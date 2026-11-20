@@ -1,0 +1,791 @@
+<!doctype html>
+<html lang="mn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Найзууд, хосууд, гэр бүлээрээ нэг утсаар тоглох монгол тоглоомууд.">
+<title>Хамтдаа</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Unbounded:wght@500;700&family=Nunito:wght@400;600;800&display=swap">
+<style>
+/* Layout: one-screen app, a single centred column (max 460px) that swaps views; each mood tints the room with its own candle glow. Deliberately one dark "evening" look. */
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+  --night:#14111f;
+  --night-2:#1e1a2e;
+  --line:#3a3350;
+  --ink:#f3eefa;
+  --ink-soft:#b7aecb;
+  --glow:#f2b45a;          /* changes per mood */
+  --glow-ink:#2a1a05;
+  --rose:#ff7a9c; --amber:#f2b45a; --teal:#5fd3c0; --lilac:#b49cff;
+  --display:"Unbounded","Arial Black",system-ui,sans-serif;
+  --body:"Nunito","Segoe UI",system-ui,sans-serif;
+  color-scheme:dark;
+}
+html,body{height:100%}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+body{background:var(--night);color:var(--ink);font-family:var(--body);font-size:16px;line-height:1.5;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));
+  overflow-x:hidden}
+body::after{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(60% 45% at 50% 0%,color-mix(in srgb,var(--glow) 28%,transparent),transparent 70%);
+  transition:background .6s}
+#app{position:relative;z-index:1;max-width:460px;margin:0 auto;min-height:100%;display:flex;flex-direction:column;padding-block:20px 28px}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible{outline:3px solid var(--glow);outline-offset:3px}
+h1,h2,h3{font-family:var(--display);font-weight:700;text-wrap:balance;margin:0;line-height:1.15}
+.view{display:flex;flex-direction:column;gap:18px;flex:1}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px}
+.brand{font-family:var(--display);font-weight:500;font-size:15px;letter-spacing:.04em}
+.brand b{color:var(--glow)}
+.back{display:inline-flex;align-items:center;gap:6px;padding:8px 12px 8px 8px;border-radius:999px;border:1px solid var(--line);color:var(--ink-soft);font-weight:600;font-size:14px}
+.back:hover{color:var(--ink);border-color:var(--ink-soft)}
+.eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);font-weight:800}
+.hero h1{font-size:clamp(28px,8vw,38px)}
+.hero p{color:var(--ink-soft);margin:8px 0 0}
+.moods{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.mood{position:relative;text-align:left;padding:16px 14px 14px;border-radius:20px;background:var(--night-2);border:1px solid var(--line);
+  display:flex;flex-direction:column;gap:6px;min-height:150px;overflow:hidden;transition:transform .2s,border-color .2s}
+.mood:hover{transform:translateY(-2px);border-color:var(--c)}
+.mood::before{content:"";position:absolute;width:120px;height:120px;right:-40px;top:-40px;border-radius:50%;background:var(--c);opacity:.22;filter:blur(8px)}
+.mood .ic{font-size:28px;line-height:1}
+.mood h3{font-size:15px;margin-top:auto}
+.mood small{color:var(--ink-soft);font-size:13px;line-height:1.35}
+.note{font-size:13px;color:var(--ink-soft);text-align:center;margin-top:auto}
+.games{display:flex;flex-direction:column;gap:12px}
+.game{display:flex;gap:14px;align-items:center;text-align:left;padding:16px;border-radius:18px;background:var(--night-2);border:1px solid var(--line)}
+.game:hover{border-color:var(--glow)}
+.game .ic{width:48px;height:48px;flex:none;border-radius:14px;display:grid;place-items:center;font-size:24px;background:color-mix(in srgb,var(--glow) 18%,transparent)}
+.game div{min-width:0}
+.game h3{font-size:15px}
+.game p{margin:2px 0 0;color:var(--ink-soft);font-size:14px;line-height:1.35}
+.tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.06em;padding:2px 8px;border-radius:999px;background:var(--glow);color:var(--glow-ink);margin-left:6px;vertical-align:2px}
+.tabs{display:flex;gap:6px;padding:4px;border-radius:999px;background:var(--night-2);border:1px solid var(--line)}
+.tabs button{flex:1;padding:9px 6px;border-radius:999px;font-weight:800;font-size:14px;color:var(--ink-soft)}
+.tabs button[aria-selected="true"]{background:var(--glow);color:var(--glow-ink)}
+.stage{perspective:1200px;flex:1;display:flex;flex-direction:column;justify-content:center;min-height:340px}
+.card{position:relative;width:100%;aspect-ratio:3/4;max-height:min(380px,55vh);margin:0 auto;max-width:100%;transform-style:preserve-3d;transition:transform .6s cubic-bezier(.2,.8,.2,1);cursor:pointer}
+.card.flipped{transform:rotateY(180deg)}
+.face{position:absolute;inset:0;border-radius:26px;backface-visibility:hidden;-webkit-backface-visibility:hidden;display:flex;flex-direction:column;padding:26px 22px}
+.front{background:
+  repeating-linear-gradient(45deg,color-mix(in srgb,var(--glow) 14%,transparent) 0 2px,transparent 2px 14px),
+  linear-gradient(160deg,var(--night-2),var(--night));border:1px solid color-mix(in srgb,var(--glow) 50%,var(--line));align-items:center;justify-content:center;gap:10px;text-align:center}
+.front .big{font-family:var(--display);font-size:56px;color:var(--glow);line-height:1}
+.front span{color:var(--ink-soft);font-weight:600}
+.back-face{transform:rotateY(180deg);background:var(--ink);color:#1b1528;justify-content:space-between}
+.back-face .kind{font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:#7a6c92}
+.back-face .q{font-family:var(--display);font-weight:500;font-size:clamp(20px,5.6vw,25px);line-height:1.35;text-wrap:balance}
+.back-face .foot{display:flex;justify-content:space-between;font-size:13px;color:#7a6c92;font-weight:700;font-variant-numeric:tabular-nums}
+.row{display:flex;gap:10px}
+.btn{flex:1;padding:15px 18px;border-radius:16px;font-weight:800;font-size:16px;text-align:center;background:var(--glow);color:var(--glow-ink);transition:transform .15s}
+.btn:active{transform:scale(.97)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.good{background:var(--teal);color:#062622}
+.btn.skip{background:#3a3350;color:var(--ink)}
+.panel{background:var(--night-2);border:1px solid var(--line);border-radius:20px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.stepper{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.stepper .ctl{display:flex;align-items:center;gap:14px}
+.stepper button{width:44px;height:44px;border-radius:50%;border:1px solid var(--line);font-size:22px;font-weight:800}
+.stepper output{font-family:var(--display);font-size:22px;min-width:2ch;text-align:center;font-variant-numeric:tabular-nums}
+.rules{margin:0;padding-left:20px;color:var(--ink-soft);font-size:14px;display:flex;flex-direction:column;gap:4px}
+.reveal{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;border-radius:26px;border:1px dashed var(--line);padding:28px 18px;min-height:320px}
+.reveal .who{font-family:var(--display);font-size:30px}
+.reveal .word{font-family:var(--display);font-size:clamp(30px,9vw,44px);color:var(--glow)}
+.reveal p{color:var(--ink-soft);margin:0}
+.timer{font-family:var(--display);font-size:64px;text-align:center;font-variant-numeric:tabular-nums;color:var(--glow);line-height:1}
+.timer.low{color:var(--rose)}
+.hu-word{flex:1;display:grid;place-items:center;text-align:center;font-family:var(--display);font-size:clamp(34px,11vw,54px);border-radius:26px;background:var(--ink);color:#1b1528;padding:24px;min-height:260px;text-wrap:balance}
+.cats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.cat{padding:16px 12px;border-radius:16px;background:var(--night-2);border:1px solid var(--line);font-weight:800;text-align:left;display:flex;flex-direction:column;gap:4px}
+.cat:hover{border-color:var(--glow)}
+.cat span{font-size:24px}
+.cat small{color:var(--ink-soft);font-weight:600}
+.results{display:flex;flex-wrap:wrap;gap:6px}
+.results span{padding:4px 10px;border-radius:999px;font-size:14px;font-weight:700;background:color-mix(in srgb,var(--teal) 20%,transparent)}
+.results span.x{background:#2b2640;color:var(--ink-soft);text-decoration:line-through}
+.gate{position:fixed;inset:0;z-index:20;display:grid;place-items:center;background:rgba(10,8,16,.82);backdrop-filter:blur(6px);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+[hidden]{display:none!important}
+.gate .panel{max-width:380px;text-align:center}
+.gate h2{font-size:22px}
+.gate p{margin:0;color:var(--ink-soft)}
+.spylist{display:flex;flex-direction:column;gap:6px;font-weight:700}
+.spylist div{display:flex;justify-content:space-between;padding:8px 12px;border-radius:12px;background:var(--night)}
+.spylist .spy{color:var(--rose)}
+.bomb{width:min(220px,60vw);aspect-ratio:1;max-width:100%;margin:8px auto;border-radius:50%;display:grid;place-items:center;font-size:84px;
+  background:radial-gradient(circle at 35% 30%,#4a4160,#1a1626 70%);box-shadow:0 0 0 6px color-mix(in srgb,var(--glow) 30%,transparent),0 0 60px color-mix(in srgb,var(--glow) 40%,transparent);animation:pulse var(--beat,.9s) ease-in-out infinite}
+@keyframes pulse{50%{transform:scale(1.05)}}
+.prompt{text-align:center;font-family:var(--display);font-size:clamp(22px,6.5vw,30px);text-wrap:balance}
+.boom{position:fixed;inset:0;z-index:30;display:grid;place-items:center;background:var(--rose);color:#2b0610;text-align:center;font-family:var(--display);animation:flash .5s ease-out}
+.boom div{font-size:clamp(44px,14vw,72px)}
+.boom p{font-family:var(--body);font-weight:800;font-size:18px;margin:8px 0 0}
+@keyframes flash{from{background:#fff}}
+.names{display:flex;flex-direction:column;gap:8px}
+.names .nm{display:flex;gap:8px}
+.names input{flex:1;min-width:0;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--night);color:var(--ink);font:inherit}
+.names input:focus{outline:2px solid var(--glow);border-color:transparent}
+.names .rm{width:44px;border-radius:12px;border:1px solid var(--line);color:var(--ink-soft);font-size:20px}
+.mission{font-family:var(--display);font-weight:500;font-size:clamp(19px,5.4vw,23px);line-height:1.4;text-wrap:balance}
+.target{display:inline-block;padding:6px 14px;border-radius:999px;background:var(--glow);color:var(--glow-ink);font-weight:800}
+.mlist{display:flex;flex-direction:column;gap:10px}
+.mitem{display:flex;gap:12px;align-items:flex-start;text-align:left;padding:14px;border-radius:16px;background:var(--night-2);border:1px solid var(--line)}
+.mitem[aria-pressed="true"]{border-color:var(--teal)}
+.mitem .ck{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-weight:800}
+.mitem[aria-pressed="true"] .ck{background:var(--teal);border-color:var(--teal);color:#062622}
+.mitem div{min-width:0}.mitem b{display:block}.mitem small{color:var(--ink-soft);font-size:14px}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt{padding:18px 12px;border-radius:16px;background:var(--night-2);border:1px solid var(--line);font-weight:800;font-size:16px}
+.opt:hover{border-color:var(--glow)}
+.opt.right{background:var(--teal);color:#062622;border-color:var(--teal)}
+.opt.wrong{background:#4a2433;border-color:var(--rose)}
+.pct{font-family:var(--display);font-size:72px;color:var(--glow);text-align:center;line-height:1}
+.qline{font-family:var(--display);font-size:clamp(20px,5.8vw,26px);text-align:center;text-wrap:balance}
+.who-line{text-align:center;color:var(--ink-soft);font-weight:700}
+.touchpad{position:fixed;inset:0;z-index:15;background:var(--night);touch-action:none;user-select:none;-webkit-user-select:none;overflow:hidden}
+.touchpad .hint{position:absolute;left:0;right:0;top:calc(env(safe-area-inset-top,0px) + 70px);text-align:center;padding-inline:24px;color:var(--ink-soft);font-weight:700;pointer-events:none}
+.touchpad .hint b{display:block;font-family:var(--display);font-size:24px;color:var(--ink);margin-bottom:6px}
+.touchpad .close{position:absolute;top:calc(env(safe-area-inset-top,0px) + 16px);left:max(16px,env(safe-area-inset-left,0px));z-index:2}
+.dot{position:absolute;width:96px;height:96px;margin:-48px 0 0 -48px;border-radius:50%;border:6px solid var(--c);background:color-mix(in srgb,var(--c) 25%,transparent);pointer-events:none;transition:transform .4s,opacity .4s;animation:ring 1s ease-in-out infinite}
+@keyframes ring{50%{transform:scale(1.12)}}
+.dot.win{animation:none;transform:scale(2.6);background:var(--c)}
+.dot.lose{animation:none;opacity:0;transform:scale(.4)}
+.shagai-row{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.bone{aspect-ratio:3/4;max-width:100%;border-radius:40% 40% 34% 34%/30% 30% 44% 44%;background:linear-gradient(160deg,#f6ead6,#d9c3a0);color:#3b2a14;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;box-shadow:inset 0 -6px 0 rgba(0,0,0,.12)}
+.bone span{font-size:30px;line-height:1}.bone small{font-weight:800;font-size:13px}
+.bone.roll{animation:roll .5s ease-in-out}
+@keyframes roll{25%{transform:translateY(-18px) rotate(-30deg)}60%{transform:translateY(4px) rotate(25deg)}}
+.cup.shake{animation:shake .45s ease-in-out}
+@keyframes shake{20%{transform:rotate(-12deg)}40%{transform:rotate(10deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(6deg)}}
+.verdict{text-align:center;font-family:var(--display);font-size:22px;min-height:1.4em;text-wrap:balance}
+.hist{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
+.hist span{font-size:13px;padding:3px 10px;border-radius:999px;background:var(--night-2);border:1px solid var(--line);color:var(--ink-soft)}
+.dial{width:100%;max-width:100%;display:block;touch-action:none}
+.dial .arc{fill:var(--night-2);stroke:var(--line);stroke-width:2}
+.dial text{fill:var(--ink-soft);font:700 13px var(--body)}
+.spectrum{display:flex;justify-content:space-between;gap:12px;font-weight:800}
+.spectrum span{max-width:45%}.spectrum span:last-child{text-align:right}
+.range{width:100%;accent-color:var(--glow)}
+.pkmodes{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);display:flex;justify-content:center;gap:6px;padding-inline:16px;z-index:2}
+.pkmodes button{padding:10px 14px;border-radius:999px;border:1px solid var(--line);background:var(--night-2);font-weight:800;font-size:14px;color:var(--ink-soft)}
+.pkmodes button[aria-pressed="true"]{background:var(--glow);color:var(--glow-ink);border-color:var(--glow)}
+.tdcard{position:absolute;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%);z-index:3;max-width:420px;margin:0 auto}
+.dot .lbl{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-size:22px;color:var(--night)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+</head>
+<body>
+<div id="app"></div>
+<div id="gate" class="gate" hidden>
+  <div class="panel" role="dialog" aria-modal="true" aria-labelledby="gateTitle">
+    <h2 id="gateTitle">Зөвхөн 18+ насныханд</h2>
+    <p>Энэ хэсэг хосуудад зориулсан романтик, халуун асуулт, даалгавартай. Та 18 нас хүрсэн үү?</p>
+    <div class="row">
+      <button class="btn ghost" id="gateNo">Буцах</button>
+      <button class="btn" id="gateYes">Тийм, 18+</button>
+    </div>
+  </div>
+</div>
+
+<script>
+const MOODS = {
+  couples:{name:"Хосуудын орой", ic:"💞", c:"var(--rose)", sub:"Дулаан, ойртуулах яриа", games:["match","wave","couplesDeck","picker"]},
+  friends:{name:"Найзуудын цугларалт", ic:"🎉", c:"var(--amber)", sub:"Инээд, өрсөлдөөн, сэжиг", games:["bomb","wave","missions","spy","headsup","shagai","picker"]},
+  family:{name:"Гэр бүл, хүүхдүүд", ic:"🏡", c:"var(--teal)", sub:"Бүх насныханд хөгжилтэй", games:["shagai","bomb","charades","familyDeck","picker"]},
+  strangers:{name:"Шинэ танилууд", ic:"🤝", c:"var(--lilac)", sub:"Мөс хайлуулах асуултууд", games:["iceDeck","missions","picker"]},
+};
+const GAMES = {
+  picker:{name:"Хурууны рулет", ic:"🖐️", desc:"Бүгд дэлгэц дээр хуруугаа тавь. Утас нэгийг сонгох, Үнэн үү Зориг уу асуух, эсвэл баг хуваана.", tag:"Шинэ"},
+  shagai:{name:"Шагай", ic:"🦴", desc:"Утсаар шагай сэгсэрч буулга. Морь, тэмээ, хонь, ямаа аль нь буух бол?", tag:"Шинэ"},
+  wave:{name:"Нэг долгион дээр", ic:"📡", desc:"Нэг нь нууц цэгийг харж ганц үгээр санаа өгнө, бусад нь зүүг тааруулна.", tag:"Шинэ"},
+  bomb:{name:"Бөмбөг", ic:"💣", desc:"Сэдэвт тохирох үг хэлээд утсаа дамжуул. Хэзээ дэлбэрэхийг хэн ч мэдэхгүй.", tag:"Шинэ"},
+  missions:{name:"Нууц даалгавар", ic:"🕶️", desc:"Хүн бүр нууц даалгавар авна. Бүх орой баригдалгүй биелүүлж, төгсгөлд нь илчил.", tag:"Шинэ"},
+  match:{name:"Хэр сайн мэддэг вэ?", ic:"🎯", desc:"Нэг нь өөрийнхөө тухай нууцаар хариулна, нөгөө нь таана. Хэдэн хувь таарахыг үз.", tag:"Шинэ"},
+  couplesDeck:{name:"Бид хоёр", ic:"🕯️", desc:"Гурван түвшний асуулт, даалгавар. Эхнээсээ ойртох тусам гүнзгийрнэ.", tag:"18+ хэсэгтэй"},
+  spy:{name:"Хэн нь тагнуул вэ?", ic:"🕵️", desc:"Бүгдэд нэг үг, тагнуулд арай өөр үг ирнэ. Ярилцаад тагнуулыг ол."},
+  headsup:{name:"Толгой дээрээ", ic:"🤳", desc:"Утсаа духан дээрээ барь, найзууд чинь тайлбарлана. 60 секундэд аль болох олныг таа."},
+  charades:{name:"Дүрээр үзүүл", ic:"🎭", desc:"Үгийг дуугүй дүрсэлж үзүүл, бусад нь таана. Хүүхдүүдэд зориулсан үгс."},
+  familyDeck:{name:"Ширээний яриа", ic:"🍲", desc:"Оройн хоолны үеэр бүгдээрээ хариулах хөгжилтэй асуултууд."},
+  iceDeck:{name:"Танилцъя", ic:"🧊", desc:"Шинэ хүмүүстэй эвгүй чимээгүй байдлыг эвдэх асуултууд."},
+};
+const DECKS = {
+  couplesDeck:{levels:[
+    {name:"Танилцах", items:[
+      "Бидний анх уулзсан өдрийн юу нь чамд хамгийн тод санагддаг вэ?",
+      "Надад анх юу чинь таалагдсан гэж бодож байна?",
+      "Хамтдаа хийх хамгийн дуртай энгийн зүйл чинь юу вэ?",
+      "Маргааш хаашаа ч хамт аялж болдог бол хаашаа явах вэ?",
+      "Миний ямар зуршил чамайг инээлгэдэг вэ?",
+      "Хүүхэд байхдаа ямар мөрөөдөлтэй байсан бэ?",
+      "Чиний хувьд төгс амралтын өдөр ямар байх вэ?",
+      "Надаас сурсан нэг зүйлээ хэлээч."]},
+    {name:"Ойртох", items:[
+      "Ямар үед надад хамгийн их хайртай гэдгээ мэдэрдэг вэ?",
+      "Чамайг хамгийн их тайвшруулдаг миний үйлдэл юу вэ?",
+      "Бидний харилцаанд нэг зүйлийг өөрчилж болдог бол юуг өөрчлөх вэ?",
+      "Хэнд ч хэлж байгаагүй нэг айдсаа надтай хуваалцаач.",
+      "5 жилийн дараа бид ямар амьдралтай байгаасай гэж хүсдэг вэ?",
+      "Надад хэлэхийг хүсээд хэлж чадаагүй зүйл байгаа юу?",
+      "Даалгавар: бие биеийнхээ нүд рүү 30 секунд дуугүй хар.",
+      "Сүүлийн үед би чамд хангалттай анхаарал хандуулж байна уу?"]},
+    {name:"18+", adult:true, items:[
+      "Намайг ямар хувцастай байхад чи хамгийн их татагддаг вэ?",
+      "Бидний хамгийн романтик шөнийг дахин дүрслээч.",
+      "Миний хэлдэг ямар үг чамайг хамгийн их догдлуулдаг вэ?",
+      "Даалгавар: хамтрагчийнхаа чихэнд нэг нууц хүслээ шивнэ.",
+      "Хамтдаа туршиж үзмээр байгаа нэг шинэ зүйл юу вэ?",
+      "Даалгавар: хамтрагчийнхаа хүзүүг 10 секунд үнс.",
+      "Төгс болзооны оройн төгсгөл ямар байх вэ?",
+      "Надад хэлж зүрхлээгүй нэг уран сэтгэмжээ хэлээч."]}
+  ]},
+  familyDeck:{levels:[{name:"Бүгдээрээ", items:[
+    "Энэ жилийн хамгийн хөгжилтэй өдөр чинь аль нь байсан бэ?",
+    "Амьтан болж болдог бол юу болох вэ, яагаад?",
+    "Гэр бүлийн хэн нь хамгийн инээдтэй вэ?",
+    "Супер баатар болбол ямар хүчтэй байх вэ?",
+    "Хамгийн дуртай үлгэр чинь юу вэ?",
+    "Аав, ээж чинь хүүхэд байхдаа ямар байсан гэж бодож байна?",
+    "Маргааш юу ч хийж болдог бол юу хийх вэ?",
+    "Даалгавар: хүн бүр нэг амьтны дууг дуурайлга, бусад нь таана."]}]},
+  iceDeck:{levels:[{name:"Танилцах", items:[
+    "Чамайг хамгийн сүүлд юу чанга инээлгэсэн бэ?",
+    "Нэг өдөр ямар ч мэргэжилтэй байж болдог бол юу болох вэ?",
+    "Хамгийн дуртай хоол чинь юу вэ, хэн хамгийн сайн хийдэг вэ?",
+    "Хэзээ ч мартагдахгүй аялал чинь хаана байсан бэ?",
+    "Чамд байдаг хачин авьяас юу вэ?",
+    "1 сая доллар хожвол хамгийн түрүүнд юу хийх вэ?",
+    "Хүүхэд байхдаа ямар хоч авч байсан бэ?",
+    "Хамгийн сүүлд үзсэн гоё кино чинь юу вэ?"]}]},
+};
+const SPY_PAIRS = [["Цай","Кофе"],["Бууз","Хуушуур"],["Морь","Тэмээ"],["Наадам","Цагаан сар"],["Гэр","Байшин"],["Нохой","Муур"],
+  ["Хөлбөмбөг","Сагсан бөмбөг"],["Утас","Таблет"],["Зун","Хавар"],["Далай","Нуур"],["Эмч","Сувилагч"],["Кино театр","Театр"],
+  ["Талх","Боов"],["Айраг","Тараг"],["Автобус","Такси"],["Сургууль","Их сургууль"]];
+const HU_CATS = {
+  animals:{name:"Амьтад", ic:"🦁", words:["Арслан","Тэмээ","Пингвин","Анааш","Матар","Туулай","Бүргэд","Мэлхий","Заан","Сарлаг","Хулгана","Далайн гахай","Цагаан баавгай","Тоть"]},
+  jobs:{name:"Мэргэжил", ic:"👩‍🚒", words:["Тогооч","Нисгэгч","Сансрын нисгэгч","Цагдаа","Багш","Шүдний эмч","Барилгачин","Дуучин","Сэтгүүлч","Гал сөнөөгч","Үсчин","Жолооч"]},
+  mongol:{name:"Монгол", ic:"🐎", words:["Наадам","Бөх","Морин хуур","Гэр","Хөөмий","Шагай","Дээл","Бууз","Чингис хаан","Тэмээ уралдаан","Цагаан сар","Говь"]},
+  actions:{name:"Үйлдэл", ic:"💃", words:["Бүжиглэх","Загасчлах","Сэлэх","Унтах","Шүдээ угаах","Сэлфи авах","Машин барих","Хоол хийх","Шатар тоглох","Дугуй унах"]},
+};
+const KID_WORDS = {name:"Хүүхдийн үгс", ic:"🧸", words:["Нохой","Муур","Тахиа","Сармагчин","Могой","Шүдээ угаах","Бөмбөг өшиглөх","Дугуй унах","Онгоц","Бороо","Цасан хүн","Зайрмаг идэх","Унтах","Туулай","Загас"]};
+
+const BOMB_PROMPTS = ["Монгол хоол нэрлэ","Амьтан нэрлэ","Монгол хот, аймаг нэрлэ","Улаан өнгөтэй зүйл нэрлэ","Монгол дуучин нэрлэ","Гал тогоонд байдаг зүйл нэрлэ",
+  "Б үсгээр эхэлсэн үг хэл","С үсгээр эхэлсэн үг хэл","Спортын төрөл нэрлэ","Кино нэрлэ","Улс орон нэрлэ","Мэргэжил нэрлэ","Жимс, ногоо нэрлэ",
+  "Сургуульд хэрэглэдэг зүйл нэрлэ","Машины марк нэрлэ","Биеийн эрхтэн нэрлэ","Шувуу нэрлэ","Өвлийн хувцас нэрлэ","Апп нэрлэ","Хүүхэлдэйн киноны баатар нэрлэ"];
+const MISSIONS_T = [
+  "Бай чинь чамд ундаа эсвэл ус авчирч өгөх ёстой. Шууд гуйж болохгүй.",
+  "Бай чинь чамтай хамт сэлфи авах ёстой. Шалтгаанаа хэлж болохгүй.",
+  "Бай чинь хүүхэд байхдаа хэн болох гэж байснаа хэлэх ёстой.",
+  "Бай чинь чамтай суудлаа солих ёстой.",
+  "Бай чинь чамд “Чи үнэхээр зөв” гэж хэлэх ёстой.",
+  "Бай чинь чиний хувцсыг магтах ёстой.",
+  "Бай чинь 10 секундээс удаан чиний нүд рүү харах ёстой.",
+  "Бай чинь “Би хэзээ ч...” гэж эхэлсэн өгүүлбэр хэлэх ёстой."];
+const MISSIONS_N = [
+  "Яриан дунд “тэмээ” гэдэг үгийг хэн ч анзааралгүй 3 удаа оруул.",
+  "Хоёр хүнийг нэгэн зэрэг инээлгэ.",
+  "Ярианы сэдвийг сансар огторгуй руу эргүүл.",
+  "Ширээн дээрх нэг зүйлийг хэн ч анзааралгүй өөр газар шилжүүл.",
+  "Хүмүүсийг нэг дуу хамт дуулахад хүргэ.",
+  "Хэн нэгнээр “гайхалтай” гэдэг үгийг 3 удаа хэлүүл.",
+  "Хэн нэгнийг чамд нууцаа хэлэхэд хүргэ.",
+  "Хэн нэгнийг амьдралынхаа хамгийн эвгүй мөчийг ярихад хүргэ."];
+const MATCH_Q = [
+  ["Хамгийн дуртай улирал?",["Хавар","Зун","Намар","Өвөл"]],
+  ["Төгс амралтын өдөр?",["Гэртээ кино","Найзуудтайгаа","Байгальд","Өдөржин унтах"]],
+  ["Хамгийн их стресс өгдөг зүйл?",["Ажил, сургууль","Мөнгө","Хүмүүс","Түгжрэл"]],
+  ["Хамгийн дуртай хоол?",["Бууз","Пицца","Хуушуур","Суши"]],
+  ["Хайраа хэрхэн илэрхийлдэг вэ?",["Үгээр","Тэврэлтээр","Бэлгээр","Тусалж"]],
+  ["Хамгийн их очмоор байгаа газар?",["Далайн эрэг","Уулс","Том хот","Хөдөө"]],
+  ["Уурласан үедээ юу хийдэг вэ?",["Чимээгүй болно","Шууд хэлнэ","Гадагшаа гарна","Юм иднэ"]],
+  ["Өглөө сэрээд эхлээд юу хийдэг вэ?",["Шууд босно","Сэрүүлэг хойшлуулна","Утас ухна","Цай, кофе ууна"]],
+  ["Хамгийн их баярлах бэлэг?",["Гар хийцийн","Хувцас","Хамтдаа аялал","Цэцэг"]],
+  ["Хамгийн том айдас?",["Ганцаардах","Бүтэлгүйтэх","Өндөр","Өвчин"]]];
+
+const SPECTRA = [["Хүйтэн","Халуун"],["Хямд болзоо","Тансаг болзоо"],["Уйтгартай","Хөгжилтэй"],["Эрүүл хоол","Эрүүл бус хоол"],
+  ["Хүүхдэд зориулсан","Насанд хүрэгчдэд"],["Амархан ажил","Хэцүү ажил"],["Муу супер хүч","Гайхалтай супер хүч"],["Хуучирсан","Моодонд орсон"],
+  ["Муухай үнэр","Сайхан үнэр"],["Жижиг асуудал","Том асуудал"],["Хөдөөний","Хотын"],["Романтик биш","Маш романтик"],
+  ["Ганцаараа хийх зүйл","Олуулаа хийх зүйл"],["Аймшигтай кино","Инээдтэй кино"],["Хэрэггүй бэлэг","Гайхалтай бэлэг"],["Эвгүй асуулт","Энгийн асуулт"]];
+const SHAGAI = [{n:"Морь",ic:"🐎",p:.11},{n:"Тэмээ",ic:"🐫",p:.11},{n:"Хонь",ic:"🐑",p:.39},{n:"Ямаа",ic:"🐐",p:.39}];
+const PICK_TASKS = ["Энэ хүн эхэлнэ!","Энэ хүн бүгдэд ундаа хийж өгнө.","Энэ хүн нэг дуу дуулна.","Энэ хүн хамгийн эвгүй мөчөө ярина.","Энэ хүн дараагийн тоглоомыг сонгоно.","Энэ хүн 10 удаа суугаад босно."];
+
+const TRUTHS = ["Хамгийн сүүлд хэнд худлаа хэлсэн бэ?","Энд байгаа хүмүүсээс хэнтэй нь арал дээр үлдмээр байна?","Хамгийн эвгүй байдалд орсон мөчөө ярь.",
+  "Утасныхаа хамгийн сүүлийн зургийг үзүүл.","Хүүхэд байхдаа хийсэн хамгийн дэггүй зүйл чинь юу вэ?","Хэнд ч хэлж байгаагүй нэг нууцаа хэл.",
+  "Энд байгаа хүмүүсийн хэн нь хамгийн хөгжилтэй вэ?","Анхны дурлал чинь ямар хүн байсан бэ?","Хамгийн сүүлд хэзээ уйлсан бэ?",
+  "Нэг өдөр үл үзэгдэх болбол юу хийх вэ?","Хамгийн муу бэлэг юу авч байсан бэ?","Өөрийнхөө аль зуршлыг өөрчилмөөр байна?"];
+const DARES = ["Хөгжимгүйгээр 20 секунд бүжиглэ.","Баруун талын хүнээ 3 өгүүлбэрээр магт.","Нэг амьтны дууг бусад нь таах хүртэл дуурай.",
+  "Дараагийн тойрог хүртэл зөвхөн шивнэж ярь.","Нэг дууны дахилтыг чангаар дуул.","10 удаа суугаад бос.",
+  "Хамгийн инээдтэй царайгаа гарга, бусад нь зураг авна.","Энд байгаа хүн бүрт нэг нэг хоч өг.","Энд байгаа нэг хүний дүрд орж ярь, бусад нь хэн болохыг таана.",
+  "Дараагийн 2 тойрогт “тийм” гэж хэлж болохгүй.","Гараа ашиглахгүйгээр нэг балгаж уу.","Баруун талын хүнтэйгээ 1 минут байраа соль."];
+
+const app = document.getElementById("app");
+let timerId = null;
+const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; };
+const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+function setGlow(c){ document.documentElement.style.setProperty("--glow", c || "var(--amber)"); }
+function stopTimer(){ if(timerId){clearInterval(timerId); timerId=null;} }
+function topBar(backTo, label){
+  return `<div class="top">${backTo?`<button class="back" data-go="${backTo}">‹ ${esc(label||"Буцах")}</button>`:`<span></span>`}<span class="brand">Хамт<b>даа</b></span></div>`;
+}
+let adultOk = false;
+try{ adultOk = sessionStorage.getItem("adult")==="1"; }catch(e){}
+
+/* ---------- Home ---------- */
+function home(){
+  stopTimer(); setGlow("var(--amber)");
+  app.innerHTML = `<section class="view">
+    <div class="top"><span class="brand">Хамт<b>даа</b></span><span class="eyebrow">Нэг утас · олон хүн</span></div>
+    <div class="hero"><h1>Өнөөдөр ямар орой вэ?</h1><p>Нөхцөл байдлаа сонго, бид тохирох тоглоомыг санал болгоно.</p></div>
+    <div class="moods">${Object.entries(MOODS).map(([k,m])=>`
+      <button class="mood" style="--c:${m.c}" data-mood="${k}"><span class="ic">${m.ic}</span><h3>${m.name}</h3><small>${m.sub}</small></button>`).join("")}
+    </div>
+    <p class="note">Бүртгэл хэрэггүй. Утсаа ширээн дээр тавиад дамжуулан тогло.</p>
+  </section>`;
+}
+/* ---------- Mood ---------- */
+function mood(k){
+  stopTimer(); const m = MOODS[k]; setGlow(m.c);
+  app.innerHTML = `<section class="view">${topBar("home","Нүүр")}
+    <div class="hero"><span class="eyebrow">${m.ic} ${m.name}</span><h1 style="margin-top:6px">Тоглоомоо сонго</h1></div>
+    <div class="games">${m.games.map(g=>{const G=GAMES[g];return `
+      <button class="game" data-game="${g}" data-from="${k}"><span class="ic">${G.ic}</span><div><h3>${G.name}${G.tag?`<span class="tag">${G.tag}</span>`:""}</h3><p>${G.desc}</p></div></button>`}).join("")}
+    </div></section>`;
+}
+/* ---------- Question decks ---------- */
+let deckState = null;
+function deck(id, from, levelIdx=0){
+  stopTimer(); setGlow(MOODS[from].c);
+  const D = DECKS[id], L = D.levels[levelIdx];
+  if(L.adult && !adultOk){ openGate(()=>deck(id,from,levelIdx)); return; }
+  deckState = {id, from, levelIdx, order:shuffle(L.items), i:0};
+  renderDeck();
+}
+function renderDeck(){
+  const {id,from,levelIdx,order,i} = deckState; const D=DECKS[id], L=D.levels[levelIdx], G=GAMES[id];
+  const q = order[i], isTask = q.startsWith("Даалгавар:");
+  app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+    <h2 style="font-size:22px">${G.ic} ${G.name}</h2>
+    ${D.levels.length>1?`<div class="tabs" role="tablist">${D.levels.map((l,n)=>`<button role="tab" aria-selected="${n===levelIdx}" data-level="${n}">${l.name}</button>`).join("")}</div>`:""}
+    <div class="stage"><div class="card" id="card" tabindex="0" role="button" aria-label="Картыг эргүүлэх">
+      <div class="face front"><div class="big">?</div><span>Дарж эргүүл</span><span class="eyebrow">${L.name}</span></div>
+      <div class="face back-face"><span class="kind">${isTask?"Даалгавар":"Асуулт"} · ${L.name}</span>
+        <div class="q">${esc(isTask?q.replace("Даалгавар: ",""):q)}</div>
+        <div class="foot"><span>${i+1} / ${order.length}</span><span>${esc(G.name)}</span></div></div>
+    </div></div>
+    <div class="row"><button class="btn" id="next">${i+1<order.length?"Дараагийн карт":"Дахин холих"}</button></div>
+  </section>`;
+  const card = document.getElementById("card");
+  const flip = () => card.classList.toggle("flipped");
+  card.onclick = flip; card.onkeydown = e => { if(e.key==="Enter"||e.key===" "){e.preventDefault();flip();} };
+  document.getElementById("next").onclick = () => {
+    if(deckState.i+1<deckState.order.length) deckState.i++; else { deckState.order=shuffle(deckState.order); deckState.i=0; }
+    renderDeck();
+    requestAnimationFrame(()=>requestAnimationFrame(()=>document.getElementById("card").classList.add("flipped")));
+  };
+  app.querySelectorAll("[data-level]").forEach(b=>b.onclick=()=>deck(id,from,+b.dataset.level));
+}
+/* ---------- Age gate ---------- */
+let gateCb = null;
+const gate = document.getElementById("gate");
+function openGate(cb){ gateCb = cb; gate.hidden = false; document.getElementById("gateYes").focus(); }
+document.getElementById("gateYes").onclick = () => { adultOk = true; try{sessionStorage.setItem("adult","1")}catch(e){} gate.hidden = true; gateCb && gateCb(); };
+document.getElementById("gateNo").onclick = () => { gate.hidden = true; };
+
+/* ---------- Spy ---------- */
+let spy = {players:5, spies:1};
+function spySetup(from){
+  stopTimer(); setGlow(MOODS[from].c);
+  app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+    <h2 style="font-size:22px">🕵️ Хэн нь тагнуул вэ?</h2>
+    <div class="panel">
+      <div class="stepper"><span>Тоглогчид</span><div class="ctl"><button data-s="players" data-d="-1" aria-label="Хасах">−</button><output id="o-players">${spy.players}</output><button data-s="players" data-d="1" aria-label="Нэмэх">+</button></div></div>
+      <div class="stepper"><span>Тагнуул</span><div class="ctl"><button data-s="spies" data-d="-1" aria-label="Хасах">−</button><output id="o-spies">${spy.spies}</output><button data-s="spies" data-d="1" aria-label="Нэмэх">+</button></div></div>
+    </div>
+    <ol class="rules"><li>Утсаа дамжуулж, хүн бүр өөрийн үгийг нууцаар харна.</li><li>Бүгдэд нэг үг, тагнуулд төстэй өөр үг ирнэ.</li><li>Ээлжээрээ үгээ нэг өгүүлбэрээр тайлбарла, хэт тодорхой хэлж болохгүй.</li><li>3 минутын дараа санал хураагаад тагнуулыг ол.</li></ol>
+    <div class="row" style="margin-top:auto"><button class="btn" id="go">Эхлэх</button></div></section>`;
+  app.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{
+    const k=b.dataset.s, d=+b.dataset.d;
+    if(k==="players") spy.players=Math.min(10,Math.max(3,spy.players+d));
+    else spy.spies=Math.min(Math.floor((spy.players-1)/2),Math.max(1,spy.spies+d));
+    spy.spies=Math.min(spy.spies,Math.floor((spy.players-1)/2));
+    document.getElementById("o-players").textContent=spy.players; document.getElementById("o-spies").textContent=spy.spies;
+  });
+  document.getElementById("go").onclick=()=>{
+    let [a,b] = SPY_PAIRS[Math.floor(Math.random()*SPY_PAIRS.length)]; if(Math.random()<.5)[a,b]=[b,a];
+    const idx = shuffle([...Array(spy.players).keys()]).slice(0,spy.spies);
+    spy.round = {common:a, odd:b, spyIdx:idx, cur:0, shown:false, from};
+    spyReveal();
+  };
+}
+function spyReveal(){
+  const r = spy.round;
+  if(r.cur>=spy.players) return spyTalk();
+  const word = r.spyIdx.includes(r.cur)?r.odd:r.common;
+  app.innerHTML = `<section class="view">${topBar("mood:"+r.from, "Зогсоох")}
+    <div class="reveal">${r.shown
+      ? `<p>Таны үг</p><div class="word">${esc(word)}</div><p>Санаж аваад бусдад харуулалгүй нуу.</p><button class="btn" id="hide" style="flex:none;width:100%">Нуугаад дамжуулах</button>`
+      : `<p>Утсыг энэ хүнд өг</p><div class="who">Тоглогч ${r.cur+1}</div><button class="btn" id="show" style="flex:none;width:100%">Үгээ харах</button>`}
+    </div><p class="note">${r.cur+1} / ${spy.players}</p></section>`;
+  const s=document.getElementById("show"), h=document.getElementById("hide");
+  if(s) s.onclick=()=>{r.shown=true;spyReveal();};
+  if(h) h.onclick=()=>{r.shown=false;r.cur++;spyReveal();};
+}
+function spyTalk(){
+  const r = spy.round; let left = 180;
+  const fmt = s => `${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`;
+  app.innerHTML = `<section class="view">${topBar("mood:"+r.from, "Зогсоох")}
+    <div class="hero" style="text-align:center"><span class="eyebrow">Ярилцах цаг</span></div>
+    <div class="timer" id="t">${fmt(left)}</div>
+    <p class="note" style="margin:0">Тоглогч 1-ээс эхлээд ээлжээрээ үгээ тайлбарла. Дараа нь хэнийг тагнуул гэж бодож байгаагаа зааж санал хураа.</p>
+    <div id="answer"></div>
+    <div class="row" style="margin-top:auto"><button class="btn ghost" id="again">Шинэ тойрог</button><button class="btn" id="showSpy">Тагнуулыг илчлэх</button></div></section>`;
+  const t=document.getElementById("t");
+  timerId=setInterval(()=>{left--; t.textContent=fmt(Math.max(0,left)); t.classList.toggle("low",left<=30); if(left<=0) stopTimer();},1000);
+  document.getElementById("showSpy").onclick=()=>{ stopTimer();
+    document.getElementById("answer").innerHTML=`<div class="panel"><div class="spylist">${[...Array(spy.players).keys()].map(n=>{
+      const isSpy=r.spyIdx.includes(n); return `<div class="${isSpy?"spy":""}"><span>Тоглогч ${n+1}${isSpy?" · тагнуул":""}</span><span>${esc(isSpy?r.odd:r.common)}</span></div>`}).join("")}</div></div>`;
+  };
+  document.getElementById("again").onclick=()=>spySetup(r.from);
+}
+/* ---------- Heads up / charades ---------- */
+function huPick(from, kids){
+  stopTimer(); setGlow(MOODS[from].c);
+  const cats = kids?{kids:KID_WORDS}:HU_CATS; const G = GAMES[kids?"charades":"headsup"];
+  app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+    <h2 style="font-size:22px">${G.ic} ${G.name}</h2>
+    <p style="margin:0;color:var(--ink-soft)">${kids?"Дэлгэц дээрх үгийг дуугүй, зөвхөн хөдөлгөөнөөр үзүүл. Бусад нь таана.":"Утсаа духан дээрээ, дэлгэцийг найзууд руугаа харуулж барь. Тэд үгийг тайлбарлана, чи таана. Таасан бол Зөв, гацвал Алгас."}</p>
+    <div class="cats">${Object.entries(cats).map(([k,c])=>`<button class="cat" data-cat="${k}"><span>${c.ic}</span>${c.name}<small>${c.words.length} үг · 60 сек</small></button>`).join("")}</div></section>`;
+  app.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>huPlay(from, cats[b.dataset.cat], kids));
+}
+function huPlay(from, cat, kids){
+  const words = shuffle(cat.words); let i=0, left=60; const got=[], skipped=[];
+  app.innerHTML = `<section class="view">${topBar("mood:"+from, "Зогсоох")}
+    <div class="timer" id="t">60</div>
+    <div class="hu-word" id="w">${esc(words[0])}</div>
+    <div class="row"><button class="btn skip" id="skip">Алгас</button><button class="btn good" id="ok">Зөв</button></div></section>`;
+  const w=document.getElementById("w"), t=document.getElementById("t");
+  const step = ok => { (ok?got:skipped).push(words[i]); i++; if(i>=words.length) return end(); w.textContent=words[i]; };
+  document.getElementById("ok").onclick=()=>step(true);
+  document.getElementById("skip").onclick=()=>step(false);
+  timerId=setInterval(()=>{left--; t.textContent=left; t.classList.toggle("low",left<=10); if(left<=0) end();},1000);
+  function end(){ stopTimer();
+    app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+      <div class="hero" style="text-align:center"><span class="eyebrow">${esc(cat.name)}</span><h1 style="margin-top:6px">${got.length} оноо</h1></div>
+      <div class="panel"><div class="results">${got.map(x=>`<span>${esc(x)}</span>`).join("")}${skipped.map(x=>`<span class="x">${esc(x)}</span>`).join("")}</div></div>
+      <div class="row" style="margin-top:auto"><button class="btn ghost" id="cats">Ангилал солих</button><button class="btn" id="re">Дахин тоглох</button></div></section>`;
+    document.getElementById("re").onclick=()=>huPlay(from,cat,kids);
+    document.getElementById("cats").onclick=()=>huPick(from,kids);
+  }
+}
+
+/* ---------- Bomb ---------- */
+let actx=null;
+function audio(){ try{ actx = actx || new (window.AudioContext||window.webkitAudioContext)(); if(actx.state==="suspended") actx.resume(); }catch(e){ actx=null; } return actx; }
+function beep(f=880,d=.05,v=.15){ const a=audio(); if(!a) return; const o=a.createOscillator(), g=a.createGain(); o.frequency.value=f; g.gain.setValueAtTime(v,a.currentTime); g.gain.exponentialRampToValueAtTime(.001,a.currentTime+d); o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime+d); }
+function boomSound(){ const a=audio(); if(!a) return; const n=a.sampleRate*1.2, b=a.createBuffer(1,n,a.sampleRate), d=b.getChannelData(0);
+  for(let i=0;i<n;i++) d[i]=(Math.random()*2-1)*Math.pow(1-i/n,2.5);
+  const src=a.createBufferSource(), f=a.createBiquadFilter(), g=a.createGain(); f.type="lowpass"; f.frequency.value=900; g.gain.value=.9; src.buffer=b; src.connect(f).connect(g).connect(a.destination); src.start(); }
+function bomb(from){
+  stopTimer(); setGlow(MOODS[from].c);
+  const prompt = () => BOMB_PROMPTS[Math.floor(Math.random()*BOMB_PROMPTS.length)];
+  app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+    <h2 style="font-size:22px">💣 Бөмбөг</h2>
+    <ol class="rules"><li>Дугуйлан суу. Бөмбөг асахад сэдэв гарна.</li><li>Утсаа барьсан хүн сэдэвт тохирох үг хэлээд дараагийн хүнд дамжуулна. Хэлсэн үгийг давтаж болохгүй.</li><li>Дэлбэрэх үед утас хэний гарт байна, тэр хожигдоно.</li></ol>
+    <div class="bomb" aria-hidden="true">💣</div>
+    <div class="row" style="margin-top:auto"><button class="btn" id="light">Бөмбөгийг асаах</button></div></section>`;
+  document.getElementById("light").onclick = () => { audio(); run(); };
+  function run(){
+    const total = 20000 + Math.random()*30000, start = Date.now(); let nextTick = 0;
+    app.innerHTML = `<section class="view">${topBar("mood:"+from, "Зогсоох")}
+      <div class="who-line">Сэдэв</div><div class="prompt" id="pr">${esc(prompt())}</div>
+      <div class="bomb" id="bm" aria-hidden="true">💣</div>
+      <p class="note" style="margin:0">Үгээ хэлээд хурдан дамжуул!</p>
+      <div class="row" style="margin-top:auto"><button class="btn ghost" id="np">Сэдэв солих</button></div></section>`;
+    document.getElementById("np").onclick=()=>{ document.getElementById("pr").textContent=prompt(); };
+    const bm=document.getElementById("bm");
+    timerId=setInterval(()=>{
+      const el=Date.now()-start, left=total-el;
+      if(left<=0){ stopTimer(); return explode(); }
+      const gap = left>10000?900:left>4000?550:260;
+      bm.style.setProperty("--beat", gap/1000+"s");
+      if(el>=nextTick){ beep(left>4000?820:1100); nextTick=el+gap; }
+    },50);
+  }
+  function explode(){
+    boomSound(); try{ navigator.vibrate && navigator.vibrate([300,100,300]); }catch(e){}
+    const o=document.createElement("div"); o.className="boom"; o.innerHTML=`<div><div>💥 БУУМ!</div><p>Утас барьж байсан хүн хожигдлоо</p></div>`;
+    document.body.appendChild(o);
+    setTimeout(()=>{ o.remove();
+      app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+        <div class="hero" style="text-align:center"><span class="eyebrow">Тойрог дууслаа</span><h1 style="margin-top:6px">Хожигдсон хүн нэг даалгавар биелүүлнэ</h1>
+        <p>Жишээ нь: дуу дуулах, 10 удаа суугаад босох, эсвэл бусдын сонгосон асуултад үнэнээр хариулах.</p></div>
+        <div class="row" style="margin-top:auto"><button class="btn" id="again">Дахин асаах</button></div></section>`;
+      document.getElementById("again").onclick=()=>{ audio(); run(); };
+    },1800);
+  }
+}
+/* ---------- Names helper ---------- */
+let savedNames = ["Бат","Сараа","Болд","Номин"];
+try{ const n=JSON.parse(localStorage.getItem("names")||"null"); if(Array.isArray(n)&&n.length) savedNames=n; }catch(e){}
+function namesEditor(min, max){
+  return `<div class="names" id="names">${savedNames.map((n,i)=>nameRow(n,i)).join("")}</div>
+    <button class="btn ghost" id="addName" style="flex:none">+ Тоглогч нэмэх</button>`;
+  function nameRow(n,i){ return `<div class="nm"><input id="nm-${i}" value="${esc(n)}" maxlength="16" aria-label="Тоглогч ${i+1}"><button class="rm" data-rm="${i}" aria-label="Хасах">×</button></div>`; }
+}
+function bindNames(min,max,rerender){
+  const read=()=>[...document.querySelectorAll("#names input")].map(i=>i.value.trim());
+  document.getElementById("addName").onclick=()=>{ savedNames=read(); if(savedNames.length<max){ savedNames.push(""); rerender(); document.getElementById("nm-"+(savedNames.length-1)).focus(); } };
+  document.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{ savedNames=read(); if(savedNames.length>min){ savedNames.splice(+b.dataset.rm,1); rerender(); } });
+  return ()=>{ const n=read().filter(Boolean); savedNames=read(); try{localStorage.setItem("names",JSON.stringify(n))}catch(e){} return n; };
+}
+/* ---------- Secret missions ---------- */
+function missions(from){
+  stopTimer(); setGlow(MOODS[from].c);
+  const render = () => {
+    app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+      <h2 style="font-size:22px">🕶️ Нууц даалгавар</h2>
+      <ol class="rules"><li>Хүн бүр утаснаас нууц даалгавар авна. Заримд нь "бай" буюу өөр тоглогч оноогдоно.</li><li>Бүх орой ердийнхөөрөө ярилц, даалгавраа баригдалгүй биелүүл.</li><li>Хэн нэгэн чиний даалгаврыг зөв тааж хэлбэл чи хасагдана.</li></ol>
+      <div class="panel"><b>Тоглогчид</b>${namesEditor(3,12)}</div>
+      <div class="row" style="margin-top:auto"><button class="btn" id="go">Даалгавар тараах</button></div></section>`;
+    const get = bindNames(3,12,render);
+    document.getElementById("go").onclick=()=>{
+      const names=get(); if(names.length<3){ document.getElementById("go").textContent="Дор хаяж 3 нэр оруул"; return; }
+      const t=shuffle(MISSIONS_T), n=shuffle(MISSIONS_N);
+      const list = names.map((name,i)=>{ const useT = i%2===0 && t.length;
+        if(useT){ const others=names.filter(x=>x!==name); return {name, text:t.pop(), target:others[Math.floor(Math.random()*others.length)], done:false}; }
+        return {name, text:(n.pop()||t.pop()), target:null, done:false}; });
+      deal(list,0,false);
+    };
+  };
+  render();
+  function deal(list,i,shown){
+    if(i>=list.length) return party(list);
+    const m=list[i];
+    app.innerHTML = `<section class="view">${topBar("mood:"+from, "Зогсоох")}
+      <div class="reveal">${shown
+        ? `<p>${esc(m.name)}, таны нууц даалгавар</p><div class="mission">${esc(m.text)}</div>${m.target?`<span class="target">Бай: ${esc(m.target)}</span>`:""}<button class="btn" id="hide" style="flex:none;width:100%">Нуугаад дамжуулах</button>`
+        : `<p>Утсыг энэ хүнд өг</p><div class="who">${esc(m.name)}</div><button class="btn" id="show" style="flex:none;width:100%">Даалгавраа харах</button>`}
+      </div><p class="note">${i+1} / ${list.length}</p></section>`;
+    const s=document.getElementById("show"), h=document.getElementById("hide");
+    if(s) s.onclick=()=>deal(list,i,true); if(h) h.onclick=()=>deal(list,i+1,false);
+  }
+  function party(list){
+    app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+      <div class="hero" style="text-align:center"><span class="eyebrow">Тоглоом эхэллээ</span><h1 style="margin-top:6px">Утсаа тавиад ердийнхөөрөө ярилц</h1>
+      <p>Орой дуусахад энд буцаж ирээд даалгавруудыг илчил.</p></div>
+      <div id="rv"></div>
+      <div class="row" style="margin-top:auto"><button class="btn" id="reveal">Даалгавруудыг илчлэх</button></div></section>`;
+    document.getElementById("reveal").onclick=()=>{
+      const draw=()=>{ const score=list.filter(m=>m.done).length;
+        document.getElementById("rv").innerHTML=`<p class="who-line">Биелүүлсэн хүнийг дарж тэмдэглэ · ${score} / ${list.length}</p><div class="mlist">${list.map((m,i)=>`
+          <button class="mitem" data-m="${i}" aria-pressed="${m.done}"><span class="ck">${m.done?"✓":""}</span><div><b>${esc(m.name)}${m.target?` → ${esc(m.target)}`:""}</b><small>${esc(m.text)}</small></div></button>`).join("")}</div>`;
+        document.querySelectorAll("[data-m]").forEach(b=>b.onclick=()=>{ list[+b.dataset.m].done=!list[+b.dataset.m].done; draw(); });
+      };
+      draw(); document.getElementById("reveal").textContent="Шинэ тоглоом"; document.getElementById("reveal").onclick=()=>missions(from);
+    };
+  }
+}
+/* ---------- How well do you know ---------- */
+function match(from){
+  stopTimer(); setGlow(MOODS[from].c);
+  let a="Бат", b="Сараа";
+  app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+    <h2 style="font-size:22px">🎯 Хэр сайн мэддэг вэ?</h2>
+    <ol class="rules"><li>Ээлжээрээ нэг нь өөрийнхөө тухай асуултад нууцаар хариулна.</li><li>Утсаа дамжуулахад нөгөө нь түүний хариултыг таана.</li><li>10 асуултын дараа хэдэн хувь таарсныг харна.</li></ol>
+    <div class="panel names"><label for="ma">Нэгдүгээр хүн</label><input id="ma" value="${esc(a)}" maxlength="16"><label for="mb">Хоёрдугаар хүн</label><input id="mb" value="${esc(b)}" maxlength="16"></div>
+    <div class="row" style="margin-top:auto"><button class="btn" id="go">Эхлэх</button></div></section>`;
+  document.getElementById("go").onclick=()=>{
+    a=document.getElementById("ma").value.trim()||"Нэгдүгээр хүн"; b=document.getElementById("mb").value.trim()||"Хоёрдугаар хүн";
+    const qs=shuffle(MATCH_Q); let i=0, hits=0;
+    ask();
+    function ask(){
+      if(i>=qs.length) return result();
+      const [q,opts]=qs[i], self=i%2?b:a, guesser=i%2?a:b;
+      app.innerHTML = `<section class="view">${topBar("mood:"+from, "Зогсоох")}
+        <p class="who-line">${i+1} / ${qs.length} · Зөвхөн <b style="color:var(--glow)">${esc(self)}</b> хар</p>
+        <div class="qline">${esc(q)}</div><p class="note" style="margin:0">Өөрийнхөө тухай үнэнээр хариул</p>
+        <div class="opts">${opts.map((o,n)=>`<button class="opt" data-o="${n}">${esc(o)}</button>`).join("")}</div></section>`;
+      app.querySelectorAll("[data-o]").forEach(x=>x.onclick=()=>pass(+x.dataset.o));
+      function pass(ans){
+        app.innerHTML = `<section class="view">${topBar("mood:"+from, "Зогсоох")}
+          <div class="reveal"><p>Утсыг дамжуул</p><div class="who">${esc(guesser)}</div><button class="btn" id="ready" style="flex:none;width:100%">Би бэлэн</button></div></section>`;
+        document.getElementById("ready").onclick=()=>{
+          app.innerHTML = `<section class="view">${topBar("mood:"+from, "Зогсоох")}
+            <p class="who-line">${esc(guesser)}, таамагла: <b style="color:var(--glow)">${esc(self)}</b> юу гэж хариулсан бэ?</p>
+            <div class="qline">${esc(q)}</div>
+            <div class="opts">${opts.map((o,n)=>`<button class="opt" data-g="${n}">${esc(o)}</button>`).join("")}</div>
+            <p class="note" id="fb" style="min-height:3em"></p>
+            <div class="row" style="margin-top:auto"><button class="btn" id="nx" hidden>Дараагийн асуулт</button></div></section>`;
+          app.querySelectorAll("[data-g]").forEach(x=>x.onclick=()=>{
+            if(!document.getElementById("nx").hidden) return;
+            const g=+x.dataset.g, ok=g===ans; if(ok) hits++;
+            app.querySelector(`[data-g="${ans}"]`).classList.add("right"); if(!ok) x.classList.add("wrong");
+            document.getElementById("fb").textContent = ok?"Таарлаа! 🎉":"Таарсангүй. Яагаад тэгж хариулсныг нь асуугаад ярилц.";
+            const nx=document.getElementById("nx"); nx.hidden=false; nx.onclick=()=>{ i++; ask(); };
+          });
+        };
+      }
+    }
+    function result(){
+      const pct=Math.round(hits/qs.length*100);
+      const label = pct>=80?"Сэтгэл нэгт хос":pct>=60?"Бие биеэ сайн мэддэг":pct>=40?"Нээх зүйл их байна":"Танилцах шинэ аялал эхэллээ";
+      app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+        <div class="hero" style="text-align:center"><span class="eyebrow">${esc(a)} & ${esc(b)}</span></div>
+        <div class="pct">${pct}%</div><h2 style="text-align:center;font-size:22px">${label}</h2>
+        <p class="note" style="margin:0">${hits} / ${qs.length} асуулт таарлаа. Энэ дэлгэцийн зургийг аваад хуваалцаарай.</p>
+        <div class="row" style="margin-top:auto"><button class="btn" id="re">Дахин тоглох</button></div></section>`;
+      document.getElementById("re").onclick=()=>match(from);
+    }
+  };
+}
+
+/* ---------- Finger picker ---------- */
+let pickMode="one";
+function picker(from){
+  stopTimer(); setGlow(MOODS[from].c);
+  const colors=["var(--rose)","var(--amber)","var(--teal)","var(--lilac)","#7fb2ff","#ff9f6b","#9be36b","#f27fe0"];
+  const MODES={one:"Сонгох", td:"Үнэн / Зориг", team:"Баг хуваах"};
+  const pad=document.createElement("div"); pad.className="touchpad";
+  pad.innerHTML=`<button class="back close" id="pkClose">‹ Буцах</button><div class="hint" id="pkHint"></div><div id="pkCard"></div>
+    <div class="pkmodes" id="pkModes">${Object.entries(MODES).map(([k,v])=>`<button data-pm="${k}" aria-pressed="${k===pickMode}">${v}</button>`).join("")}</div>`;
+  document.body.appendChild(pad);
+  const pts=new Map(); let wait=null, done=false, ci=0;
+  const hint=pad.querySelector("#pkHint"), cardBox=pad.querySelector("#pkCard"), modes=pad.querySelector("#pkModes");
+  const idle=()=>{ hint.innerHTML = pickMode==="team"
+    ? `<b>Хуруугаа тавь</b>4–8 хүн хуруугаа тавиад барь. Утас хоёр багт хуваана.`
+    : `<b>Хуруугаа тавь</b>2–8 хүн дэлгэц дээр нэг нэг хуруугаа тавиад хөдөлгөлгүй барь.`; };
+  idle();
+  pad.querySelector("#pkClose").onclick=()=>{ clearTimeout(wait); pad.remove(); mood(from); };
+  modes.querySelectorAll("[data-pm]").forEach(b=>b.onclick=()=>{ pickMode=b.dataset.pm; modes.querySelectorAll("[data-pm]").forEach(x=>x.setAttribute("aria-pressed",x===b)); reset(); });
+  function reset(){ clearTimeout(wait); done=false; cardBox.innerHTML=""; pad.querySelectorAll(".dot").forEach(d=>d.remove()); pts.clear(); modes.hidden=false; idle(); }
+  const need=()=>pickMode==="team"?4:2;
+  function arm(){ clearTimeout(wait); if(done) return;
+    if(pts.size>=need()){ hint.innerHTML=`<b>${pts.size} хуруу</b>Хөдөлгөлгүй барь...`; wait=setTimeout(pick,2500); }
+    else hint.innerHTML=`<b>Хуруугаа тавь</b>Дор хаяж ${need()} хүн хэрэгтэй.`; }
+  function pick(){ done=true; modes.hidden=true; beep(660,.12,.2); setTimeout(()=>beep(990,.25,.2),130);
+    try{ navigator.vibrate && navigator.vibrate(200); }catch(e){}
+    const ids=[...pts.keys()];
+    if(pickMode==="team"){
+      shuffle(ids).forEach((id,n)=>{ const d=pts.get(id), A=n%2===0; d.style.setProperty("--c",A?"var(--teal)":"var(--rose)"); d.classList.add("team"); d.innerHTML=`<span class="lbl">${A?"А":"Б"}</span>`; d.style.animation="none"; d.style.background=A?"var(--teal)":"var(--rose)"; });
+      hint.innerHTML=`<b>Багууд бэлэн!</b>Ногоон нь А баг, ягаан нь Б баг. Дахин хуваахын тулд бүгд хуруугаа ав.`; return; }
+    const w=ids[Math.floor(Math.random()*ids.length)];
+    pts.forEach((el,id)=>el.classList.add(id===w?"win":"lose"));
+    if(pickMode==="one"){ hint.innerHTML=`<b>${esc(PICK_TASKS[Math.floor(Math.random()*PICK_TASKS.length)])}</b>Дахин сонгохын тулд бүгд хуруугаа аваад шинээр тавь.`; return; }
+    hint.innerHTML=`<b>Чи сонгогдлоо!</b>`;
+    cardBox.innerHTML=`<div class="tdcard panel"><h2 style="text-align:center">Үнэн үү, Зориг уу?</h2><div class="row"><button class="btn ghost" id="tdT">Үнэн</button><button class="btn" id="tdD">Зориг</button></div></div>`;
+    const show=(kind,list)=>{ cardBox.innerHTML=`<div class="tdcard panel"><span class="eyebrow">${kind}</span><div class="mission">${esc(list[Math.floor(Math.random()*list.length)])}</div><button class="btn" id="tdNext" style="flex:none">Дараагийн тойрог</button></div>`;
+      cardBox.querySelector("#tdNext").onclick=reset; };
+    cardBox.querySelector("#tdT").onclick=()=>show("Үнэн",TRUTHS);
+    cardBox.querySelector("#tdD").onclick=()=>show("Зориг",DARES);
+  }
+  pad.addEventListener("pointerdown",e=>{ if(e.target.closest("button")) return; audio(); e.preventDefault();
+    if(done && pts.size===0 && pickMode!=="td"){ reset(); }
+    if(done||pts.size>=8) return;
+    const d=document.createElement("div"); d.className="dot"; d.style.setProperty("--c",colors[ci++%colors.length]);
+    d.style.left=e.clientX+"px"; d.style.top=e.clientY+"px"; pad.appendChild(d); pts.set(e.pointerId,d); arm(); });
+  pad.addEventListener("pointermove",e=>{ const d=pts.get(e.pointerId); if(d&&!done){ d.style.left=e.clientX+"px"; d.style.top=e.clientY+"px"; } });
+  const up=e=>{ const d=pts.get(e.pointerId); if(!d) return; pts.delete(e.pointerId); if(done) return; d.remove(); arm(); };
+  pad.addEventListener("pointerup",up); pad.addEventListener("pointercancel",up);
+}
+/* ---------- Shagai ---------- */
+function shagai(from){
+  stopTimer(); setGlow(MOODS[from].c);
+  const hist=[];
+  const roll=()=>{ const r=Math.random(); let a=0; for(const s of SHAGAI){ a+=s.p; if(r<a) return s; } return SHAGAI[3]; };
+  app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+    <h2 style="font-size:22px">🦴 Шагай</h2>
+    <ol class="rules"><li>Ээлжээрээ утсаа авч "Сэгсрэх" товчийг дар.</li><li>Буусан морь бүр нэг оноо. Хамгийн түрүүнд 10 морь цуглуулсан хүн хожно.</li><li>Морь, тэмээ, хонь, ямаа дөрвүүлээ буувал Дөрвөн бэрх. Тэр хүн хүссэн хүндээ даалгавар өгнө.</li></ol>
+    <div class="shagai-row cup" id="row">${SHAGAI.map(s=>`<div class="bone"><span>${s.ic}</span><small>${s.n}</small></div>`).join("")}</div>
+    <div class="verdict" id="vd" aria-live="polite">Шагайгаа сэгсэр!</div>
+    <div class="hist" id="hs"></div>
+    <div class="row" style="margin-top:auto"><button class="btn" id="toss">Сэгсрэх</button></div></section>`;
+  const row=document.getElementById("row"), vd=document.getElementById("vd");
+  document.getElementById("toss").onclick=()=>{ audio();
+    row.classList.remove("shake"); void row.offsetWidth; row.classList.add("shake");
+    for(let k=0;k<6;k++) setTimeout(()=>beep(300+Math.random()*500,.03,.12),k*60);
+    setTimeout(()=>{
+      const res=[roll(),roll(),roll(),roll()];
+      row.innerHTML=res.map(s=>`<div class="bone roll"><span>${s.ic}</span><small>${s.n}</small></div>`).join("");
+      const horses=res.filter(s=>s.n==="Морь").length;
+      const v = new Set(res.map(s=>s.n)).size===4 ? "Дөрвөн бэрх! Хүссэн хүндээ даалгавар өг 🎉"
+        : res.every(s=>s.n===res[0].n) ? `Дөрвөн ${res[0].n.toLowerCase()} буулаа! Ховор азтай шидэлт ✨`
+        : horses ? `${horses} морь буулаа, ${horses} оноо 🐎` : "Морь буусангүй. Дараагийн хүнд дамжуул.";
+      vd.textContent=v; beep(horses?880:440,.15,.18);
+      hist.unshift(res.map(s=>s.ic).join("")); document.getElementById("hs").innerHTML=hist.slice(0,8).map(h=>`<span>${h}</span>`).join("");
+    },450);
+  };
+}
+/* ---------- Wavelength-style ---------- */
+function wave(from){
+  stopTimer(); setGlow(MOODS[from].c);
+  let score=0, round=0;
+  app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+    <h2 style="font-size:22px">📡 Нэг долгион дээр</h2>
+    <ol class="rules"><li>Санаа өгөгч утсаа авч нууц цэгийг харна.</li><li>Хоёр туйлын хооронд тэр цэгт тохирох ганц үг, нэр, зүйл хэлнэ. Жишээ нь "Хүйтэн ↔ Халуун" дээр 80% бол "халуун цай".</li><li>Бусад нь ярилцаж зүүг тааруулна. Ойртох тусам оноо их.</li></ol>
+    <div class="row" style="margin-top:auto"><button class="btn" id="go">Эхлэх</button></div></section>`;
+  document.getElementById("go").onclick=start;
+  function dial(target, guess, showTarget){
+    const R=140, cx=160, cy=160, pt=(v,r)=>{ const a=Math.PI*(1-v/100); return [cx+r*Math.cos(a), cy-r*Math.sin(a)]; };
+    let band="";
+    if(showTarget){ [[15,"color-mix(in srgb,var(--glow) 25%,transparent)"],[10,"color-mix(in srgb,var(--glow) 55%,transparent)"],[5,"var(--glow)"]].forEach(([w,c])=>{
+      const a=Math.max(0,target-w), b=Math.min(100,target+w), [x1,y1]=pt(a,R), [x2,y2]=pt(b,R);
+      band+=`<path d="M${cx} ${cy} L${x1} ${y1} A${R} ${R} 0 0 1 ${x2} ${y2} Z" fill="${c}"/>`; }); }
+    let needle="";
+    if(guess!=null){ const [nx,ny]=pt(guess,R-14); needle=`<line x1="${cx}" y1="${cy}" x2="${nx}" y2="${ny}" stroke="var(--ink)" stroke-width="5" stroke-linecap="round"/><circle cx="${cx}" cy="${cy}" r="9" fill="var(--ink)"/>`; }
+    return `<svg class="dial" viewBox="0 0 320 180" id="dial" role="img" aria-label="Хуваарь">
+      <path class="arc" d="M${cx-R} ${cy} A${R} ${R} 0 0 1 ${cx+R} ${cy} Z"/>${band}${needle}
+      <text x="${cx-R}" y="176">0</text><text x="${cx+R-22}" y="176">100</text></svg>`;
+  }
+  function start(){
+    round++; const sp=SPECTRA[Math.floor(Math.random()*SPECTRA.length)], target=5+Math.floor(Math.random()*91);
+    const spec=`<div class="spectrum"><span>← ${esc(sp[0])}</span><span>${esc(sp[1])} →</span></div>`;
+    app.innerHTML=`<section class="view">${topBar("mood:"+from, "Зогсоох")}
+      <p class="who-line">Тойрог ${round} · Зөвхөн санаа өгөгч хар</p>${spec}${dial(target,null,true)}
+      <p class="note" style="margin:0">Нууц цэг: <b style="color:var(--glow)">${target}%</b>. Энэ цэгт тохирох ганц үг сана.</p>
+      <div class="row" style="margin-top:auto"><button class="btn" id="hide">Нуугаад дамжуулах</button></div></section>`;
+    document.getElementById("hide").onclick=()=>guess(target,spec);
+  }
+  function guess(target,spec){
+    let g=50;
+    app.innerHTML=`<section class="view">${topBar("mood:"+from, "Зогсоох")}
+      <p class="who-line">Санаа өгөгч үгээ хэлсэн үү? Одоо зүүг тааруул</p>${spec}<div id="dw">${dial(target,g,false)}</div>
+      <label for="wr" class="who-line">Зүүний байрлал: <output id="wo">50</output>%</label>
+      <input type="range" class="range" id="wr" min="0" max="100" value="50">
+      <div class="row" style="margin-top:auto"><button class="btn" id="lock">Таамаглал илгээх</button></div></section>`;
+    const r=document.getElementById("wr"), dw=document.getElementById("dw");
+    const set=v=>{ g=Math.round(Math.max(0,Math.min(100,v))); r.value=g; document.getElementById("wo").textContent=g; dw.innerHTML=dial(target,g,false); bindDrag(); };
+    r.oninput=()=>set(+r.value);
+    function bindDrag(){ const svg=document.getElementById("dial");
+      const mv=e=>{ const b=svg.getBoundingClientRect(), x=(e.clientX-b.left)/b.width*320-160, y=160-(e.clientY-b.top)/b.height*180;
+        set(100-Math.atan2(Math.max(y,0),x)/Math.PI*100); };
+      svg.onpointerdown=e=>{ e.preventDefault(); mv(e); const m=ev=>mv(ev), u=()=>{window.removeEventListener("pointermove",m);window.removeEventListener("pointerup",u)}; window.addEventListener("pointermove",m); window.addEventListener("pointerup",u); }; }
+    bindDrag();
+    document.getElementById("lock").onclick=()=>reveal(target,g,spec);
+  }
+  function reveal(target,g,spec){
+    const d=Math.abs(target-g), pts=d<=5?4:d<=10?3:d<=15?2:0; score+=pts;
+    app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+      ${spec}${dial(target,g,true)}
+      <div class="pct" style="font-size:56px">${100-d}%</div>
+      <p class="verdict" style="margin:0">${pts===4?"Тархины долгион нэг дээр! +4":pts?`Ойрхон байлаа, +${pts}`:"Өөр өөр долгион дээр байна 😅"}</p>
+      <p class="note" style="margin:0">Нууц цэг ${target}%, таны таамаг ${g}%. Нийт оноо: ${score} (${round} тойрог)</p>
+      <div class="row" style="margin-top:auto"><button class="btn" id="nx">Дараагийн тойрог</button></div></section>`;
+    beep(pts?990:330,.2,.18);
+    document.getElementById("nx").onclick=start;
+  }
+}
+/* ---------- Routing ---------- */
+app.addEventListener("click", e=>{
+  const go=e.target.closest("[data-go]"), m=e.target.closest("[data-mood]"), g=e.target.closest("[data-game]");
+  if(go){ const v=go.dataset.go; if(v==="home") home(); else if(v.startsWith("mood:")) mood(v.slice(5)); }
+  else if(m) mood(m.dataset.mood);
+  else if(g){ const id=g.dataset.game, from=g.dataset.from;
+    if(DECKS[id]) deck(id,from); else if(id==="spy") spySetup(from); else if(id==="headsup") huPick(from,false); else if(id==="charades") huPick(from,true); else if(id==="bomb") bomb(from); else if(id==="missions") missions(from); else if(id==="match") match(from); else if(id==="picker") picker(from); else if(id==="shagai") shagai(from); else if(id==="wave") wave(from); }
+});
+home();
+</script>
+
+</body>
+</html>
