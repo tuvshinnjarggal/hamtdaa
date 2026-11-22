@@ -1,12 +1,28 @@
 // Хамтдаа: generate-deck
 // Тоглогчдын нэр, бүлгийн онцлог, түвшинг авч Gemini-ээр 15 монгол карт (JSON) зохионо.
-// Secrets: GEMINI_API_KEY (заавал), GEMINI_MODEL (заавал биш, анхдагч нь gemini-2.5-flash-lite),
+// Secrets: GEMINI_API_KEY (заавал), GEMINI_MODEL (заавал биш; байхгүй бол хамгийн шинэ Flash-Lite/Flash загварыг автоматаар сонгоно),
 //          ALLOWED_KEYS (заавал биш, таслалаар тусгаарласан publishable key-үүд).
 // Deploy: supabase functions deploy generate-deck --no-verify-jwt
 //   (sb_publishable_ түлхүүр JWT биш тул JWT шалгалтыг унтрааж, apikey-г энд өөрсдөө шалгана.)
 
 const DEFAULT_KEYS = ["sb_publishable_wtyyhRs6Xok5tveMGwyFSg_cha8Hchv"];
-const MODEL = Deno.env.get("GEMINI_MODEL") || "gemini-2.5-flash-lite";
+const API = "https://generativelanguage.googleapis.com/v1beta";
+const PREFERRED = Deno.env.get("GEMINI_MODEL") || "gemini-flash-lite-latest";
+let cachedModel: string | null = null;
+
+// Түлхүүрт нээлттэй загваруудаас хамгийн тохирохыг сонгоно: flash-lite > flash, preview/exp/tts/image/live-ийг алгасна.
+async function discoverModel(apiKey: string): Promise<string | null> {
+  const r = await fetch(`${API}/models?pageSize=200`, { headers: { "x-goog-api-key": apiKey }, signal: AbortSignal.timeout(8_000) });
+  if (!r.ok) { console.error("list_models_failed", r.status); return null; }
+  const data = await r.json();
+  const names: string[] = (data?.models || [])
+    .filter((m: any) => (m.supportedGenerationMethods || []).includes("generateContent"))
+    .map((m: any) => String(m.name).replace(/^models\//, ""))
+    .filter((n: string) => /^gemini-/.test(n) && !/(preview|exp|tts|image|live|audio|embedding|thinking|robotics|computer)/.test(n));
+  const ver = (n: string) => parseFloat((n.match(/gemini-(\d+(?:\.\d+)?)/) || [])[1] || "0");
+  const pick = (re: RegExp) => names.filter((n) => re.test(n)).sort((a, b) => ver(b) - ver(a) || a.length - b.length)[0];
+  return pick(/flash-lite/) || pick(/flash/) || names[0] || null;
+}
 const CARD_COUNT = 15;
 
 const CORS = {
@@ -113,14 +129,25 @@ Deno.serve(async (req) => {
     },
   };
 
+  const call = (model: string) => fetch(`${API}/models/${model}:generateContent`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+    body: JSON.stringify(gemReq),
+    signal: AbortSignal.timeout(25_000),
+  });
+
   try {
-    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${MODEL}:generateContent`, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-      body: JSON.stringify(gemReq),
-      signal: AbortSignal.timeout(25_000),
-    });
-    const data = await r.json().catch(() => ({}));
+    let model = cachedModel || PREFERRED;
+    let r = await call(model);
+    let data: any = await r.json().catch(() => ({}));
+    if (r.status === 404 || r.status === 400 && /model/i.test(data?.error?.message || "")) {
+      console.error("model_unavailable", model, data?.error?.message?.slice(0, 200));
+      const found = await discoverModel(apiKey);
+      if (found && found !== model) {
+        model = found; r = await call(model); data = await r.json().catch(() => ({}));
+      }
+    }
+    if (r.ok) cachedModel = model;
     if (!r.ok) {
       console.error("gemini_error", r.status, JSON.stringify(data).slice(0, 500));
       return json({ error: r.status === 429 ? "ai_busy" : "ai_error", detail: data?.error?.message?.slice(0, 200) }, 502);
@@ -133,7 +160,7 @@ Deno.serve(async (req) => {
       console.error("too_few_cards", data?.candidates?.[0]?.finishReason, text.slice(0, 300));
       return json({ error: "ai_empty" }, 502);
     }
-    return json({ cards, model: MODEL });
+    return json({ cards, model });
   } catch (e) {
     console.error("fetch_failed", String(e));
     return json({ error: "ai_timeout" }, 504);
