@@ -85,6 +85,14 @@ img{max-width:100%}
 .tally .bar{grid-column:1/-1;height:10px;border-radius:99px;background:var(--line);overflow:hidden}
 .tally .bar i{display:block;height:100%;background:var(--glow);border-radius:99px;transition:width .6s}
 .wait{text-align:center;color:var(--ink-soft)}
+.avi{display:inline-grid;place-items:center;border-radius:50%;overflow:hidden;flex:none;vertical-align:middle;font-weight:800;color:#1b1528;object-fit:cover;line-height:1}
+.chip .avi{margin-right:6px}
+.pe-av{width:112px;height:112px;margin:0 auto;font-size:44px}
+.guide-a{font-size:16px;line-height:1.55}
+.ex-chips{display:flex;flex-wrap:wrap;gap:8px}
+.ex-chips .chip{font-size:13px;text-align:left}
+.ai-in{width:100%;box-sizing:border-box;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--night);color:var(--ink);font:inherit}
+.ai-in:focus{outline:2px solid var(--glow);border-color:transparent}
 .wh-names{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .wh-names .chip{color:var(--ink);font-size:15px}
 .wh-q{font-family:var(--display);font-weight:500;font-size:clamp(20px,5.8vw,25px);line-height:1.4;text-align:center;text-wrap:balance}
@@ -471,6 +479,7 @@ function home(){
   app.innerHTML = `<section class="view">
     <div class="top"><span class="brand">Хамт<b>даа</b></span><div class="tr"><span class="eyebrow">Нэг утас · олон хүн</span>${sndBtn()}${authBtn()}</div></div>
     <div class="hero"><h1>Өнөөдөр ямар орой вэ?</h1><p>Нөхцөл байдлаа сонго, бид тохирох тоглоомыг санал болгоно.</p></div>
+    <button class="btn story" data-go-hash="#/guide" style="flex:none">✨ Юу тоглох вэ? AI Хөтчөөс асуу</button>
     <div class="moods">${Object.entries(MOODS).map(([k,m])=>`
       <button class="mood" style="--c:${m.c}" data-mood="${k}"><span class="ic">${m.ic}</span><h3>${m.name}</h3><small>${m.sub}</small></button>`).join("")}
     </div>
@@ -536,6 +545,10 @@ document.getElementById("gateNo").onclick = () => { gate.hidden = true; if(gateN
 
 /* ---------- Spy ---------- */
 let spy = {players:5, spies:1};
+function spyAiChip(){ return `<div class="wh-names" style="justify-content:flex-start"><button class="chip" id="spyUseAi" aria-pressed="${!!spy.useAi}">✨ ${esc(spy.ai.topic)} (${spy.ai.pairs.length} хос)</button><button class="chip" id="spyUseStd" aria-pressed="${!spy.useAi}">Үндсэн үгс</button></div>`; }
+function bindSpyAi(){ const a=document.getElementById("spyUseAi"), s=document.getElementById("spyUseStd"); if(!a) return;
+  a.onclick=()=>{ spy.useAi=true; a.setAttribute("aria-pressed",true); s.setAttribute("aria-pressed",false); };
+  s.onclick=()=>{ spy.useAi=false; a.setAttribute("aria-pressed",false); s.setAttribute("aria-pressed",true); }; }
 function spySetup(from){
   stopTimer(); setGlow(MOODS[from].c);
   app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
@@ -545,7 +558,11 @@ function spySetup(from){
       <div class="stepper"><span>Тагнуул</span><div class="ctl"><button data-s="spies" data-d="-1" aria-label="Хасах">−</button><output id="o-spies">${spy.spies}</output><button data-s="spies" data-d="1" aria-label="Нэмэх">+</button></div></div>
     </div>
     <ol class="rules"><li>Утсаа дамжуулж, хүн бүр өөрийн үгийг нууцаар харна.</li><li>Бүгдэд нэг үг, тагнуулд төстэй өөр үг ирнэ.</li><li>Ээлжээрээ үгээ нэг өгүүлбэрээр тайлбарла, хэт тодорхой хэлж болохгүй.</li><li>3 минутын дараа санал хураагаад тагнуулыг ол.</li></ol>
+    ${aiHelperBox("spy",{title:"Өөрийн сэдвээр үг үүсгэх", placeholder:"Жишээ: 12Б анги, Dota 2, K-Pop, Улаанбаатар", btn:"Үүсгэх"})}
+    <div id="spyAi">${spy.ai?spyAiChip():""}</div>
     <div class="row" style="margin-top:auto"><button class="btn" id="go">Эхлэх</button></div></section>`;
+  bindAiHelper("spy", topic=>({mode:"spy_words", topic}), (items, topic)=>{ spy.ai={topic, pairs:items}; spy.useAi=true; document.getElementById("spyAi").innerHTML=spyAiChip(); bindSpyAi(); return `✓ «${topic}» сэдвээр ${items.length} хос үг бэлэн`; });
+  bindSpyAi();
   app.querySelectorAll("[data-s]").forEach(b=>b.onclick=()=>{
     const k=b.dataset.s, d=+b.dataset.d;
     if(k==="players") spy.players=Math.min(10,Math.max(3,spy.players+d));
@@ -554,7 +571,8 @@ function spySetup(from){
     document.getElementById("o-players").textContent=spy.players; document.getElementById("o-spies").textContent=spy.spies;
   });
   document.getElementById("go").onclick=()=>{
-    let [a,b] = SPY_PAIRS[Math.floor(Math.random()*SPY_PAIRS.length)]; if(Math.random()<.5)[a,b]=[b,a];
+    const src = spy.ai && spy.useAi ? spy.ai.pairs : SPY_PAIRS;
+    let [a,b] = src[Math.floor(Math.random()*src.length)]; if(Math.random()<.5)[a,b]=[b,a];
     const idx = shuffle([...Array(spy.players).keys()]).slice(0,spy.spies);
     spy.round = {common:a, odd:b, spyIdx:idx, cur:0, shown:false, from};
     spyReveal();
@@ -598,8 +616,10 @@ function huPick(from, kids){
   app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
     <h2 style="font-size:22px">${G.ic} ${G.name}</h2>
     <p style="margin:0;color:var(--ink-soft)">${kids?"Дэлгэц дээрх үгийг дуугүй, зөвхөн хөдөлгөөнөөр үзүүл. Бусад нь таана.":"Утсаа духан дээрээ, дэлгэцийг найзууд руугаа харуулж барь. Тэд үгийг тайлбарлана, чи таана. Таасан бол Зөв, гацвал Алгас."}</p>
-    <div class="cats">${Object.entries(cats).map(([k,c])=>`<button class="cat" data-cat="${k}"><span>${c.ic}</span>${c.name}<small>${c.words.length} үг · 60 сек</small></button>`).join("")}</div></section>`;
+    <div class="cats">${Object.entries(cats).map(([k,c])=>`<button class="cat" data-cat="${k}"><span>${c.ic}</span>${esc(c.name)}<small>${c.words.length} үг · 60 сек</small></button>`).join("")}</div>
+    ${kids?"":aiHelperBox("hu",{title:"Өөрийн сэдвээр үг үүсгэх", placeholder:"Жишээ: 12Б анги, Dota 2, K-Pop, Монгол кино", btn:"Үүсгэх"})}</section>`;
   app.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>huPlay(from, cats[b.dataset.cat], kids));
+  if(!kids) bindAiHelper("hu", topic=>({mode:"headsup_words", topic}), (items, topic)=>{ const k="ai"+Date.now(); HU_CATS[k]={name:topic, ic:"✨", words:items}; setTimeout(()=>{ huPick(from,false); const m=document.getElementById("ahMsg-hu"); if(m) m.textContent=`✓ «${topic}» ангилал нэмэгдлээ (${items.length} үг). Дээрээс сонго.`; },0); return ""; });
 }
 function huPlay(from, cat, kids){
   const words = shuffle(cat.words); let i=0, left=60; const got=[], skipped=[];
@@ -1056,8 +1076,22 @@ function cssColor(v){ const m=/var\((--[\w-]+)\)/.exec(v||""); const c=m?getComp
 function wrapLines(ctx, text, maxW){ const words=String(text).split(/\s+/), lines=[]; let cur="";
   words.forEach(w=>{ const t=cur?cur+" "+w:w; if(ctx.measureText(t).width>maxW && cur){ lines.push(cur); cur=w; } else cur=t; }); if(cur) lines.push(cur); return lines; }
 function fitFont(ctx, text, weight, family, start, maxW, min=60){ let s=start; do{ ctx.font=`${weight} ${s}px ${family}`; if(ctx.measureText(text).width<=maxW) break; s-=6; }while(s>min); return s; }
-function loadImg(src){ return new Promise((res,rej)=>{ const im=new Image(); im.onload=()=>res(im); im.onerror=rej; im.src=src; }); }
-async function shareStory({game, ic, big, line, sub}){
+function loadImg(src){ return new Promise((res,rej)=>{ const im=new Image(); if(/^https?:/.test(src)) im.crossOrigin="anonymous"; im.onload=()=>res(im); im.onerror=rej; im.src=src; setTimeout(()=>rej(new Error("timeout")),5000); }); }
+const AV_COLORS=["#ff7a9c","#f2b45a","#5fd3c0","#b49cff","#7fb2ff","#ff9f6b","#9be36b","#f27fe0"];
+function avColor(name){ let s=0; for(const ch of String(name||"?")) s=(s*31+ch.codePointAt(0))>>>0; return AV_COLORS[s%AV_COLORS.length]; }
+function avHTML(name, pic, size=24){ const st=`width:${size}px;height:${size}px;font-size:${Math.round(size*.45)}px`;
+  return pic ? `<img class="avi" src="${esc(pic)}" alt="" style="${st}" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'avi',textContent:${esc(JSON.stringify(String(name||'?').slice(0,1).toUpperCase()))},style:'${st};background:${avColor(name)}'}))">`
+             : `<span class="avi" style="${st};background:${avColor(name)}">${esc(String(name||"?").slice(0,1).toUpperCase())}</span>`; }
+async function drawAvatar(x, cx, cy, r, name, pic, ring){
+  x.save(); x.beginPath(); x.arc(cx,cy,r+8,0,Math.PI*2); x.fillStyle=ring||"#f4eefc"; x.fill(); x.restore();
+  let im=null; if(pic){ try{ im=await loadImg(pic); }catch(e){ im=null; } }
+  x.save(); x.beginPath(); x.arc(cx,cy,r,0,Math.PI*2); x.clip();
+  if(im){ const s=Math.min(im.naturalWidth||im.width, im.naturalHeight||im.height)||1, sx=((im.naturalWidth||im.width)-s)/2, sy=((im.naturalHeight||im.height)-s)/2; x.drawImage(im,sx,sy,s,s,cx-r,cy-r,r*2,r*2); }
+  else { x.fillStyle=avColor(name); x.fillRect(cx-r,cy-r,r*2,r*2); x.fillStyle="#1b1528"; x.textAlign="center"; x.textBaseline="middle"; x.font=`700 ${Math.round(r*.95)}px "Unbounded","Arial Black",sans-serif`; x.fillText(String(name||"?").slice(0,1).toUpperCase(), cx, cy+r*.05); x.textBaseline="alphabetic"; }
+  x.restore();
+  try{ x.getImageData(cx,cy,1,1); }catch(e){ /* tainted: repaint as initial */ x.save(); x.beginPath(); x.arc(cx,cy,r,0,Math.PI*2); x.clip(); x.fillStyle=avColor(name); x.fillRect(cx-r,cy-r,r*2,r*2); x.restore(); }
+}
+async function shareStory({game, ic, big, line, sub, who}){
   try{ await document.fonts?.ready; }catch(e){}
   const W=1080, H=1920, cv=document.createElement("canvas"); cv.width=W; cv.height=H; const x=cv.getContext("2d");
   const glow=cssColor(getComputedStyle(document.documentElement).getPropertyValue("--glow").trim());
@@ -1066,7 +1100,12 @@ async function shareStory({game, ic, big, line, sub}){
   const D='"Unbounded","Arial Black",sans-serif', B='"Nunito","Segoe UI",sans-serif';
   x.textAlign="center"; x.textBaseline="alphabetic";
   x.font=`500 44px ${D}`; { const w1=x.measureText("Хамт").width, w2=x.measureText("даа").width, x0=W/2-(w1+w2)/2; x.textAlign="left"; x.fillStyle="#f4eefc"; x.fillText("Хамт", x0, 170); x.fillStyle=glow; x.fillText("даа", x0+w1, 170); x.textAlign="center"; }
-  x.font=`160px ${B}`; x.fillText(ic, W/2, 480);
+  if(who){ await drawAvatar(x, W/2, 380, 130, who.name, who.pic, glow); x.textAlign="center"; x.font=`84px ${B}`; x.fillText(ic, W/2+120, 510); }
+  else {
+    if(user){ const nm=userName(); x.font=`700 40px ${B}`; const tw=x.measureText(nm).width, total=72+18+tw, x0=W/2-total/2;
+      await drawAvatar(x, x0+36, 262, 36, nm, profilePic(), "rgba(244,238,252,.85)"); x.textAlign="left"; x.fillStyle="#f4eefc"; x.font=`700 40px ${B}`; x.fillText(nm, x0+72+18, 276); x.textAlign="center"; }
+    x.font=`160px ${B}`; x.fillText(ic, W/2, 480);
+  }
   x.fillStyle="#cfc6e2"; x.font=`800 46px ${B}`; x.fillText(game.toUpperCase(), W/2, 590);
   x.fillStyle=glow; const bs=fitFont(x, big, 700, D, 260, W-140); x.font=`700 ${bs}px ${D}`; x.fillText(big, W/2, 930);
   x.fillStyle="#f4eefc"; x.font=`700 70px ${D}`; wrapLines(x, line, W-160).slice(0,3).forEach((l,i)=>x.fillText(l, W/2, 1110+i*92));
@@ -1203,6 +1242,77 @@ function aiDeck(from){
   }
   render();
 }
+
+/* ---------- Shared AI call + helper quotas ---------- */
+const AIQ = {whisper:[]};
+function quotaLeft(bucket, limit){ try{ const q=JSON.parse(localStorage.getItem("aiQ_"+bucket)||"{}"); return Math.max(0, limit-(q.date===today()?q.used:0)); }catch(e){ return limit; } }
+function quotaUse(bucket){ try{ const k="aiQ_"+bucket, q=JSON.parse(localStorage.getItem(k)||"{}"); const used=(q.date===today()?q.used:0)+1; localStorage.setItem(k,JSON.stringify({date:today(),used})); }catch(e){} }
+const HELP_LIMIT = () => user ? 20 : 10;
+async function aiCall(body){
+  if(!navigator.onLine) throw {code:"offline"};
+  const ctl=new AbortController(), to=setTimeout(()=>ctl.abort(),35000);
+  try{
+    const r=await fetch(SUPA_URL+"/functions/v1/generate-deck",{method:"POST",signal:ctl.signal,headers:{"Content-Type":"application/json","apikey":SUPA_KEY},body:JSON.stringify(body)});
+    const j=await r.json().catch(()=>({}));
+    if(!r.ok) throw {code:j.error||("http_"+r.status)};
+    return j;
+  }catch(e){ throw (e&&e.code)?e:{code:(e&&e.name==="AbortError")?"ai_timeout":"network"}; }
+  finally{ clearTimeout(to); }
+}
+const aiErrText = code => AI_ERR[code] || "AI-тай холбогдож чадсангүй. Дахин оролдоорой.";
+// A small "✨" panel inside a game's start screen. getBody() returns the request (or a string error); onItems(items, input) applies the result.
+function aiHelperBox(key, {title, placeholder, btn}){
+  return `<details class="panel custom" id="ah-${key}"><summary>✨ ${esc(title)}</summary>
+    <input class="ai-in" id="ahIn-${key}" maxlength="80" placeholder="${esc(placeholder)}">
+    <div class="row" style="align-items:center"><span class="cnt" id="ahMsg-${key}" style="flex:1">Өнөөдөр ${quotaLeft("helper",HELP_LIMIT())} AI оролдлого үлдсэн</span><button class="btn" id="ahGo-${key}" style="flex:none">${esc(btn)}</button></div></details>`;
+}
+function bindAiHelper(key, getBody, onItems){
+  const go=document.getElementById("ahGo-"+key), inp=document.getElementById("ahIn-"+key), msg=document.getElementById("ahMsg-"+key);
+  if(!go) return;
+  go.onclick=async()=>{
+    const text=inp.value.trim(); if(!text){ msg.textContent="Эхлээд нэг мөр бич"; inp.focus(); return; }
+    if(!quotaLeft("helper",HELP_LIMIT())){ msg.textContent="Өнөөдрийн AI оролдлого дууслаа"; return; }
+    const body=getBody(text); if(typeof body==="string"){ msg.textContent=body; return; }
+    go.disabled=true; go.textContent="✨ …"; msg.textContent="AI бодож байна…";
+    try{ const j=await aiCall(body); if(!Array.isArray(j.items)||!j.items.length) throw {code:"ai_empty"};
+      quotaUse("helper"); track("ai_helper",{mode:body.mode, n:j.items.length}); beep(990,.15,.12); buzz(30);
+      const m=document.getElementById("ahMsg-"+key); if(m) m.textContent=onItems(j.items, text)||"✓ Бэлэн"; }
+    catch(e){ const m=document.getElementById("ahMsg-"+key); if(m) m.textContent=aiErrText(e.code); track("ai_helper_error",{mode:body.mode, code:e.code}); }
+    finally{ const g=document.getElementById("ahGo-"+key); if(g){ g.disabled=false; g.textContent="Үүсгэх"; } }
+  };
+}
+
+/* ---------- AI guide: what should we play? ---------- */
+function guideCatalog(){ const out=[]; Object.entries(MOODS).forEach(([mk,m])=>m.games.forEach(g=>{ const G=GAMES[g]; if(G) out.push({id:g, mood:mk, name:G.name, desc:(m.desc&&m.desc[g])||G.desc, tag:G.tag||""}); })); return out; }
+function guide(){
+  stopTimer(); setGlow("var(--lilac)");
+  const ex=["Бид 6-уулаа караокед байна, 2 нь шинэ танил","Тагнуул яаж тоглодог юм бэ?","Хоёулаа гэртээ, романтик орой","Эмээгийндээ хүүхдүүдтэйгээ цугласан"];
+  const left=quotaLeft("guide",HELP_LIMIT());
+  app.innerHTML=`<section class="view">${topBar("home","Нүүр")}
+    <h2 style="font-size:22px">✨ AI Хөтөч</h2>
+    <p style="margin:0;color:var(--ink-soft)">Хаана, хэдүүлээ, ямар уур амьсгалтай байгаагаа бич, эсвэл дүрмийн талаар асуу.</p>
+    <div class="panel custom"><textarea id="gq" maxlength="300" placeholder="Жишээ: Бид 6-уулаа караокед байна, 2 нь шинэ танил"></textarea>
+      <div class="ex-chips">${ex.map(t=>`<button class="chip" data-ex="${esc(t)}">${esc(t)}</button>`).join("")}</div>
+      <button class="btn" id="gAsk">✨ Асуух</button><span class="cnt" id="gMsg">Өнөөдөр ${left} асуулт үлдсэн</span></div>
+    <div id="gAns"></div></section>`;
+  const q=document.getElementById("gq"), msg=document.getElementById("gMsg"), ans=document.getElementById("gAns"), ask=document.getElementById("gAsk");
+  app.querySelectorAll("[data-ex]").forEach(b=>b.onclick=()=>{ q.value=b.dataset.ex; q.focus(); });
+  ask.onclick=async()=>{
+    const question=q.value.trim(); if(!question){ msg.textContent="Эхлээд асуултаа бич"; return; }
+    if(!quotaLeft("guide",HELP_LIMIT())){ msg.textContent="Өнөөдрийн асуулт дууслаа. Маргааш дахин."; return; }
+    ask.disabled=true; ask.textContent="✨ Бодож байна…"; ans.innerHTML="";
+    try{
+      const j=await aiCall({mode:"guide", question, catalog:guideCatalog()});
+      if(!location.hash.startsWith("#/guide")) return;
+      quotaUse("guide"); track("ai_guide",{picks:(j.picks||[]).length});
+      const picks=(j.picks||[]).filter(p=>GAMES[p.id] && MOODS[p.mood] && MOODS[p.mood].games.includes(p.id)).slice(0,2);
+      ans.innerHTML=`<div class="panel"><div class="guide-a">${esc(j.answer||"")}</div>
+        ${picks.map(p=>`<button class="game" data-go-hash="#/game/${p.id}/${p.mood}" style="--glow:${MOODS[p.mood].c}"><span class="ic">${GAMES[p.id].ic}</span><div><h3>▶ Тоглох: ${esc(GAMES[p.id].name)}</h3><p>${esc(MOODS[p.mood].name)}</p></div></button>`).join("")}</div>`;
+      msg.textContent=`Өнөөдөр ${quotaLeft("guide",HELP_LIMIT())} асуулт үлдсэн`;
+    }catch(e){ ans.innerHTML=`<p class="note" style="margin:0">${esc(aiErrText(e.code))}</p>`; }
+    finally{ const a=document.getElementById("gAsk"); if(a){ a.disabled=false; a.textContent="✨ Асуух"; } }
+  };
+}
 /* ---------- Whisper (paranoia) ---------- */
 const WHISPER_Q = {
   fun:["Энд байгаа хүмүүсээс хэн нь хамгийн түрүүнд гэрлэх вэ?","Хэн нь нууцаа хамгийн муу хадгалдаг вэ?","Хэн нь хамгийн итгэл төрүүлэхээр худлаа ярьдаг вэ?","Арал дээр гацвал хэнтэй нь хамт байхыг хүсэх вэ?","Хэн нь хамгийн халдвартай инээдтэй вэ?","Хэн нь шалгалтандаа хуулдаг байсан гэж бодож байна?","Хэн нь хамгийн түрүүнд баяжих вэ?","Хэний утсыг 5 минут ухаж үзмээр байна?","Хэн нь өөрийгөө хамгийн их зураг авдаг вэ?","Хэн нь өнөө орой хамгийн түрүүнд унтах вэ?","Хэн нь хамгийн муу жолооч болох вэ?","Нууцаа хэнд нь хамгийн түрүүнд хэлэх вэ?","Хэн нь хов живийг хамгийн түрүүнд мэддэг вэ?","Хэн нь кино од болох байсан бэ?","Хэн нь хамгийн амархан дурладаг вэ?","Хэнийг ээждээ танилцуулахаас хамгийн их эмээх вэ?","Хэн нь гаднаа хүйтэн ч дотроо хамгийн зөөлөн бэ?","Зомби дайрвал хэн нь хамгийн түрүүнд баригдах вэ?","Хэн нь дуртай хүндээ хамгийн удаан хэлж чадахгүй явах вэ?","Хэнтэй нь 20 жилийн дараа ч найз хэвээр байх вэ?","Хэн нь цалингаа хамгийн хурдан дуусгадаг вэ?","Хэн нь 10 жилийн дараа огт өөрчлөгдөөгүй байх вэ?","Хэн нь мессежид хамгийн удаан хариулдаг вэ?","Хэн нь хамгийн түрүүнд гадаад руу явах вэ?","Хэн нь хамгийн амархан уурладаг вэ?","Хэнтэй нь нэг өрөөнд сар түгжигдмээргүй байна?","Хэн нь хамгийн гоё дуулдаг вэ?","Хэний хүүхэд байхдаа авахуулсан зургийг хамгийн их үзмээр байна?","Хэн нь багшдаа хамгийн их загнуулдаг байсан бэ?","Хэн нь энэ бүлгийн жинхэнэ ахлагч вэ?"],
@@ -1219,9 +1329,12 @@ function whisper(from){
         <button class="chip" data-lv="fun" aria-pressed="${whLevel==="fun"}">😄 Энгийн</button>
         <button class="chip" data-lv="hot" aria-pressed="${whLevel==="hot"}">😈 Дэггүй 18+</button></div></div>
       <div class="panel"><b>Тоглогчид</b>${namesEditor(3,12)}</div>
+      ${aiHelperBox("whisper",{title:"Бидний тухай AI асуулт нэмэх", placeholder:"Жишээ: 12Б анги, маргааш зугаалгатай, Болд үргэлж хоцордог", btn:"Үүсгэх"})}
       ${customBox("whisper")}
-      <div class="row" style="margin-top:auto"><button class="btn" id="go">Эхлэх</button></div></section>`;
+      <div class="row" style="margin-top:auto"><button class="btn" id="go">Эхлэх</button></div>${AIQ.whisper.length?`<p class="note" style="margin:0">✨ ${AIQ.whisper.length} AI асуулт холигдсон</p>`:""}</section>`;
     const get=bindNames(3,12,render);
+    bindAiHelper("whisper", ctx=>({mode:"whisper", names:[...document.querySelectorAll("#names input")].map(i=>i.value.trim()).filter(Boolean), context:ctx, level:whLevel}),
+      items=>{ AIQ.whisper.push(...items); return `✓ ${items.length} AI асуулт холигдлоо (нийт ${AIQ.whisper.length})`; });
     app.querySelectorAll("[data-lv]").forEach(b=>b.onclick=()=>{ const v=b.dataset.lv;
       const set=()=>{ whLevel=v; app.querySelectorAll("[data-lv]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.lv===v)); };
       if(v==="hot" && !adultOk) openGate(set,{text:"«Дэггүй» түвшин нь найзуудын дундах краш, нууц сонирхол, зоригтой сонголтын асуулттай. Зөвхөн 18 нас хүрсэн хүмүүс тоглоно. Бүгд 18+ үү?", onNo:()=>{}}); else set(); });
@@ -1229,7 +1342,7 @@ function whisper(from){
     document.getElementById("go").onclick=()=>{ const names=get(); if(names.length<3){ document.getElementById("go").textContent="Дор хаяж 3 нэр оруул"; return; } play(names); };
   };
   function play(names){
-    const pool=()=>shuffle(WHISPER_Q[whLevel].concat(CUSTOM.whisper));
+    const pool=()=>shuffle(WHISPER_Q[whLevel].concat(CUSTOM.whisper, AIQ.whisper));
     let deckQ=pool(), reader=names[Math.floor(Math.random()*names.length)];
     const tally={}, nextQ=()=>{ if(!deckQ.length) deckQ=pool(); return deckQ.pop(); };
     const head=`${topBar("mood:"+from, MOODS[from].name)}`;
@@ -1255,7 +1368,7 @@ function whisper(from){
         <div class="hero" style="text-align:center"><span class="eyebrow">Өнөө оройн хамгийн нууцлаг хүн</span><h1 style="margin-top:6px">🤫 ${esc(top)}</h1><p>${cnt} удаа нэрлэгдлээ</p></div>
         <div class="panel">${rows.map(([n,c])=>`<div style="display:flex;justify-content:space-between"><span>${esc(n)}</span><b>${c}</b></div>`).join("")}</div>
         <div class="row" style="margin-top:auto;flex-direction:column"><button class="btn story" id="st">📸 Story зураг хадгалах</button><button class="btn" id="re">Дахин тоглох</button></div></section>`;
-      document.getElementById("st").onclick=()=>shareStory({game:"Шивнээ", ic:"🤫", big:top, line:"Өнөө оройн хамгийн нууцлаг хүн", sub:`${cnt} удаа нэрлэгдсэн · ${names.length} хүн тоглосон`});
+      document.getElementById("st").onclick=()=>shareStory({game:"Шивнээ", ic:"🤫", who:{name:top, pic:""}, big:top, line:"Өнөө оройн хамгийн нууцлаг хүн", sub:`${cnt} удаа нэрлэгдсэн · ${names.length} хүн тоглосон`});
       document.getElementById("re").onclick=()=>whisper(from);
     };
     const named=(q,who)=>{ beep(520,.1,.12); buzz(30); tally[who]=(tally[who]||0)+1;
@@ -1288,10 +1401,12 @@ function sbClient(){
   }
   return sb;
 }
-const userName = () => user ? (user.user_metadata?.full_name || user.user_metadata?.name || (user.email||"").split("@")[0] || "Та") : "";
+function profileCache(){ try{ const p=JSON.parse(localStorage.getItem("profile")||"null"); return p&&user&&p.uid===user.id?p:null; }catch(e){ return null; } }
+const userName = () => user ? (user.user_metadata?.custom_name || profileCache()?.name || user.user_metadata?.full_name || user.user_metadata?.name || (user.email||"").split("@")[0] || "Та") : "";
+const profilePic = () => user ? (user.user_metadata?.custom_avatar || profileCache()?.avatar || user.user_metadata?.avatar_url || user.user_metadata?.picture || "") : "";
 function authBtn(){
   if(!user) return `<button class="login" data-auth>Нэвтрэх</button>`;
-  const pic=user.user_metadata?.avatar_url || user.user_metadata?.picture;
+  const pic=profilePic();
   return `<button class="av" data-auth aria-label="${esc(userName())}">${pic?`<img src="${esc(pic)}" alt="" referrerpolicy="no-referrer">`:esc(userName().slice(0,1).toUpperCase())}</button>`;
 }
 function refreshAuthUI(){
@@ -1300,6 +1415,7 @@ function refreshAuthUI(){
   if(!r[0]) { home(); return; }
   document.querySelectorAll(".top .tr").forEach(tr=>{ tr.querySelectorAll("[data-auth]").forEach(b=>b.remove()); if(user){ const s=document.createElement("span"); s.innerHTML=authBtn(); tr.insertBefore(s.firstChild, tr.querySelector(".brand")); } });
   if(aiRerender) aiRerender();
+  const rn=document.getElementById("rmName"); if(rn && !rn.value && user) rn.value=userName().slice(0,16);
 }
 async function initAuth(){
   if(!window.supabase){ await new Promise(res=>{ let n=0; const t=setInterval(()=>{ if(window.supabase||++n>40){ clearInterval(t); res(); } },100); }); }
@@ -1322,10 +1438,11 @@ function userMenu(){
   if(document.querySelector(".umenu")){ closeUserMenu(); return; }
   const m=document.createElement("div"); m.className="panel umenu";
   m.innerHTML=`<b>${esc(userName())}</b><span class="note" style="margin:0;text-align:left">AI багц: өдөрт ${AI_DAILY_USER} удаа</span>
-    <button class="btn ghost" id="umOut">Гарах</button><a href="#/privacy" class="note" style="margin:0" id="umPriv">Нууцлалын бодлого</a>`;
+    <button class="btn ghost" id="umEdit">🖼️ Зураг ба нэр засах</button><button class="btn ghost" id="umOut">Гарах</button><a href="#/privacy" class="note" style="margin:0" id="umPriv">Нууцлалын бодлого</a>`;
   document.body.appendChild(m);
   m.querySelector("#umOut").onclick=async()=>{ closeUserMenu(); try{ await sbClient()?.auth.signOut(); }catch(e){} user=null; refreshAuthUI(); };
   m.querySelector("#umPriv").onclick=closeUserMenu;
+  m.querySelector("#umEdit").onclick=()=>{ closeUserMenu(); profileEditor(); };
 }
 document.addEventListener("click", e=>{
   const a=e.target.closest("[data-auth]");
@@ -1333,6 +1450,47 @@ document.addEventListener("click", e=>{
   if(!e.target.closest(".umenu")) closeUserMenu();
 }, true);
 
+
+/* ---------- Profile editor: photo -> 160x160 JPEG data URL in user_metadata ---------- */
+async function compressAvatar(file){
+  const url=URL.createObjectURL(file);
+  try{
+    const im=await new Promise((res,rej)=>{ const i=new Image(); i.onload=()=>res(i); i.onerror=rej; i.src=url; });
+    const s=Math.min(im.naturalWidth,im.naturalHeight), sx=(im.naturalWidth-s)/2, sy=(im.naturalHeight-s)/2;
+    let out="";
+    for(const size of [160,128,96]){
+      const cv=document.createElement("canvas"); cv.width=cv.height=size; const x=cv.getContext("2d");
+      x.fillStyle="#fff"; x.fillRect(0,0,size,size); x.drawImage(im,sx,sy,s,s,0,0,size,size);
+      for(const q of [.82,.72,.62,.5,.4]){ out=cv.toDataURL("image/jpeg",q); if(out.length<=9000) return out; }
+    }
+    return out;
+  } finally { URL.revokeObjectURL(url); }
+}
+function profileEditor(){
+  if(!user) return;
+  let pic=profilePic(), busy=false;
+  const o=document.createElement("div"); o.className="gate"; o.id="pe";
+  const paint=()=>{ o.innerHTML=`<div class="panel" role="dialog" aria-modal="true" aria-labelledby="peT" style="max-width:380px;width:100%">
+      <h2 id="peT" style="font-size:20px">🖼️ Зураг ба нэр</h2>
+      <div class="pe-av-wrap">${avHTML(userName(), pic, 112).replace('class="avi"','class="avi pe-av"')}</div>
+      <label class="btn ghost" style="flex:none;cursor:pointer">📷 Зураг сонгох<input type="file" id="peFile" accept="image/*" hidden></label>
+      <div class="names"><label for="peName"><b>Нэр</b></label><input id="peName" maxlength="24" value="${esc(document.getElementById("peName")?.value ?? userName())}"></div>
+      <p class="note" id="peMsg" style="margin:0">Зураг өрөөний тоглоом болон Story зураг дээр гарна.</p>
+      <div class="row"><button class="btn ghost" id="peNo">Болих</button><button class="btn" id="peOk">Хадгалах</button></div></div>`;
+    o.querySelector("#peNo").onclick=()=>o.remove();
+    o.querySelector("#peFile").onchange=async e=>{ const f=e.target.files&&e.target.files[0]; if(!f) return; const msg=o.querySelector("#peMsg"); msg.textContent="Зургийг жижигрүүлж байна…";
+      try{ const nm=o.querySelector("#peName").value; pic=await compressAvatar(f); paint(); o.querySelector("#peName").value=nm; o.querySelector("#peMsg").textContent=`Бэлэн (${Math.round(pic.length/1024)} KB). «Хадгалах» дар.`; }
+      catch(err){ msg.textContent="Энэ зургийг уншиж чадсангүй. Өөр зураг сонго."; } };
+    o.querySelector("#peOk").onclick=async()=>{ if(busy) return; busy=true; const msg=o.querySelector("#peMsg"); const name=o.querySelector("#peName").value.trim().slice(0,24)||userName();
+      msg.textContent="Хадгалж байна…";
+      const custom_avatar = pic && pic.startsWith("data:") ? pic : (user.user_metadata?.custom_avatar||null);
+      try{ localStorage.setItem("profile", JSON.stringify({uid:user.id, name, avatar:custom_avatar})); }catch(e){}
+      try{ const {data,error}=await sbClient().auth.updateUser({data:{custom_avatar, custom_name:name}}); if(error) throw error; if(data?.user) user=data.user; track("profile_update",{photo:!!custom_avatar});
+        o.remove(); refreshAuthUI(); }
+      catch(err){ busy=false; msg.textContent="Сервер дээр хадгалж чадсангүй, энэ утсан дээр л хадгалагдлаа."; refreshAuthUI(); setTimeout(()=>o.remove(),1800); } };
+  };
+  paint(); document.body.appendChild(o);
+}
 /* ---------- Privacy page ---------- */
 function privacy(){
   stopTimer(); setGlow("var(--lilac)");
@@ -1378,7 +1536,7 @@ function roomMenu(from, presetCode){
   app.innerHTML=`<section class="view">${back}
     <h2 style="font-size:22px">🗳️ Хэн нь вэ?</h2>
     <ol class="rules"><li>Нэг хүн өрөө нээж, бусад нь 4 оронтой кодоор утаснаасаа нэгдэнэ (2–12 хүн).</li><li>Асуулт бүх утсан дээр зэрэг гарна. Хүн бүр нэг хүний нэр дээр нууцаар санал өгнө.</li><li>Хэн хэдэн санал авсан нь бүгдэд зэрэг харагдана. Хэн хэнд өгсөн нь нууц хэвээр.</li></ol>
-    <div class="panel names"><label for="rmName"><b>Таны нэр</b></label><input id="rmName" maxlength="16" value="${esc(myName())}" placeholder="Нэрээ бич"></div>
+    <div class="panel names"><label for="rmName"><b>Таны нэр</b></label><input id="rmName" maxlength="16" value="${esc(myName()||(user?userName().slice(0,16):""))}" placeholder="Нэрээ бич"></div>
     <div class="panel"><b>Өрөөнд нэгдэх</b>
       <div class="names"><input id="rmCode" class="code-in" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="0000" value="${esc(presetCode||"")}" aria-label="Өрөөний код"></div>
       <button class="btn" id="rmJoin">Нэгдэх</button></div>
@@ -1415,7 +1573,7 @@ async function connectRoom(code, isHost, name, from){
   ch.subscribe(async status=>{
     if(room!==R) return;
     if(status==="SUBSCRIBED"){
-      await ch.track({id:myId, name, host:isHost, at:R.at});
+      await ch.track({id:myId, name, host:isHost, at:R.at, pic:(user?profilePic():"")||""});
       if(isHost){ track("room_created",{level:R.level}); setTimeout(()=>{ if(room!==R) return; const other=roomPlayers(true).find(p=>p.host && p.id!==myId); if(other){ connectRoom(String(1000+Math.floor(Math.random()*9000)),true,name,from); return; } roomSend({t:"lobby", level:R.level}); },1200); renderRoom(); }
       else { track("room_joined",{}); R.findT=setTimeout(()=>{ if(room===R && !R.hostSeen) roomError(`${code} кодтой өрөө олдсонгүй`); },5000); renderRoom(); }
     } else if(status==="CHANNEL_ERROR" || status==="TIMED_OUT"){ roomError("Өрөөнд холбогдож чадсангүй"); }
@@ -1424,10 +1582,11 @@ async function connectRoom(code, isHost, name, from){
 function roomPlayers(raw){
   if(!room) return [];
   const st=room.ch.presenceState?.()||{}, list=[];
-  Object.values(st).forEach(arr=>{ const p=arr&&arr[0]; if(p&&p.id&&!list.some(x=>x.id===p.id)) list.push({id:p.id,name:p.name,host:!!p.host,at:p.at||0}); });
+  Object.values(st).forEach(arr=>{ const p=arr&&arr[0]; if(p&&p.id&&!list.some(x=>x.id===p.id)) list.push({id:p.id,name:p.name,host:!!p.host,at:p.at||0,pic:p.pic||""}); });
   list.sort((a,b)=>(b.host-a.host)||(a.at-b.at));
   return raw?list:list.slice(0,12);
 }
+function picById(id){ const p=roomPlayers(true).find(x=>x.id===id); return p?p.pic:""; }
 function roomSend(payload){ if(room) try{ room.ch.send({type:"broadcast", event:"msg", payload}); }catch(e){} }
 function onRoomPresence(){
   const R=room, ps=roomPlayers(), host=ps.find(p=>p.host);
@@ -1465,25 +1624,25 @@ function roomFinish(){
   const tally={}; R.round.players.forEach(p=>tally[p.id]=0);
   Object.values(R.votes).forEach(to=>{ if(to in tally) tally[to]++; });
   const names=Object.fromEntries(R.round.players.map(p=>[p.id,p.name]));
-  Object.entries(tally).forEach(([id,v])=>{ const nm=names[id]; R.totals[nm]=(R.totals[nm]||0)+v; });
+  Object.entries(tally).forEach(([id,v])=>{ const t=R.totals[id]||(R.totals[id]={name:names[id],v:0}); t.v+=v; });
   R.rounds++;
-  const rows=Object.entries(tally).map(([id,v])=>[names[id],v]).sort((a,b)=>b[1]-a[1]);
+  const rows=Object.entries(tally).map(([id,v])=>[names[id],v,id]).sort((a,b)=>b[1]-a[1]);
   hostBroadcast({t:"result", n:R.round.n, q:R.round.q, tally:rows, voters:Object.keys(R.votes).length});
 }
 function roomNext(){
   const R=room, ps=roomPlayers();
   if(ps.length<2){ const m=document.getElementById("rmHint"); if(m) m.textContent="Дор хаяж 2 хүн хэрэгтэй"; return; }
-  if(!R.deck.length) R.deck=shuffle(ROOM_Q[R.level]);
+  if(!R.deck.length) R.deck=shuffle(ROOM_Q[R.level].concat(R.aiQ||[]));
   R.votes={}; R.result=null;
   hostBroadcast({t:"round", n:(R.round?.n||0)+1, q:R.deck.pop(), level:R.level, players:ps.map(p=>({id:p.id,name:p.name}))});
 }
 function roomEnd(){
-  const R=room, rows=Object.entries(R.totals).sort((a,b)=>b[1]-a[1]);
+  const R=room, rows=Object.entries(R.totals).map(([id,t])=>[t.name,t.v,id]).sort((a,b)=>b[1]-a[1]);
   hostBroadcast({t:"end", totals:rows, rounds:R.rounds, players:roomPlayers().length});
 }
 function tallyHTML(rows){
   const max=Math.max(1,...rows.map(r=>r[1]));
-  return `<div class="tally">${rows.map(([n,v],i)=>`<div class="tr2"><span>${i===0&&v>0?"👑 ":""}${esc(n)}</span><b>${v}</b><div class="bar"><i style="width:${Math.round(v/max*100)}%"></i></div></div>`).join("")}</div>`;
+  return `<div class="tally">${rows.map(([n,v,id],i)=>`<div class="tr2"><span>${avHTML(n,id?picById(id):"",26)} ${i===0&&v>0?"👑 ":""}${esc(n)}</span><b>${v}</b><div class="bar"><i style="width:${Math.round(v/max*100)}%"></i></div></div>`).join("")}</div>`;
 }
 function renderRoom(){
   const R=room; if(!R) return;
@@ -1491,7 +1650,7 @@ function renderRoom(){
   const ps=roomPlayers();
   if(R.level==="hot" && !adultOk && !R.host && !R.ageAsked){ R.ageAsked=true; openGate(()=>renderRoom(), {text:AGE_ROOM, onNo:()=>nav("#/")}); }
   if(R.view==="lobby"){
-    const chips=ps.map(p=>`<span class="chip" style="color:var(--ink)">${p.host?"⭐ ":""}${esc(p.name)}${p.id===myId?" (та)":""}</span>`).join("");
+    const chips=ps.map(p=>`<span class="chip" style="color:var(--ink);display:inline-flex;align-items:center">${avHTML(p.name,p.pic,24)}${p.host?"⭐ ":""}${esc(p.name)}${p.id===myId?" (та)":""}</span>`).join("");
     if(R.host){
       app.innerHTML=`<section class="view">${head}
         <div class="hero" style="text-align:center"><span class="eyebrow">🗳️ Хэн нь вэ? · Өрөөний код</span></div>
@@ -1501,8 +1660,13 @@ function renderRoom(){
         <button class="btn ghost" id="rmShare" style="flex:none">🔗 Линк хуваалцах</button>
         <div class="panel"><b>Тоглогчид (${ps.length}/12)</b><div class="wh-names" style="justify-content:flex-start">${chips}</div></div>
         <div class="panel"><b>Горим</b><div class="wh-names" style="justify-content:flex-start"><button class="chip" data-lv="fun" aria-pressed="${R.level==="fun"}">😄 Энгийн</button><button class="chip" data-lv="hot" aria-pressed="${R.level==="hot"}">😈 Дэггүй 18+</button></div></div>
+        ${aiHelperBox("room",{title:"Бидний тухай AI асуулт нэмэх", placeholder:"Жишээ: Ажлынхан, шинэ жилийн үдэшлэг, Бат үргэлж оройтдог", btn:"Үүсгэх"})}
         <div class="row" style="margin-top:auto;flex-direction:column"><button class="btn" id="rmStart" ${ps.length<2?"disabled style=\"opacity:.5\"":""}>Эхлэх</button><p class="note" id="rmHint" style="margin:0">${ps.length<2?"Дор хаяж 2 хүн нэгдэхийг хүлээж байна…":"Бүгд нэгдсэн бол эхлүүл"}</p></div></section>`;
       document.getElementById("rmStart").onclick=roomNext;
+      { const d=document.getElementById("ah-room"), inp=document.getElementById("ahIn-room"); if(R.aiOpen) d.open=true; inp.value=R.aiDraft||""; if(R.aiMsg) document.getElementById("ahMsg-room").textContent=R.aiMsg;
+        d.ontoggle=()=>{ R.aiOpen=d.open; }; inp.oninput=()=>{ R.aiDraft=inp.value; };
+        bindAiHelper("room", ctx=>({mode:"room_questions", names:roomPlayers().map(p=>p.name), context:ctx, level:R.level}),
+          items=>{ R.aiQ=(R.aiQ||[]).concat(items); R.deck=[]; R.aiDraft=""; R.aiMsg=`✓ ${items.length} AI асуулт холигдлоо (нийт ${R.aiQ.length})`; return R.aiMsg; }); }
       document.getElementById("rmShare").onclick=async e=>{ const url=roomUrl(R.code);
         try{ if(navigator.share){ await navigator.share({title:"Хамтдаа · Хэн нь вэ?", text:`Өрөөний код: ${R.code}`, url}); return; } }catch(err){ if(err&&err.name==="AbortError") return; }
         try{ await navigator.clipboard.writeText(url); e.target.textContent="✓ Линк хуулагдлаа"; }catch(err){ e.target.textContent=url; } };
@@ -1529,7 +1693,7 @@ function renderRoom(){
     } else {
       app.innerHTML=`<section class="view">${head}<p class="who-line" style="margin:0">Асуулт ${m.n} · Нууцаар санал өг</p>
         <div class="panel" style="gap:18px"><div class="wh-q">${esc(m.q)}</div></div>
-        <div class="wh-names">${m.players.map(p=>`<button class="chip" data-vote="${esc(p.id)}">${esc(p.name)}${p.id===myId?" (та)":""}</button>`).join("")}</div>
+        <div class="wh-names">${m.players.map(p=>`<button class="chip" data-vote="${esc(p.id)}" style="display:inline-flex;align-items:center">${avHTML(p.name,picById(p.id),26)}${esc(p.name)}${p.id===myId?" (та)":""}</button>`).join("")}</div>
         <p class="wait" id="rmProg" style="margin:0">${pr.count} / ${pr.total} санал өгсөн</p>${hostBtns}</section>`;
       app.querySelectorAll("[data-vote]").forEach(b=>b.onclick=()=>{ R.myVote=b.dataset.vote; buzz(25); beep(700,.06,.1); roomSend({t:"vote", n:m.n, from:myId, to:b.dataset.vote}); renderRoom(); });
     }
@@ -1551,7 +1715,7 @@ function renderRoom(){
       <div class="hero" style="text-align:center"><span class="eyebrow">Хамгийн олон санал авсан хүн</span><h1 style="margin-top:6px">👑 ${esc(top[0])}</h1><p>${top[1]} санал · ${m.rounds} асуулт</p></div>
       ${tallyHTML(rows)}
       <div class="row" style="margin-top:auto;flex-direction:column"><button class="btn story" id="st">📸 Story зураг хадгалах</button>${R.host?`<button class="btn" id="rmAgain">Шинэ тоглолт</button>`:""}</div></section>`;
-    document.getElementById("st").onclick=()=>shareStory({game:"Хэн нь вэ?", ic:"🗳️", big:top[0], line:"Хамгийн олон санал авсан хүн", sub:`${top[1]} санал · ${m.rounds} асуулт · ${m.players} тоглогч`});
+    document.getElementById("st").onclick=()=>shareStory({game:"Хэн нь вэ?", ic:"🗳️", who:{name:top[0], pic:top[2]?picById(top[2]):""}, big:top[0], line:"Хамгийн олон санал авсан хүн", sub:`${top[1]} санал · ${m.rounds} асуулт · ${m.players} тоглогч`});
     const ag=document.getElementById("rmAgain"); if(ag) ag.onclick=()=>{ R.totals={}; R.rounds=0; R.round=null; R.result=null; R.last=null; R.view="lobby"; roomSend({t:"lobby", level:R.level}); renderRoom(); };
   }
 }
@@ -1568,6 +1732,7 @@ function route(){
   try{ gtag("event","page_view",{page_title:document.title, page_location:location.href, page_path:location.pathname+location.hash}); }catch(e){}
   if(r[0]==="mood" && MOODS[r[1]]) mood(r[1]);
   else if(r[0]==="privacy") privacy();
+  else if(r[0]==="guide") guide();
   else if(r[0]==="room") { roomMenu("friends", /^\d{4}$/.test(r[1]||"")?r[1]:""); track("game_start",{game_id:"room", mood:"friends"}); }
   else if(r[0]==="game" && GAMES[r[1]] && MOODS[r[2]] && startGame(r[1],r[2])) track("game_start",{game_id:r[1], mood:r[2]});
   else home();
