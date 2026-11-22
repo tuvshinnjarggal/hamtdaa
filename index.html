@@ -56,6 +56,13 @@ img{max-width:100%}
 .custom textarea:focus{outline:2px solid var(--glow);border-color:transparent}
 .custom .cnt{font-size:13px;color:var(--ink-soft)}
 .btn.story{background:transparent;color:var(--ink);border:1px solid var(--glow)}
+.ai-card{display:flex;flex-direction:column;gap:14px;text-align:center;padding:26px 20px;border-radius:26px;background:var(--ink);color:#1b1528;min-height:min(300px,40dvh);justify-content:center}
+.ai-card .k{font-size:12px;letter-spacing:.14em;text-transform:uppercase;font-weight:800;color:#6b5f86;line-height:1.5;padding-top:4px}
+.ai-card .t{font-family:var(--display);font-size:clamp(26px,8vw,34px);line-height:1.3;color:#1b1528}
+.ai-card .q{font-family:var(--display);font-weight:500;font-size:clamp(18px,5.2vw,22px);line-height:1.45;text-wrap:balance}
+.ai-load{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:16px;text-align:center}
+.ai-load .sp{font-size:64px;line-height:1.3;animation:aipulse 1.2s ease-in-out infinite}
+@keyframes aipulse{50%{transform:scale(1.2) rotate(12deg);opacity:.7}}
 .wh-names{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .wh-names .chip{color:var(--ink);font-size:15px}
 .wh-q{font-family:var(--display);font-weight:500;font-size:clamp(20px,5.8vw,25px);line-height:1.4;text-align:center;text-wrap:balance}
@@ -244,12 +251,13 @@ h1,h2,h3{font-family:var(--display);font-weight:700;text-wrap:balance;margin:0;l
 
 <script>
 const MOODS = {
-  couples:{name:"Хосуудын орой", ic:"💞", c:"var(--rose)", sub:"Дулаан, ойртуулах яриа", games:["nandin","spicy","wheel","match","wave","picker"]},
-  friends:{name:"Найзуудын цугларалт", ic:"🎉", c:"var(--amber)", sub:"Инээд, өрсөлдөөн, сэжиг", games:["whisper","bomb","wave","missions","spy","headsup","shagai","picker"]},
-  family:{name:"Гэр бүл, хүүхдүүд", ic:"🏡", c:"var(--teal)", sub:"Бүх насныханд хөгжилтэй", games:["shagai","bomb","charades","familyDeck","picker"], desc:{picker:"Бүгд дэлгэц дээр хуруугаа тавь. Утас хэн эхлэхийг сонгох эсвэл хоёр баг болгон хуваана."}},
-  strangers:{name:"Шинэ танилууд", ic:"🤝", c:"var(--lilac)", sub:"Мөс хайлуулах асуултууд", games:["iceDeck","missions","picker"]},
+  couples:{name:"Хосуудын орой", ic:"💞", c:"var(--rose)", sub:"Дулаан, ойртуулах яриа", games:["ai","nandin","spicy","wheel","match","wave","picker"]},
+  friends:{name:"Найзуудын цугларалт", ic:"🎉", c:"var(--amber)", sub:"Инээд, өрсөлдөөн, сэжиг", games:["ai","whisper","bomb","wave","missions","spy","headsup","shagai","picker"]},
+  family:{name:"Гэр бүл, хүүхдүүд", ic:"🏡", c:"var(--teal)", sub:"Бүх насныханд хөгжилтэй", games:["shagai","bomb","charades","familyDeck","picker","ai"], desc:{picker:"Бүгд дэлгэц дээр хуруугаа тавь. Утас хэн эхлэхийг сонгох эсвэл хоёр баг болгон хуваана."}},
+  strangers:{name:"Шинэ танилууд", ic:"🤝", c:"var(--lilac)", sub:"Мөс хайлуулах асуултууд", games:["ai","iceDeck","missions","picker"]},
 };
 const GAMES = {
+  ai:{name:"AI Хувийн багц", ic:"✨", desc:"Нэрс, бүлгийнхээ онцлогийг бич. AI зөвхөн танай бүлэгт зориулсан 15 карт зохионо.", tag:"AI"},
   whisper:{name:"Шивнээ", ic:"🤫", desc:"Нууц асуултыг ганцаараа уншаад хариулт болох хүний нэрийг чанга хэл. Тэр хүн асуултыг мэдэхийн тулд зоос шидэх үү, шийтгэл хүлээх үү?", tag:"Шинэ"},
   nandin:{name:"Нандин", ic:"🌸", desc:"Гурван үе шаттай орой: бидний эхлэл, хэлж чадаагүй үг, нүд рүү харсан 30 секундын талархал.", tag:"Шинэ"},
   spicy:{name:"Үнэн үү, Халуухан шийтгэл үү?", ic:"🔥", desc:"Халуухан асуултад хариул. Ичвэл санамсаргүй шийтгэл биелүүлнэ.", tag:"18+"},
@@ -1023,6 +1031,7 @@ function cssColor(v){ const m=/var\((--[\w-]+)\)/.exec(v||""); const c=m?getComp
 function wrapLines(ctx, text, maxW){ const words=String(text).split(/\s+/), lines=[]; let cur="";
   words.forEach(w=>{ const t=cur?cur+" "+w:w; if(ctx.measureText(t).width>maxW && cur){ lines.push(cur); cur=w; } else cur=t; }); if(cur) lines.push(cur); return lines; }
 function fitFont(ctx, text, weight, family, start, maxW, min=60){ let s=start; do{ ctx.font=`${weight} ${s}px ${family}`; if(ctx.measureText(text).width<=maxW) break; s-=6; }while(s>min); return s; }
+function loadImg(src){ return new Promise((res,rej)=>{ const im=new Image(); im.onload=()=>res(im); im.onerror=rej; im.src=src; }); }
 async function shareStory({game, ic, big, line, sub}){
   try{ await document.fonts?.ready; }catch(e){}
   const W=1080, H=1920, cv=document.createElement("canvas"); cv.width=W; cv.height=H; const x=cv.getContext("2d");
@@ -1036,9 +1045,9 @@ async function shareStory({game, ic, big, line, sub}){
   x.fillStyle="#cfc6e2"; x.font=`800 46px ${B}`; x.fillText(game.toUpperCase(), W/2, 590);
   x.fillStyle=glow; const bs=fitFont(x, big, 700, D, 260, W-140); x.font=`700 ${bs}px ${D}`; x.fillText(big, W/2, 930);
   x.fillStyle="#f4eefc"; x.font=`700 70px ${D}`; wrapLines(x, line, W-160).slice(0,3).forEach((l,i)=>x.fillText(l, W/2, 1110+i*92));
-  x.fillStyle="#cfc6e2"; x.font=`600 46px ${B}`; wrapLines(x, sub||"", W-180).slice(0,3).forEach((l,i)=>x.fillText(l, W/2, 1420+i*64));
-  x.strokeStyle=glow; x.globalAlpha=.6; x.lineWidth=3; x.beginPath(); x.moveTo(W/2-120,1700); x.lineTo(W/2+120,1700); x.stroke(); x.globalAlpha=1;
-  x.fillStyle="#f4eefc"; x.font=`800 44px ${B}`; x.fillText("Хамтдаа · hamtdaa.mn", W/2, 1790);
+  x.fillStyle="#cfc6e2"; x.font=`600 46px ${B}`; wrapLines(x, sub||"", W-180).slice(0,2).forEach((l,i)=>x.fillText(l, W/2, 1370+i*64));
+  try{ const qr=await loadImg("qr.png"); const qs=230, qx=W/2-qs/2, qy=1560; x.fillStyle="#fff"; x.beginPath(); x.roundRect(qx-14,qy-14,qs+28,qs+28,24); x.fill(); x.imageSmoothingEnabled=false; x.drawImage(qr,qx,qy,qs,qs); x.imageSmoothingEnabled=true; }catch(e){}
+  x.fillStyle="#f4eefc"; x.font=`800 46px ${B}`; x.fillText("Хамтдаа", W/2, 1868);
   const blob=await new Promise(res=>cv.toBlob(res,"image/png")); if(!blob) return;
   const file=new File([blob], "hamtdaa-story.png", {type:"image/png"});
   try{ if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], title:"Хамтдаа"}); track("story_share",{game}); return; } }catch(e){ if(e && e.name==="AbortError") return; }
@@ -1047,6 +1056,125 @@ async function shareStory({game, ic, big, line, sub}){
 }
 /* ---------- Analytics helper (GA4; silent until a real GA_ID is set) ---------- */
 function track(name, params={}){ try{ gtag("event", name, params); }catch(e){} }
+/* ---------- AI personal deck (Supabase Edge Function -> Gemini) ---------- */
+const SUPA_URL = "https://wexbuaopnfnangtptstu.supabase.co";
+const SUPA_KEY = "sb_publishable_wtyyhRs6Xok5tveMGwyFSg_cha8Hchv";
+const AI_DAILY = 3;
+const AI_KIND = {truth:"Үнэн", dare:"Зориг", paranoia:"Шивнээ"};
+const AI_PH = {
+  friends:"Жишээ: 12Б анги, маргааш зугаалгатай. Болд Сараад сэтгэлтэй гэсэн цуу яриа бий. Тэмүүлэн үргэлж хоцордог.",
+  couples:"Жишээ: 2 жил үерхэж байна, Говьд анх танилцсан, аялах дуртай, удахгүй хамт амьдарна.",
+  strangers:"Жишээ: Компанийн шинэ ажилчид, ихэнх нь IT-д ажилладаг, анх удаа уулзаж байна.",
+  family:"Жишээ: Цагаан сараар эмээгийндээ цугларсан, 6–12 настай 3 хүүхэдтэй, аав нь хошин."
+};
+let aiLevel="fun";
+const today=()=>new Date().toLocaleDateString("sv");
+function aiQuota(){ try{ const q=JSON.parse(localStorage.getItem("aiQuota")||"{}"); return q.date===today()?q:{date:today(),used:0}; }catch(e){ return {date:today(),used:0}; } }
+function aiLeft(){ return Math.max(0, AI_DAILY-aiQuota().used); }
+function aiUse(){ const q=aiQuota(); q.used++; try{ localStorage.setItem("aiQuota",JSON.stringify(q)); }catch(e){} }
+const AI_ERR = {
+  rate_limited:"Хэт олон удаа дарлаа. Нэг минут хүлээгээд дахин оролдоорой.",
+  ai_busy:"AI одоо их ачаалалтай байна. Хэсэг хүлээгээд дахин оролдоорой.",
+  ai_timeout:"AI хэт удаж байна. Дахин оролдоорой.",
+  ai_empty:"AI карт зохиож чадсангүй. Тайлбараа өөрчлөөд дахин оролдоорой.",
+  offline:"Интернэт холболт алга. AI багцад интернэт хэрэгтэй.",
+};
+function aiDeck(from){
+  stopTimer(); setGlow(MOODS[from].c);
+  if(from==="family" && aiLevel==="hot") aiLevel="fun";
+  let ctxDraft="";
+  const head=()=>topBar("mood:"+from, MOODS[from].name);
+  const render=()=>{
+    const left=aiLeft(); let last=null; try{ last=JSON.parse(localStorage.getItem("aiLast")||"null"); }catch(e){}
+    app.innerHTML=`<section class="view">${head()}
+      <h2 style="font-size:22px">✨ AI Хувийн багц</h2>
+      <p style="margin:0;color:var(--ink-soft)">Нэрс болон бүлгийнхээ онцлогийг бич. AI зөвхөн танай бүлэгт зориулсан 15 асуулт, даалгавар зохионо.</p>
+      ${from==="family"?"":`<div class="panel"><b>Түвшин</b><div class="wh-names" style="justify-content:flex-start">
+        <button class="chip" data-lv="fun" aria-pressed="${aiLevel==="fun"}">😄 Энгийн</button>
+        <button class="chip" data-lv="hot" aria-pressed="${aiLevel==="hot"}">😈 Дэггүй 18+</button></div></div>`}
+      <div class="panel"><b>Тоглогчид</b>${namesEditor(2,12)}</div>
+      <div class="panel custom"><b>Бүлгийн онцлог</b><textarea id="aiCtx" maxlength="300" placeholder="${esc(AI_PH[from])}">${esc(ctxDraft)}</textarea>
+        <span class="cnt">Нэр, тайлбар карт зохиоход л AI руу илгээгдэнэ. Хэнд ч гомдол төрүүлэх зүйл бүү бич.</span></div>
+      <div class="row" style="margin-top:auto;flex-direction:column">
+        <button class="btn" id="gen" ${left?"":"disabled style=\"opacity:.5\""}>✨ Карт үүсгэх</button>
+        ${last&&last.cards&&last.from===from?`<button class="btn ghost" id="cont">Сүүлийн багцаа дахин тоглох</button>`:""}
+        <p class="note" id="aiMsg" style="margin:0">${left?`Өнөөдөр ${left} / ${AI_DAILY} үнэгүй оролдлого үлдсэн`:"Өнөөдрийн 3 үнэгүй оролдлого дууслаа. Маргааш дахин нээгдэнэ."}</p></div></section>`;
+    const get=bindNames(2,12,()=>{ ctxDraft=document.getElementById("aiCtx").value; render(); });
+    app.querySelectorAll("[data-lv]").forEach(b=>b.onclick=()=>{ const v=b.dataset.lv;
+      const set=()=>{ aiLevel=v; app.querySelectorAll("[data-lv]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.lv===v)); };
+      if(v==="hot" && !adultOk) openGate(set,{text:"«Дэггүй» түвшинд AI краш, нууц сонирхол, зоригтой сонголтын асуулт зохионо. Зөвхөн 18 нас хүрсэн хүмүүс тоглоно. Бүгд 18+ үү?", onNo:()=>{}}); else set(); });
+    const cont=document.getElementById("cont"); if(cont) cont.onclick=()=>play(last.cards);
+    document.getElementById("gen").onclick=()=>{
+      const names=get(), msg=document.getElementById("aiMsg"); ctxDraft=document.getElementById("aiCtx").value.trim();
+      if(names.length<2){ msg.textContent="Дор хаяж 2 нэр оруул"; return; }
+      if(!aiLeft()){ msg.textContent="Өнөөдрийн оролдлого дууслаа"; return; }
+      generate(names, ctxDraft);
+    };
+  };
+  async function generate(names, context){
+    const tips=["Нэрсийг чинь уншиж байна…","Танай бүлгийн нууцыг тааж байна…","Хамгийн халуун асуултуудыг шүүж байна…","Бараг боллоо…"];
+    app.innerHTML=`<section class="view">${head()}<div class="ai-load"><div class="sp">✨</div><h2 style="font-size:22px">AI карт зохиож байна</h2><p class="note" id="tip" style="margin:0">${tips[0]}</p></div></section>`;
+    let t=0; timerId=setInterval(()=>{ const el=document.getElementById("tip"); if(el) el.textContent=tips[Math.min(++t,tips.length-1)]; },2500);
+    track("ai_deck_request",{mood:from, level:aiLevel});
+    let err=null, cards=null;
+    try{
+      if(!navigator.onLine) throw {code:"offline"};
+      const ctl=new AbortController(), to=setTimeout(()=>ctl.abort(),35000);
+      const r=await fetch(SUPA_URL+"/functions/v1/generate-deck",{method:"POST",signal:ctl.signal,
+        headers:{"Content-Type":"application/json","apikey":SUPA_KEY},
+        body:JSON.stringify({names, context, level:aiLevel, mood:from})});
+      clearTimeout(to);
+      const j=await r.json().catch(()=>({}));
+      if(!r.ok || !Array.isArray(j.cards) || !j.cards.length) throw {code:j.error||("http_"+r.status)};
+      cards=j.cards;
+    }catch(e){ err=(e&&e.code)||(e&&e.name==="AbortError"?"ai_timeout":"network"); }
+    stopTimer();
+    if(!location.hash.startsWith("#/game/ai/")) return;
+    if(err){
+      app.innerHTML=`<section class="view">${head()}<div class="ai-load"><div class="sp" style="animation:none">😕</div><h2 style="font-size:22px">Карт үүсгэж чадсангүй</h2>
+        <p class="note" style="margin:0">${esc(AI_ERR[err]||"Сервертэй холбогдож чадсангүй. Дахин оролдоорой.")}</p>
+        <p class="note" style="margin:0">Оролдлого хасагдаагүй.</p></div>
+        <div class="row" style="flex-direction:column"><button class="btn" id="retry">Дахин оролдох</button><button class="btn ghost" id="bk">Буцах</button></div></section>`;
+      document.getElementById("retry").onclick=()=>generate(names, context);
+      document.getElementById("bk").onclick=render;
+      track("ai_deck_error",{code:err}); return;
+    }
+    aiUse(); beep(990,.2,.15); buzz([40,40,120]);
+    try{ localStorage.setItem("aiLast",JSON.stringify({cards, from, at:Date.now()})); }catch(e){}
+    track("ai_deck_ok",{mood:from, level:aiLevel, n:cards.length});
+    play(cards);
+  }
+  function play(cards){
+    let i=0;
+    const show=()=>{
+      const c=cards[i], k=AI_KIND[c.type]||"Карт";
+      const how = c.type==="paranoia" ? `Зөвхөн ${esc(c.target)} нууцаар уншаад хариултыг нь (хүний нэрийг) чангаар хэлнэ.` : c.type==="dare" ? "Хийж чадахгүй бол шийтгэл авна." : "Үнэнээр хариул, эсвэл шийтгэл ав.";
+      app.innerHTML=`<section class="view">${head()}
+        <p class="who-line" style="margin:0">${i+1} / ${cards.length} · ✨ AI багц</p>
+        <div class="stage"><div class="card" id="card" tabindex="0" role="button" aria-label="Картыг эргүүлэх">
+          <div class="face front"><div class="big">✨</div><span>Ээлж: ${esc(c.target)}</span><span class="eyebrow">Дарж эргүүл</span></div>
+          <div class="face back-face" style="justify-content:center;text-align:center;gap:12px"><span class="kind">${k} · ${esc(c.target)}</span><div class="q">${esc(c.text)}</div><p class="note" style="margin:0">${how}</p></div>
+        </div></div>
+        <div id="pen"></div>
+        <div class="row" style="flex-direction:column">
+          <button class="btn" id="nx">${i+1<cards.length?"Дараагийн карт":"Багц дууслаа"}</button>
+          <button class="btn ghost" id="no">🙈 Татгалзах (шийтгэл)</button></div></section>`;
+      const card=document.getElementById("card"); const flip=()=>{ card.classList.toggle("flipped"); flipSound(); };
+      card.onclick=flip; card.onkeydown=e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); flip(); } };
+      document.getElementById("no").onclick=()=>{ document.getElementById("pen").innerHTML=penaltyHTML("Шийтгэл: "+c.target); card.classList.add("flipped"); buzz(60); };
+      document.getElementById("nx").onclick=()=>{ if(i+1<cards.length){ i++; show(); } else done(); };
+    };
+    const done=()=>{
+      app.innerHTML=`<section class="view">${head()}<div class="ai-load"><div class="sp" style="animation:none">🎉</div><h2 style="font-size:24px">Багц дууслаа!</h2>
+        <p class="note" style="margin:0">Өнөөдөр ${aiLeft()} / ${AI_DAILY} үнэгүй оролдлого үлдсэн.</p></div>
+        <div class="row" style="flex-direction:column"><button class="btn" id="new">✨ Шинэ багц үүсгэх</button><button class="btn ghost" id="again">Энэ багцаа дахин тоглох</button></div></section>`;
+      document.getElementById("new").onclick=render;
+      document.getElementById("again").onclick=()=>{ i=0; cards=shuffle(cards); show(); };
+    };
+    show();
+  }
+  render();
+}
 /* ---------- Whisper (paranoia) ---------- */
 const WHISPER_Q = {
   fun:["Энд байгаа хүмүүсээс хэн нь хамгийн түрүүнд гэрлэх вэ?","Хэн нь нууцаа хамгийн муу хадгалдаг вэ?","Хэн нь хамгийн итгэл төрүүлэхээр худлаа ярьдаг вэ?","Арал дээр гацвал хэнтэй нь хамт байхыг хүсэх вэ?","Хэн нь хамгийн халдвартай инээдтэй вэ?","Хэн нь шалгалтандаа хуулдаг байсан гэж бодож байна?","Хэн нь хамгийн түрүүнд баяжих вэ?","Хэний утсыг 5 минут ухаж үзмээр байна?","Хэн нь өөрийгөө хамгийн их зураг авдаг вэ?","Хэн нь өнөө орой хамгийн түрүүнд унтах вэ?","Хэн нь хамгийн муу жолооч болох вэ?","Нууцаа хэнд нь хамгийн түрүүнд хэлэх вэ?","Хэн нь хов живийг хамгийн түрүүнд мэддэг вэ?","Хэн нь кино од болох байсан бэ?","Хэн нь хамгийн амархан дурладаг вэ?","Хэнийг ээждээ танилцуулахаас хамгийн их эмээх вэ?","Хэн нь гаднаа хүйтэн ч дотроо хамгийн зөөлөн бэ?","Зомби дайрвал хэн нь хамгийн түрүүнд баригдах вэ?","Хэн нь дуртай хүндээ хамгийн удаан хэлж чадахгүй явах вэ?","Хэнтэй нь 20 жилийн дараа ч найз хэвээр байх вэ?","Хэн нь цалингаа хамгийн хурдан дуусгадаг вэ?","Хэн нь 10 жилийн дараа огт өөрчлөгдөөгүй байх вэ?","Хэн нь мессежид хамгийн удаан хариулдаг вэ?","Хэн нь хамгийн түрүүнд гадаад руу явах вэ?","Хэн нь хамгийн амархан уурладаг вэ?","Хэнтэй нь нэг өрөөнд сар түгжигдмээргүй байна?","Хэн нь хамгийн гоё дуулдаг вэ?","Хэний хүүхэд байхдаа авахуулсан зургийг хамгийн их үзмээр байна?","Хэн нь багшдаа хамгийн их загнуулдаг байсан бэ?","Хэн нь энэ бүлгийн жинхэнэ ахлагч вэ?"],
@@ -1125,7 +1253,7 @@ function whisper(from){
 }
 /* ---------- Routing ---------- */
 function startGame(id, from){
-  if(DECKS[id]) deck(id,from); else if(id==="spy") spySetup(from); else if(id==="headsup") huPick(from,false); else if(id==="charades") huPick(from,true); else if(id==="bomb") bomb(from); else if(id==="missions") missions(from); else if(id==="match") match(from); else if(id==="picker") picker(from); else if(id==="shagai") shagai(from); else if(id==="wave") wave(from); else if(id==="nandin") nandin(from); else if(id==="spicy") spicy(from); else if(id==="wheel") wheel(from); else if(id==="whisper") whisper(from); else return false;
+  if(DECKS[id]) deck(id,from); else if(id==="spy") spySetup(from); else if(id==="headsup") huPick(from,false); else if(id==="charades") huPick(from,true); else if(id==="bomb") bomb(from); else if(id==="missions") missions(from); else if(id==="match") match(from); else if(id==="picker") picker(from); else if(id==="shagai") shagai(from); else if(id==="wave") wave(from); else if(id==="nandin") nandin(from); else if(id==="spicy") spicy(from); else if(id==="wheel") wheel(from); else if(id==="whisper") whisper(from); else if(id==="ai") aiDeck(from); else return false;
   return true;
 }
 function nav(hash){ if(location.hash===hash) route(); else location.hash=hash; }

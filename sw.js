@@ -1,6 +1,6 @@
 /* Хамтдаа service worker: the app shell works offline; the page itself is network-first so updates show up right away. */
-const VERSION = "hamtdaa-v10";
-const SHELL = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png"];
+const VERSION = "hamtdaa-v11";
+const SHELL = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./qr.png"];
 
 self.addEventListener("install", e => {
   e.waitUntil(caches.open(VERSION).then(c => c.addAll(SHELL)).then(() => self.skipWaiting()));
