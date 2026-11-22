@@ -263,6 +263,26 @@ h1,h2,h3{font-family:var(--display);font-weight:700;text-wrap:balance;margin:0;l
 .reel b{font-family:var(--display);font-size:clamp(20px,6vw,26px);font-weight:700}
 .reel.spin b{filter:blur(1.5px)}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+.dview{gap:10px}
+.dhead{display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:700}
+.dhead b{color:var(--glow)}
+.dtimer{font-family:var(--display);font-size:22px;min-width:52px;text-align:center;padding:4px 10px;border-radius:12px;background:var(--night-2);border:1px solid var(--line)}
+.dtimer.low{color:#ff6b6b;border-color:#ff6b6b}
+.dbox{width:100%;max-width:520px;margin:0 auto;border-radius:16px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.35);background:#fff;aspect-ratio:1}
+.dpad{display:block;touch-action:none;-webkit-user-select:none;user-select:none}
+.dtools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center}
+.dcol{width:36px;height:36px;border-radius:50%;border:2px solid var(--line);padding:0;font-size:16px;cursor:pointer}
+.dcol.on{outline:3px solid var(--glow);outline-offset:2px}
+.dw{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--night-2);display:grid;place-items:center;cursor:pointer;padding:0}
+.dw i{display:block;border-radius:50%;background:var(--ink)}
+.dw.on{border-color:var(--glow);background:var(--night)}
+.dbr{flex-basis:100%;height:0}
+.dsep{width:1px;height:24px;background:var(--line)}
+.dbtn{width:44px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--night-2);font-size:17px;cursor:pointer;padding:0}
+.dchat{display:flex;flex-direction:column;gap:2px;font-size:14px;min-height:22px;color:var(--ink-soft)}
+.dchat .sys{color:var(--glow);font-weight:800}
+.dthumb{display:block;width:100%;max-width:300px;margin:0 auto;border-radius:14px;background:#fff;aspect-ratio:1;object-fit:contain}
+.hint{letter-spacing:.08em;font-family:monospace;font-size:15px}
 </style>
 
 </head>
@@ -282,13 +302,14 @@ h1,h2,h3{font-family:var(--display);font-weight:700;text-wrap:balance;margin:0;l
 <script>
 const MOODS = {
   couples:{name:"Хосуудын орой", ic:"💞", c:"var(--rose)", sub:"Дулаан, ойртуулах яриа", games:["ai","nandin","spicy","wheel","match","wave","picker"]},
-  friends:{name:"Найзуудын цугларалт", ic:"🎉", c:"var(--amber)", sub:"Инээд, өрсөлдөөн, сэжиг", games:["room","ai","whisper","bomb","wave","missions","spy","headsup","shagai","picker"]},
-  family:{name:"Гэр бүл, хүүхдүүд", ic:"🏡", c:"var(--teal)", sub:"Бүх насныханд хөгжилтэй", games:["shagai","bomb","charades","familyDeck","picker","ai"], desc:{picker:"Бүгд дэлгэц дээр хуруугаа тавь. Утас хэн эхлэхийг сонгох эсвэл хоёр баг болгон хуваана."}},
+  friends:{name:"Найзуудын цугларалт", ic:"🎉", c:"var(--amber)", sub:"Инээд, өрсөлдөөн, сэжиг", games:["room","draw","ai","whisper","bomb","wave","missions","spy","headsup","shagai","picker"]},
+  family:{name:"Гэр бүл, хүүхдүүд", ic:"🏡", c:"var(--teal)", sub:"Бүх насныханд хөгжилтэй", games:["draw","shagai","bomb","charades","familyDeck","picker","ai"], desc:{picker:"Бүгд дэлгэц дээр хуруугаа тавь. Утас хэн эхлэхийг сонгох эсвэл хоёр баг болгон хуваана."}},
   strangers:{name:"Шинэ танилууд", ic:"🤝", c:"var(--lilac)", sub:"Мөс хайлуулах асуултууд", games:["ai","iceDeck","missions","picker"]},
 };
 const GAMES = {
   room:{name:"Хэн нь вэ?", ic:"🗳️", desc:"Олон утсаар: асуулт бүх утсан дээр зэрэг гарч, хүн бүр нууцаар санал өгнө. Хэн хэдэн санал авсан нь бүгдэд зэрэг илэрнэ.", tag:"Олон утас"},
   ai:{name:"AI Хувийн багц", ic:"✨", desc:"Нэрс, бүлгийнхээ онцлогийг бич. AI зөвхөн танай бүлэгт зориулсан 15 карт зохионо.", tag:"AI"},
+  draw:{name:"Утасны зураач", ic:"🎨", desc:"Олон утсаар: нэг нь утсан дээрээ зурж, бусад нь өөрсдийн утсан дээр шууд харж таана. Эсвэл «Гинжин зураг»: бичсэн өгүүлбэр зураг болж, зураг таамаг болж хувирна.", tag:"Шинэ"},
   whisper:{name:"Шивнээ", ic:"🤫", desc:"Нууц асуултыг ганцаараа уншаад хариулт болох хүний нэрийг чанга хэл. Тэр хүн асуултыг мэдэхийн тулд зоос шидэх үү, шийтгэл хүлээх үү?", tag:"Шинэ"},
   nandin:{name:"Нандин", ic:"🌸", desc:"Гурван үе шаттай орой: бидний эхлэл, хэлж чадаагүй үг, нүд рүү харсан 30 секундын талархал.", tag:"Шинэ"},
   spicy:{name:"Үнэн үү, Халуухан шийтгэл үү?", ic:"🔥", desc:"Халуухан асуултад хариул. Ичвэл санамсаргүй шийтгэл биелүүлнэ.", tag:"18+"},
@@ -1091,7 +1112,7 @@ async function drawAvatar(x, cx, cy, r, name, pic, ring){
   x.restore();
   try{ x.getImageData(cx,cy,1,1); }catch(e){ /* tainted: repaint as initial */ x.save(); x.beginPath(); x.arc(cx,cy,r,0,Math.PI*2); x.clip(); x.fillStyle=avColor(name); x.fillRect(cx-r,cy-r,r*2,r*2); x.restore(); }
 }
-async function shareStory({game, ic, big, line, sub, who}){
+async function shareStory({game, ic, big, line, sub, who, img}){
   try{ await document.fonts?.ready; }catch(e){}
   const W=1080, H=1920, cv=document.createElement("canvas"); cv.width=W; cv.height=H; const x=cv.getContext("2d");
   const glow=cssColor(getComputedStyle(document.documentElement).getPropertyValue("--glow").trim());
@@ -1107,9 +1128,17 @@ async function shareStory({game, ic, big, line, sub, who}){
     x.font=`160px ${B}`; x.fillText(ic, W/2, 480);
   }
   x.fillStyle="#cfc6e2"; x.font=`800 46px ${B}`; x.fillText(game.toUpperCase(), W/2, 590);
+  let pic=null; if(img){ try{ pic=await loadImg(img); }catch(e){} }
+  if(pic){
+    x.fillStyle=glow; const bs=fitFont(x, big, 700, D, 104, W-140, 50); x.font=`700 ${bs}px ${D}`; x.fillText(big, W/2, 712);
+    const ps=500, px=W/2-ps/2, py=800; x.save(); x.translate(W/2,py+ps/2); x.rotate(-.025); x.fillStyle="#fff"; x.shadowColor="rgba(0,0,0,.45)"; x.shadowBlur=40; x.beginPath(); x.roundRect(-ps/2-18,-ps/2-18,ps+36,ps+36,28); x.fill(); x.shadowBlur=0; x.drawImage(pic,-ps/2,-ps/2,ps,ps); x.restore();
+    x.fillStyle="#f4eefc"; x.font=`700 48px ${D}`; const ll=wrapLines(x, line, W-160).slice(0,2); ll.forEach((l,i)=>x.fillText(l, W/2, 1395+i*56));
+    x.fillStyle="#cfc6e2"; x.font=`600 40px ${B}`; wrapLines(x, sub||"", W-180).slice(0,1).forEach(l=>x.fillText(l, W/2, 1395+ll.length*56+18));
+  } else {
   x.fillStyle=glow; const bs=fitFont(x, big, 700, D, 260, W-140); x.font=`700 ${bs}px ${D}`; x.fillText(big, W/2, 930);
   x.fillStyle="#f4eefc"; x.font=`700 70px ${D}`; wrapLines(x, line, W-160).slice(0,3).forEach((l,i)=>x.fillText(l, W/2, 1110+i*92));
   x.fillStyle="#cfc6e2"; x.font=`600 46px ${B}`; wrapLines(x, sub||"", W-180).slice(0,2).forEach((l,i)=>x.fillText(l, W/2, 1370+i*64));
+  }
   try{ const qr=await loadImg("qr.png"); const qs=230, qx=W/2-qs/2, qy=1560; x.fillStyle="#fff"; x.beginPath(); x.roundRect(qx-14,qy-14,qs+28,qs+28,24); x.fill(); x.imageSmoothingEnabled=false; x.drawImage(qr,qx,qy,qs,qs); x.imageSmoothingEnabled=true; }catch(e){}
   x.fillStyle="#f4eefc"; x.font=`800 46px ${B}`; x.fillText("Хамтдаа", W/2, 1868);
   const blob=await new Promise(res=>cv.toBlob(res,"image/png")); if(!blob) return;
@@ -1550,9 +1579,20 @@ function roomMenu(from, presetCode){
   app.querySelectorAll("[data-lv]").forEach(b=>b.onclick=()=>{ const v=b.dataset.lv;
     const set=()=>{ roomLevel=v; app.querySelectorAll("[data-lv]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.lv===v)); };
     if(v==="hot" && !adultOk) openGate(set,{text:AGE_ROOM, onNo:()=>{}}); else set(); });
-  document.getElementById("rmJoin").onclick=()=>{ const n=getName(); if(!n) return; const c=codeIn.value; if(!/^\d{4}$/.test(c)){ msg.textContent="4 оронтой код оруул"; codeIn.focus(); return; } connectRoom(c,false,n,from||"friends"); };
+  document.getElementById("rmJoin").onclick=()=>{ const n=getName(); if(!n) return; const c=codeIn.value; if(!/^\d{4}$/.test(c)){ msg.textContent="4 оронтой код оруул"; codeIn.focus(); return; } msg.textContent="Өрөө хайж байна…"; const jb=document.getElementById("rmJoin"); jb.disabled=true;
+    detectRoomKind(c).then(k=>{ jb.disabled=false; if(k==="draw"){ nav("#/draw/"+c+"/go"); } else if(k==="vote") connectRoom(c,false,n,from||"friends"); else msg.textContent=`${c} кодтой өрөө олдсонгүй. Кодоо шалгаад дахин оролдоорой.`; }); };
   const hb=document.getElementById("rmHost"); if(hb) hb.onclick=()=>{ const n=getName(); if(!n) return; connectRoom(String(1000+Math.floor(Math.random()*9000)),true,n,from||"friends"); };
   const hl=document.getElementById("rmHostLink"); if(hl) hl.onclick=()=>nav("#/game/room/friends");
+}
+async function waitSb(){ if(!window.supabase){ await new Promise(res=>{ let n=0; const t=setInterval(()=>{ if(window.supabase||++n>30){ clearInterval(t); res(); } },100); }); } return sbClient(); }
+// peek at both room types for this code (no track), resolve "vote" | "draw" | null
+async function detectRoomKind(code){
+  const c=await waitSb(); if(!c||!navigator.onLine) return null;
+  return new Promise(res=>{ let done=false; const chs=[];
+    const fin=async k=>{ if(done) return; done=true; clearTimeout(t); await Promise.all(chs.map(ch=>Promise.resolve().then(()=>c.removeChannel(ch)).catch(()=>{}))); res(k); };
+    [["room-","vote"],["draw-","draw"]].forEach(([pre,k])=>{ const ch=c.channel(pre+code,{config:{presence:{key:"peek-"+myId}}}); chs.push(ch);
+      ch.on("presence",{event:"sync"},()=>{ const st=ch.presenceState?.()||{}; if(Object.values(st).some(a=>a&&a[0]&&a[0].host)) fin(k); }); ch.subscribe(); });
+    const t=setTimeout(()=>fin(null),4000); });
 }
 function roomError(text){
   leaveRoom();
@@ -1719,21 +1759,325 @@ function renderRoom(){
     const ag=document.getElementById("rmAgain"); if(ag) ag.onclick=()=>{ R.totals={}; R.rounds=0; R.round=null; R.result=null; R.last=null; R.view="lobby"; roomSend({t:"lobby", level:R.level}); renderRoom(); };
   }
 }
+/* ---------- Phone artist: shared canvas pad (normalized 0..1 coords) ---------- */
+const DR_COLORS=[["#1b1528","Хар"],["#e5484d","Улаан"],["#3b82f6","Цэнхэр"],["#22a55b","Ногоон"],["#f5c518","Шар"],["#ffffff","Баллуур"]];
+const DR_WIDTHS=[.008,.018,.04];
+function makePad(box, {editable=false, onBegin, onPoint, onUndo, onClear}={}){
+  box.innerHTML=`<canvas class="dpad" style="touch-action:none"></canvas>`;
+  const cv=box.querySelector("canvas"), x=cv.getContext("2d");
+  const pad={strokes:[], color:DR_COLORS[0][0], width:DR_WIDTHS[1], cv};
+  let W=0;
+  const size=()=>{ const w=Math.round(box.clientWidth||300), dpr=Math.min(2,window.devicePixelRatio||1); W=w; cv.style.width=w+"px"; cv.style.height=w+"px"; cv.width=cv.height=Math.round(w*dpr); x.setTransform(dpr,0,0,dpr,0,0); redraw(); };
+  function seg(s, from){ if(!s.pts.length) return; x.strokeStyle=s.c; x.fillStyle=s.c; x.lineWidth=Math.max(1,s.w*W); x.lineCap="round"; x.lineJoin="round";
+    if(s.pts.length===1){ const [a,b]=s.pts[0]; x.beginPath(); x.arc(a*W,b*W,x.lineWidth/2,0,Math.PI*2); x.fill(); return; }
+    x.beginPath(); const st=Math.max(0,from-1); x.moveTo(s.pts[st][0]*W,s.pts[st][1]*W); for(let i=st+1;i<s.pts.length;i++) x.lineTo(s.pts[i][0]*W,s.pts[i][1]*W); x.stroke(); }
+  function redraw(){ x.fillStyle="#fff"; x.fillRect(0,0,W,W); pad.strokes.forEach(s=>seg(s,0)); }
+  pad.redraw=redraw;
+  pad.add=(id,c,w,pts)=>{ let s=pad.strokes.find(q=>q.id===id); if(!s){ s={id,c,w,pts:[]}; pad.strokes.push(s); } const from=s.pts.length; s.pts.push(...pts); seg(s,from); };
+  pad.undo=()=>{ pad.strokes.pop(); redraw(); };
+  pad.clear=()=>{ pad.strokes=[]; redraw(); };
+  pad.load=strokes=>{ pad.strokes=strokes.map(s=>({...s,pts:[...s.pts]})); redraw(); };
+  pad.jpeg=(px=320,q=.6)=>{ const c=document.createElement("canvas"); c.width=c.height=px; const y=c.getContext("2d"); y.fillStyle="#fff"; y.fillRect(0,0,px,px);
+    pad.strokes.forEach(s=>{ y.strokeStyle=s.c; y.fillStyle=s.c; y.lineWidth=Math.max(1,s.w*px); y.lineCap="round"; y.lineJoin="round"; y.beginPath();
+      if(s.pts.length===1){ y.arc(s.pts[0][0]*px,s.pts[0][1]*px,y.lineWidth/2,0,7); y.fill(); return; } s.pts.forEach(([a,b],i)=>i?y.lineTo(a*px,b*px):y.moveTo(a*px,b*px)); y.stroke(); });
+    let out=c.toDataURL("image/jpeg",q); if(out.length>22000) out=c.toDataURL("image/jpeg",.4); return out; };
+  if(editable){
+    let cur=null;
+    const pt=e=>{ const r=cv.getBoundingClientRect(); return [Math.min(1,Math.max(0,(e.clientX-r.left)/r.width)), Math.min(1,Math.max(0,(e.clientY-r.top)/r.height))].map(v=>Math.round(v*1000)/1000); };
+    cv.addEventListener("pointerdown",e=>{ e.preventDefault(); cv.setPointerCapture?.(e.pointerId); const p=pt(e); cur={id:myId+"-"+Date.now().toString(36)+Math.random().toString(36).slice(2,5), c:pad.color, w:pad.width, pts:[]}; pad.strokes.push(cur); cur.pts.push(p); seg(cur,0); onBegin&&onBegin(cur,p); });
+    cv.addEventListener("pointermove",e=>{ if(!cur) return; e.preventDefault(); const p=pt(e), l=cur.pts[cur.pts.length-1]; if(Math.abs(p[0]-l[0])+Math.abs(p[1]-l[1])<.003) return; cur.pts.push(p); seg(cur,cur.pts.length-1); onPoint&&onPoint(cur,p); });
+    const up=()=>{ cur=null; }; cv.addEventListener("pointerup",up); cv.addEventListener("pointercancel",up); cv.addEventListener("pointerleave",up);
+    pad.doUndo=()=>{ pad.undo(); onUndo&&onUndo(); };
+    pad.doClear=()=>{ pad.clear(); onClear&&onClear(); };
+  }
+  size(); const ro=new ResizeObserver(()=>{ if(Math.round(box.clientWidth)!==W) size(); }); ro.observe(box); pad.stop=()=>ro.disconnect();
+  return pad;
+}
+function toolsHTML(){ return `<div class="dtools">${DR_COLORS.map(([c,n],i)=>`<button class="dcol${i===0?" on":""}" data-col="${c}" aria-label="${n}" style="background:${c}">${i===5?"🧽":""}</button>`).join("")}
+  <span class="dbr"></span>${DR_WIDTHS.map((w,i)=>`<button class="dw${i===1?" on":""}" data-w="${w}" aria-label="Өргөн ${i+1}"><i style="width:${6+i*6}px;height:${6+i*6}px"></i></button>`).join("")}
+  <span class="dsep"></span><button class="dbtn" data-undo aria-label="Буцаах">↩️</button><button class="dbtn" data-clear aria-label="Цэвэрлэх">🗑️</button></div>`; }
+function bindTools(pad){
+  app.querySelectorAll("[data-col]").forEach(b=>b.onclick=()=>{ pad.color=b.dataset.col; app.querySelectorAll("[data-col]").forEach(q=>q.classList.toggle("on",q===b)); });
+  app.querySelectorAll("[data-w]").forEach(b=>b.onclick=()=>{ pad.width=+b.dataset.w; app.querySelectorAll("[data-w]").forEach(q=>q.classList.toggle("on",q===b)); });
+  const u=app.querySelector("[data-undo]"), c=app.querySelector("[data-clear]"); if(u) u.onclick=()=>pad.doUndo(); if(c) c.onclick=()=>pad.doClear();
+}
+
+/* ---------- Phone artist: room ---------- */
+const DRAW_WORDS=["Бууз","Хуушуур","Түгжрэл","Зайсан","Бөх","Айраг","Морь","Утаа","Хөвсгөл","Сармагчин","Гэр","Тэмээ","Ямаа","Хонь","Үхэр","Шагай","Дээл","Гутал","Малгай","Цуйван","Банш","Чихэр","Мөс","Цасан хүн","Нар","Сар","Солонго","Бороо","Уул","Гол","Нуур","Говь","Автобус","Такси","Онгоц","Галт тэрэг","Дугуй","Утас","Компьютер","Телевиз","Хөргөгч","Шүдний сойз","Толь","Цүнх","Ном","Харандаа","Багш","Эмч","Цагдаа","Тогооч","Дуучин","Хөлбөмбөг","Сагсан бөмбөг","Шатар","Морин хуур","Наадам","Цагаан сар","Шинэ жил","Бялуу","Бэлэг","Хурим","Сургууль","Эмнэлэг","Дэлгүүр","Тоглоомын талбай","Чингис хаан","Тэрэлж","Луу","Чоно","Баавгай","Үнэг","Туулай","Загас","Бүргэд","Муур","Нохой","Мэлхий","Аалз","Зөгий","Эрвээхэй","Цэцэг","Мод","Алим","Тарвас","Пицца","Кофе","Майхан","Гал","Робот","Сүнс","Зомби","Гүнж","Шүхэр","Нүдний шил","Цаг","Түлхүүр","Лаа","Од","Сансрын хөлөг","Далай"];
+const DRAW_MODES={quick:{name:"⚡ Хурдан таах", min:2, max:10}, chain:{name:"🔗 Гинжин зураг", min:3, max:8}};
+const DRAW_SEC={draw:60, cwrite:30, cdraw:45, cguess:30};
+let dr=null, drMode="quick";
+const drawUrl = code => SITE_URL + "#/draw/" + code;
+function normWord(s){ return String(s||"").toLowerCase().replace(/ө/g,"о").replace(/ү/g,"у").replace(/ё/g,"е").replace(/[^a-zа-яё0-9]/gi,""); }
+function leaveDraw(){ if(!dr) return; const d=dr; dr=null; clearInterval(d.tick); clearInterval(d.flushT); clearTimeout(d.hostGone); clearTimeout(d.findT); clearTimeout(d.stepT); clearTimeout(d.nextT); clearInterval(d.leftT); d.pad?.stop?.();
+  try{ d.ch.untrack?.(); }catch(e){} try{ sbClient()?.removeChannel(d.ch); }catch(e){ try{ d.ch.unsubscribe(); }catch(_){} } }
+function drSend(p){ if(dr) try{ dr.ch.send({type:"broadcast", event:"msg", payload:p}); }catch(e){} }
+function drPlayers(){ if(!dr) return []; const st=dr.ch.presenceState?.()||{}, list=[];
+  Object.values(st).forEach(a=>{ const p=a&&a[0]; if(p&&p.id&&!list.some(x=>x.id===p.id)) list.push({id:p.id,name:p.name,host:!!p.host,at:p.at||0,pic:p.pic||""}); });
+  return list.sort((a,b)=>(b.host-a.host)||(a.at-b.at)); }
+const drName = id => (dr?.names?.[id]) || drPlayers().find(p=>p.id===id)?.name || "?";
+const drPic = id => drPlayers().find(p=>p.id===id)?.pic || "";
+
+function drawMenu(from, presetCode, autoJoin){
+  stopTimer(); setGlow(MOODS[from||"friends"].c);
+  const joinOnly=presetCode!=null;
+  app.innerHTML=`<section class="view">${joinOnly?topBar("home","Нүүр"):topBar("mood:"+from, MOODS[from].name)}
+    <h2 style="font-size:22px">🎨 Утасны зураач</h2>
+    <ol class="rules"><li>Нэг хүн өрөө нээж, бусад нь 4 оронтой кодоор утаснаасаа нэгдэнэ.</li><li><b>⚡ Хурдан таах:</b> ээлжээр нэг нь зурна, бусад нь утсан дээрээ бичиж таана (2–10 хүн).</li><li><b>🔗 Гинжин зураг:</b> өгүүлбэр бич → дараагийн хүн зурна → дараагийнх нь таана, төгсгөлд нь бүх гинжийг үзнэ (3–8 хүн).</li></ol>
+    <div class="panel names"><label for="drName"><b>Таны нэр</b></label><input id="drName" maxlength="16" value="${esc(myName()||(user?userName().slice(0,16):""))}" placeholder="Нэрээ бич"></div>
+    <div class="panel"><b>Өрөөнд нэгдэх</b><div class="names"><input id="drCode" class="code-in" inputmode="numeric" maxlength="4" placeholder="0000" value="${esc(presetCode||"")}" aria-label="Өрөөний код"></div><button class="btn" id="drJoin">Нэгдэх</button></div>
+    ${joinOnly?`<button class="btn ghost" id="drHostLink" style="flex:none">Эсвэл шинэ өрөө нээх</button>`:`<div class="panel"><b>Шинэ өрөө нээх</b><button class="btn ghost" id="drHost">Өрөө нээх</button></div>`}
+    <p class="note" id="drMsg" style="margin:0">Бүгд интернэттэй байх хэрэгтэй.</p></section>`;
+  const msg=document.getElementById("drMsg"), nameIn=document.getElementById("drName"), codeIn=document.getElementById("drCode");
+  const getName=()=>{ const n=nameIn.value.trim().slice(0,16); if(!n){ msg.textContent="Эхлээд нэрээ бич"; nameIn.focus(); return null; } saveMyName(n); return n; };
+  codeIn.oninput=()=>{ codeIn.value=codeIn.value.replace(/\D/g,"").slice(0,4); };
+  document.getElementById("drJoin").onclick=()=>{ const n=getName(); if(!n) return; if(!/^\d{4}$/.test(codeIn.value)){ msg.textContent="4 оронтой код оруул"; return; } connectDraw(codeIn.value,false,n,from||"friends"); };
+  const hb=document.getElementById("drHost"); if(hb) hb.onclick=()=>{ const n=getName(); if(!n) return; connectDraw(String(1000+Math.floor(Math.random()*9000)),true,n,from||"friends"); };
+  const hl=document.getElementById("drHostLink"); if(hl) hl.onclick=()=>nav("#/game/draw/friends");
+  if(autoJoin && presetCode && nameIn.value.trim()) document.getElementById("drJoin").click();
+}
+function drawError(text){ leaveDraw();
+  app.innerHTML=`<section class="view">${topBar("home","Нүүр")}<div class="ai-load"><div class="sp" style="animation:none">😕</div><h2 style="font-size:22px">${esc(text)}</h2></div><div class="row"><button class="btn" id="drBack">Дахин оролдох</button></div></section>`;
+  document.getElementById("drBack").onclick=()=>drawMenu("friends","",false); }
+async function connectDraw(code, isHost, name, from){
+  leaveDraw();
+  app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}<div class="ai-load"><div class="sp">🔌</div><h2 style="font-size:22px">Өрөөнд холбогдож байна…</h2></div></section>`;
+  if(!window.supabase){ await new Promise(res=>{ let n=0; const t=setInterval(()=>{ if(window.supabase||++n>30){ clearInterval(t); res(); } },100); }); }
+  const c=sbClient(); if(!c||!navigator.onLine){ drawError("Интернэт холболтоо шалгана уу"); return; }
+  const ch=c.channel("draw-"+code,{config:{broadcast:{self:true,ack:false},presence:{key:myId}}});
+  const D=dr={code,ch,from,host:isHost,me:{id:myId,name},mode:isHost?drMode:"quick",view:"lobby",scores:{},names:{},hostSeen:false,at:Date.now(),aiWords:[],chat:[]};
+  ch.on("broadcast",{event:"msg"},({payload})=>{ if(dr===D) onDrawMsg(payload||{}); });
+  ch.on("presence",{event:"sync"},()=>{ if(dr===D) onDrawPresence(); });
+  ch.subscribe(async status=>{
+    if(dr!==D) return;
+    if(status==="SUBSCRIBED"){
+      await ch.track({id:myId,name,host:isHost,at:D.at,pic:(user?profilePic():"")||""});
+      if(isHost){ track("draw_room_created",{mode:D.mode}); setTimeout(()=>{ if(dr!==D) return; if(drPlayers().some(p=>p.host&&p.id!==myId)){ connectDraw(String(1000+Math.floor(Math.random()*9000)),true,name,from); return; } drSend({t:"lobby",mode:D.mode}); },1200); }
+      else { track("draw_room_joined",{}); D.findT=setTimeout(()=>{ if(dr===D&&!D.hostSeen) drawError(`${code} кодтой зургийн өрөө олдсонгүй`); },5000); }
+      renderDraw();
+    } else if(status==="CHANNEL_ERROR"||status==="TIMED_OUT") drawError("Өрөөнд холбогдож чадсангүй");
+  });
+}
+function onDrawPresence(){
+  const D=dr, ps=drPlayers(); ps.forEach(p=>{ D.names[p.id]=p.name; });
+  const host=ps.find(p=>p.host);
+  if(!D.host){ if(host){ D.hostSeen=true; clearTimeout(D.hostGone); D.hostGone=null; } else if(D.hostSeen&&!D.hostGone){ D.hostGone=setTimeout(()=>{ if(dr===D&&!drPlayers().some(p=>p.host)) drawError("Хост өрөөнөөс гарлаа"); },6000); } }
+  if(D.view==="lobby") renderDraw();
+  if(D.host){
+    if(D.view==="lobby") drSend({t:"lobby",mode:D.mode});
+    else if(D.last) drSend(D.last);
+    // drawer left mid-turn -> end the turn
+    if(D.view==="q_draw" && D.turn && !ps.some(p=>p.id===D.turn.drawer)) drSend({t:"q_end",n:D.turn.n,word:"?",img:"",left:true});
+  }
+}
+function drHostSend(p){ dr.last=p; drSend(p); }
+function chipsHTML(ps){ return ps.map(p=>`<span class="chip" style="color:var(--ink);display:inline-flex;align-items:center">${avHTML(p.name,p.pic,24)}${p.host?"⭐ ":""}${esc(p.name)}${p.id===myId?" (та)":""}</span>`).join(""); }
+function scoreRows(){ const D=dr; return Object.entries(D.scores).map(([id,v])=>[drName(id),v,id]).sort((a,b)=>b[1]-a[1]); }
+
+function renderDraw(){
+  const D=dr; if(!D) return; const ps=drPlayers(), head=topBar("mood:"+D.from,"Гарах");
+  if(D.view==="lobby"){
+    const M=DRAW_MODES[D.mode];
+    if(D.host){
+      const ok=ps.length>=M.min && ps.length<=M.max;
+      app.innerHTML=`<section class="view">${head}
+        <div class="hero" style="text-align:center"><span class="eyebrow">🎨 Утасны зураач · Өрөөний код</span></div>
+        <div class="room-code">${D.code}</div>${qrImg(drawUrl(D.code))}
+        <button class="btn ghost" id="drShare" style="flex:none">🔗 Линк хуваалцах</button>
+        <div class="panel"><b>Тоглогчид (${ps.length}/${M.max})</b><div class="wh-names" style="justify-content:flex-start">${chipsHTML(ps)}</div></div>
+        <div class="panel"><b>Горим</b><div class="wh-names" style="justify-content:flex-start">${Object.entries(DRAW_MODES).map(([k,m])=>`<button class="chip" data-dm="${k}" aria-pressed="${D.mode===k}">${m.name} · ${m.min}–${m.max}</button>`).join("")}</div></div>
+        ${D.mode==="quick"?aiHelperBox("draw",{title:"Өөрийн сэдвээр үг үүсгэх", placeholder:"Жишээ: 12Б анги, Dota 2, Монгол кино", btn:"Үүсгэх"})+(D.aiWords.length?`<p class="note" style="margin:0">✨ «${esc(D.aiTopic)}» сэдвийн ${D.aiWords.length} үг ашиглана</p>`:""):""}
+        <div class="row" style="margin-top:auto;flex-direction:column"><button class="btn" id="drStart" ${ok?"":"disabled style=\"opacity:.5\""}>Эхлэх</button><p class="note" style="margin:0">${ok?"Бүгд нэгдсэн бол эхлүүл":`${M.min}–${M.max} хүн хэрэгтэй`}</p></div></section>`;
+      document.getElementById("drStart").onclick=()=>D.mode==="quick"?qStart():cStart();
+      document.getElementById("drShare").onclick=async e=>{ const url=drawUrl(D.code); try{ if(navigator.share){ await navigator.share({title:"Хамтдаа · Утасны зураач",text:`Өрөөний код: ${D.code}`,url}); return; } }catch(err){ if(err&&err.name==="AbortError") return; } try{ await navigator.clipboard.writeText(url); e.target.textContent="✓ Линк хуулагдлаа"; }catch(err){ e.target.textContent=url; } };
+      app.querySelectorAll("[data-dm]").forEach(b=>b.onclick=()=>{ D.mode=drMode=b.dataset.dm; drSend({t:"lobby",mode:D.mode}); renderDraw(); });
+      if(D.mode==="quick"){ const d=document.getElementById("ah-draw"), inp=document.getElementById("ahIn-draw"); if(D.aiOpen) d.open=true; inp.value=D.aiDraft||""; d.ontoggle=()=>{ D.aiOpen=d.open; }; inp.oninput=()=>{ D.aiDraft=inp.value; };
+        bindAiHelper("draw", topic=>({mode:"headsup_words", topic}), (items,topic)=>{ D.aiWords=items; D.aiTopic=topic; D.aiDraft=""; setTimeout(renderDraw,0); return ""; }); }
+    } else {
+      app.innerHTML=`<section class="view">${head}<div class="hero" style="text-align:center"><span class="eyebrow">🎨 Утасны зураач · Өрөө</span></div><div class="room-code">${D.code}</div>
+        <div class="panel"><b>Тоглогчид (${ps.length})</b><div class="wh-names" style="justify-content:flex-start">${chipsHTML(ps)}</div></div>
+        <p class="wait">${DRAW_MODES[D.mode].name}<br>Хост тоглоомыг эхлүүлэхийг хүлээж байна…</p></section>`;
+    }
+    return;
+  }
+  if(D.view.startsWith("q_")) return renderQuick();
+  if(D.view.startsWith("c_")) return renderChain();
+}
+
+/* --- Mode A: quick guess --- */
+function qStart(){ const D=dr, ps=drPlayers(); D.order=ps.map(p=>p.id); D.names={}; ps.forEach(p=>D.names[p.id]=p.name);
+  track("draw_game_started",{mode:"quick",players:ps.length}); D.turnIdx=-1; drSend({t:"q_begin",names:D.names}); qNextTurn(); }
+function qNextTurn(){ const D=dr; const present=new Set(drPlayers().map(p=>p.id));
+  do{ D.turnIdx++; }while(D.turnIdx<D.order.length && !present.has(D.order[D.turnIdx]));
+  if(D.turnIdx>=D.order.length) return drHostSend({t:"q_over",best:D.best||null});
+  drHostSend({t:"q_turn",n:D.turnIdx+1,total:D.order.length,drawer:D.order[D.turnIdx],bank:D.aiWords.length>=3?D.aiWords:null,names:D.names}); }
+function qWordChoices(bank){ return shuffle(bank&&bank.length>=3?bank:DRAW_WORDS).slice(0,3); }
+function onDrawMsg(m){
+  const D=dr;
+  if(m.t==="lobby"){ D.mode=m.mode||"quick"; if(D.view!=="lobby"){ D.view="lobby"; } renderDraw(); return; }
+  // ----- quick
+  if(m.t==="q_begin"){ D.scores={}; D.names=m.names||D.names; D.best=null; return; }
+  if(m.t==="q_turn"){ if(D.turn&&D.turn.n===m.n&&D.view!=="lobby") return; if(m.names) D.names=m.names; clearInterval(D.tick); clearInterval(D.flushT);
+    D.turn={n:m.n,total:m.total,drawer:m.drawer,bank:m.bank,guessed:[],word:null,len:null}; D.chat=[]; D.guessTimer=null; D.myCorrect=false; D.pad?.stop?.(); D.pad=null; D.view=m.drawer===myId?"q_choose":"q_wait"; if(m.drawer===myId) D.choices=qWordChoices(m.bank); renderDraw(); return; }
+  if(m.t==="q_start"){ if(!D.turn||m.n!==D.turn.n) return; D.turn.hint=m.hint; D.turn.left=m.dur; if(D.turn.drawer!==myId){ D.view="q_guess"; renderDraw(); } return; }
+  if(m.t==="s"){ if(D.turn&&D.turn.drawer===m.from&&m.from!==myId&&D.pad) (m.list||[]).forEach(s=>D.pad.add(s.id,s.c,s.w,s.pts)); return; }
+  if(m.t==="undo"){ if(D.turn&&m.from!==myId&&D.pad) D.pad.undo(); return; }
+  if(m.t==="clear"){ if(D.turn&&m.from!==myId&&D.pad) D.pad.clear(); return; }
+  if(m.t==="guess"){ if(!D.turn||D.turn.drawer!==myId||m.n!==D.turn.n||!D.turn.word) return; qCheckGuess(m.from,m.text); return; }
+  if(m.t==="chat"){ if(!D.turn||m.n!==D.turn.n) return; D.chat.push({who:m.who,text:m.text}); qChat(); return; }
+  if(m.t==="q_correct"){ if(!D.turn||m.n!==D.turn.n||D.turn.guessed.includes(m.who)) return; D.turn.guessed.push(m.who);
+    D.scores[m.who]=(D.scores[m.who]||0)+m.pts; D.scores[D.turn.drawer]=(D.scores[D.turn.drawer]||0)+m.dpts;
+    D.chat.push({sys:true,text:`🎉 ${drName(m.who)} зөв таалаа! +${m.pts}`}); qChat(); if(m.who===myId){ D.view="q_guess"; D.myCorrect=true; renderDraw(); } beep(990,.12,.12); buzz(30); return; }
+  if(m.t==="q_end"){ if(!D.turn||m.n!==D.turn.n||D.view==="q_end") return; clearInterval(D.tick); clearInterval(D.flushT); D.turn.word=m.word; D.turn.img=m.img; D.view="q_end";
+    if(m.img && (!D.best || D.turn.guessed.length>=D.best.g)) D.best={img:m.img, word:m.word, g:D.turn.guessed.length, by:D.turn.drawer};
+    renderDraw(); beep(660,.25,.12); if(D.host){ clearTimeout(D.nextT); D.nextT=setTimeout(()=>{ if(dr===D) qNextTurn(); },5000); } return; }
+  if(m.t==="q_over"){ if(D.view==="q_over") return; clearInterval(D.tick); D.view="q_over"; if(m.best) D.best=m.best; renderDraw(); beep(1200,.3,.15); buzz([60,40,200]); return; }
+  // ----- chain
+  if(m.t==="c_start"){ if(D.chain&&D.chain.step!=null&&D.view!=="lobby") return; D.chain={order:m.order,names:m.names,subs:{}}; D.names=m.names; return; }
+  if(m.t==="c_fill"){ if(!D.chain) return; const t=D.chain.subs[m.step]||(D.chain.subs[m.step]={}); Object.entries(m.subs||{}).forEach(([k,v])=>{ if(!(k in t)) t[k]=v; }); return; }
+  if(m.t==="c_step"){ if(!D.chain) return; if(D.chain.step===m.step) return; D.chain.step=m.step; D.chain.dur=m.dur; D.chain.done=false; D.view="c_step"; renderDraw(); return; }
+  if(m.t==="c_sub"){ if(!D.chain) return; (D.chain.subs[m.step]||(D.chain.subs[m.step]={}))[m.chain]=m.data; if(D.host) cMaybeAdvance(); const el=document.getElementById("cProg"); if(el) el.textContent=cProgText(); return; }
+  if(m.t==="c_reveal"){ if(!D.chain||(D.view==="c_reveal"&&D.chain.reveal===m.idx)) return; D.view="c_reveal"; D.chain.reveal=m.idx; renderDraw(); return; }
+  if(m.t==="c_over"){ if(D.view==="c_over"||!D.chain) return; D.view="c_over"; renderDraw(); return; }
+}
+function qTimer(sec, el, onEnd){ const D=dr; clearInterval(D.tick); let left=sec; el&&(el.textContent=left);
+  D.tick=setInterval(()=>{ if(dr!==D){ clearInterval(D.tick); return; } left--; const t=document.getElementById("qT"); if(t){ t.textContent=left; t.classList.toggle("low",left<=10); } if(left<=0){ clearInterval(D.tick); onEnd&&onEnd(); } },1000); }
+function qChat(){ const box=document.getElementById("qChat"); if(!box||!dr) return; box.innerHTML=dr.chat.slice(-5).map(c=>`<div class="${c.sys?"sys":""}">${c.sys?esc(c.text):`<b>${esc(drName(c.who))}:</b> ${esc(c.text)}`}</div>`).join(""); }
+function qCheckGuess(from, text){ const D=dr, T=D.turn; if(T.guessed.includes(from)||from===myId) return;
+  if(normWord(text)===normWord(T.word)){ const order=T.guessed.length; const pts=Math.max(20, 100-order*15) + Math.max(0, Math.round((T.left||0)/2)); drSend({t:"q_correct",n:T.n,who:from,pts,dpts:25});
+    const guessers=drPlayers().filter(p=>p.id!==myId && T.players?.includes(p.id)); if(T.guessed.length+1>=guessers.length) setTimeout(()=>qEndTurn(),600); }
+  else if(normWord(text).length) drSend({t:"chat",n:T.n,who:from,text:String(text).slice(0,40)}); }
+function qEndTurn(){ const D=dr; if(!D||!D.turn||D.view==="q_end") return; clearInterval(D.flushT); drSend({t:"q_end",n:D.turn.n,word:D.turn.word,img:D.pad&&D.pad.strokes.length?D.pad.jpeg(320,.6):""}); }
+function renderQuick(){
+  const D=dr, T=D.turn, head=topBar("mood:"+D.from,"Гарах"), drawer=drName(T?.drawer);
+  const scoreLine=()=>`<p class="who-line" style="margin:0">Ээлж ${T.n} / ${T.total} · 🎨 ${esc(drawer)}</p>`;
+  if(D.view==="q_choose"){
+    app.innerHTML=`<section class="view">${head}${scoreLine()}<div class="hero" style="text-align:center"><h1 style="font-size:26px">Чиний ээлж! Үгээ сонго</h1><p>Бусдад харуулалгүй сонго. 60 секундэд зурна.</p></div>
+      <div class="row" style="flex-direction:column">${D.choices.map(w=>`<button class="btn ghost" data-word="${esc(w)}">${esc(w)}</button>`).join("")}</div></section>`;
+    app.querySelectorAll("[data-word]").forEach(b=>b.onclick=()=>qBeginDraw(b.dataset.word)); return;
+  }
+  if(D.view==="q_wait"){ app.innerHTML=`<section class="view">${head}${scoreLine()}<div class="ai-load"><div class="sp">🎨</div><h2 style="font-size:22px">${esc(drawer)} үгээ сонгож байна…</h2></div></section>`; return; }
+  if(D.view==="q_draw"){
+    app.innerHTML=`<section class="view dview">${head}<div class="dhead"><span>Зур: <b>${esc(T.word)}</b></span><span class="dtimer" id="qT">${T.left}</span></div>
+      <div class="dbox" id="dBox"></div>${toolsHTML()}<div class="dchat" id="qChat"></div></section>`;
+    const pad=D.pad=makePad(document.getElementById("dBox"),{editable:true,
+      onBegin:(s,p)=>{ D.out.push({id:s.id,c:s.c,w:s.w,pts:[p]}); }, onPoint:(s,p)=>{ const l=D.out[D.out.length-1]; if(l&&l.id===s.id) l.pts.push(p); else D.out.push({id:s.id,c:s.c,w:s.w,pts:[p]}); },
+      onUndo:()=>{ D.out=[]; drSend({t:"undo",from:myId}); }, onClear:()=>{ D.out=[]; drSend({t:"clear",from:myId}); }});
+    pad.load(D.myStrokes||[]); bindTools(pad); qChat();
+    D.out=[]; clearInterval(D.flushT); D.flushT=setInterval(()=>{ if(D.out.length){ drSend({t:"s",from:myId,n:T.n,list:D.out}); D.out=[]; } D.myStrokes=pad.strokes; },100);
+    return;
+  }
+  if(D.view==="q_guess"){
+    app.innerHTML=`<section class="view dview">${head}<div class="dhead"><span>${esc(drawer)} зурж байна · <b class="hint">${esc(T.hint||"")}</b></span><span class="dtimer" id="qT">${T.left??DRAW_SEC.draw}</span></div>
+      <div class="dbox" id="dBox"></div><div class="dchat" id="qChat"></div>
+      ${D.myCorrect?`<p class="wait" style="margin:0">🎉 Зөв таалаа! Бусдыг хүлээж байна…</p>`:`<form class="row" id="qForm"><input class="ai-in" id="qIn" maxlength="40" placeholder="Таамгаа бич…" autocomplete="off"><button class="btn" style="flex:none">➤</button></form>`}</section>`;
+    const keep=D.pad?D.pad.strokes:[]; D.pad?.stop?.(); D.pad=makePad(document.getElementById("dBox")); D.pad.load(keep); qChat();
+    if(!D.guessTimer||D.guessTimer!==T.n){ D.guessTimer=T.n; D.myCorrect=false; qTimer(T.left??DRAW_SEC.draw); }
+    const f=document.getElementById("qForm"); if(f) f.onsubmit=e=>{ e.preventDefault(); const i=document.getElementById("qIn"); const v=i.value.trim(); if(!v) return; drSend({t:"guess",n:T.n,from:myId,text:v.slice(0,40)}); i.value=""; i.focus(); };
+    return;
+  }
+  if(D.view==="q_end"){
+    const rows=scoreRows();
+    app.innerHTML=`<section class="view">${head}${scoreLine()}<div class="hero" style="text-align:center"><span class="eyebrow">Үг байсан нь</span><h1 style="margin-top:6px">${esc(T.word||"?")}</h1><p>${T.guessed.length} хүн зөв таалаа</p></div>
+      ${T.img?`<img class="dthumb" src="${T.img}" alt="">`:""}${tallyHTML(rows)}<p class="wait" style="margin:0">Дараагийн ээлж удахгүй…</p></section>`;
+    D.pad?.stop?.(); D.pad=null; D.myStrokes=null; return;
+  }
+  if(D.view==="q_over"){
+    const rows=scoreRows(), top=rows[0]||["—",0,""];
+    app.innerHTML=`<section class="view">${head}<div class="hero" style="text-align:center"><span class="eyebrow">🎨 Шилдэг зураач, таагч</span><h1 style="margin-top:6px">👑 ${esc(top[0])}</h1><p>${top[1]} оноо</p></div>
+      ${D.best?.img?`<img class="dthumb" src="${D.best.img}" alt=""><p class="note" style="margin:0">Шилдэг зураг: «${esc(D.best.word)}» · ${esc(drName(D.best.by))}</p>`:""}
+      ${tallyHTML(rows)}<div class="row" style="margin-top:auto;flex-direction:column"><button class="btn story" id="st">📸 Story зураг хадгалах</button>${D.host?`<button class="btn" id="drAgain">Дахин тоглох</button>`:""}</div></section>`;
+    document.getElementById("st").onclick=()=>shareStory({game:"Утасны зураач", ic:"🎨", who:{name:top[0],pic:top[2]?drPic(top[2]):""}, big:top[0], line:`${top[1]} оноо`, sub:D.best?`Шилдэг зураг: «${D.best.word}»`:`${rows.length} тоглогч`, img:D.best?.img||""});
+    const ag=document.getElementById("drAgain"); if(ag) ag.onclick=()=>{ D.last=null; D.view="lobby"; D.turn=null; drSend({t:"lobby",mode:D.mode}); renderDraw(); };
+  }
+}
+function qBeginDraw(word){ const D=dr, T=D.turn; T.word=word; T.left=DRAW_SEC.draw; T.players=drPlayers().map(p=>p.id); D.myStrokes=[]; D.view="q_draw";
+  const hint=word.split("").map(ch=>ch===" "?"  ":"_").join(" ");
+  drSend({t:"q_start",n:T.n,hint,dur:DRAW_SEC.draw}); renderDraw();
+  qTimer(DRAW_SEC.draw,null,()=>qEndTurn()); const tick=D.tick;
+  // keep T.left in sync for scoring
+  const t0=Date.now(); D.leftT=setInterval(()=>{ if(dr!==D||D.view!=="q_draw"){ clearInterval(D.leftT); return; } T.left=Math.max(0,DRAW_SEC.draw-Math.round((Date.now()-t0)/1000)); },500); }
+
+/* --- Mode B: chain (write -> draw -> guess) --- */
+function cStart(){ const D=dr, ps=drPlayers().slice(0,8); const names={}; ps.forEach(p=>names[p.id]=p.name);
+  track("draw_game_started",{mode:"chain",players:ps.length});
+  D.cAdv=-1; drHostSend({t:"c_start",order:ps.map(p=>p.id),names}); cStep(0); }
+const C_STEPS=[{k:"write",dur:DRAW_SEC.cwrite},{k:"draw",dur:DRAW_SEC.cdraw},{k:"guess",dur:DRAW_SEC.cguess}];
+function cStep(step){ const D=dr; clearTimeout(D.stepT); if(step>=C_STEPS.length){ return cReveal(0); }
+  const p={t:"c_step",step,dur:C_STEPS[step].dur}; drHostSend(p); D.stepT=setTimeout(()=>{ if(dr===D) cForce(step); },(C_STEPS[step].dur+6)*1000); }
+function cForce(step){ cAdvanceFrom(step); }
+function cMaybeAdvance(){ const D=dr, C=D.chain; if(C.step==null) return; const subs=C.subs[C.step]||{}; const present=new Set(drPlayers().map(p=>p.id));
+  const need=C.order.map((id,j)=>cChainFor(j,C.step)).filter((ci,j)=>present.has(C.order[j])); if(need.every(ci=>ci in subs)) { const s=C.step; setTimeout(()=>{ if(dr===D) cAdvanceFrom(s); },400); } }
+function cAdvanceFrom(s){ const D=dr; if(!D||!D.chain||D.cAdv>=s) return; D.cAdv=s; clearTimeout(D.stepT);
+  const subs=D.chain.subs[s]||(D.chain.subs[s]={}), miss={}; D.chain.order.forEach((_,i)=>{ if(!(i in subs)) miss[i]=s===1?"":"(хоосон)"; });
+  if(Object.keys(miss).length) drSend({t:"c_fill",step:s,subs:miss}); cStep(s+1); }
+const cChainFor=(j,step)=>{ const n=dr.chain.order.length; return ((j-step)%n+n)%n; };
+function cProgText(){ const C=dr.chain, subs=C.subs[C.step]||{}; return `${Object.keys(subs).length} / ${C.order.length} бэлэн`; }
+function cSubmit(data){ const D=dr, C=D.chain; if(C.done) return; C.done=true; const j=C.order.indexOf(myId); const ci=cChainFor(j,C.step); clearInterval(D.tick);
+  drSend({t:"c_sub",step:C.step,chain:ci,from:myId,data}); renderDraw(); }
+function renderChain(){
+  const D=dr, C=D.chain, head=topBar("mood:"+D.from,"Гарах");
+  if(D.view==="c_step"){
+    const j=C.order.indexOf(myId);
+    if(j<0){ app.innerHTML=`<section class="view">${head}<div class="ai-load"><div class="sp">🔗</div><h2 style="font-size:22px">Тоглолт явагдаж байна</h2><p class="wait">Дараагийн тоглолтод нэгдэнэ.</p></div></section>`; return; }
+    const ci=cChainFor(j,C.step), prev=C.step>0?(C.subs[C.step-1]||{})[ci]:null, k=C_STEPS[C.step].k, stepN=`${C.step+1} / 3`;
+    if(C.done){ app.innerHTML=`<section class="view">${head}<p class="who-line" style="margin:0">Алхам ${stepN}</p><div class="ai-load"><div class="sp" style="animation:none">✅</div><h2 style="font-size:22px">Илгээгдлээ!</h2><p class="wait" id="cProg">${cProgText()}</p></div></section>`; return; }
+    if(k==="write"){
+      app.innerHTML=`<section class="view">${head}<div class="dhead"><span>Алхам ${stepN} · ✍️ Инээдтэй өгүүлбэр бич</span><span class="dtimer" id="qT">${C.dur}</span></div>
+        <p class="note" style="margin:0">Жишээ: «Бөх дээл өмссөн тэмээ буузны дэлгүүрт дараалалд зогсож байна»</p>
+        <textarea class="ai-in" id="cIn" maxlength="120" rows="3" placeholder="Өгүүлбэрээ бич…"></textarea><button class="btn" id="cOk" style="flex:none">Илгээх</button></section>`;
+      const send=()=>cSubmit(document.getElementById("cIn")?.value.trim()||"(хоосон)"); document.getElementById("cOk").onclick=send; qTimer(C.dur,null,send); return;
+    }
+    if(k==="draw"){
+      app.innerHTML=`<section class="view dview">${head}<div class="dhead"><span>Алхам ${stepN} · 🎨 Зур: <b>${esc(prev||"(хоосон)")}</b></span><span class="dtimer" id="qT">${C.dur}</span></div>
+        <div class="dbox" id="dBox"></div>${toolsHTML()}<button class="btn" id="cOk" style="flex:none">Илгээх</button></section>`;
+      const pad=D.pad=makePad(document.getElementById("dBox"),{editable:true}); bindTools(pad);
+      const send=()=>{ const img=pad.strokes.length?pad.jpeg(320,.6):""; pad.stop(); cSubmit(img); }; document.getElementById("cOk").onclick=send; qTimer(C.dur,null,send); return;
+    }
+    if(k==="guess"){
+      app.innerHTML=`<section class="view">${head}<div class="dhead"><span>Алхам ${stepN} · 🤔 Энэ юу вэ?</span><span class="dtimer" id="qT">${C.dur}</span></div>
+        ${prev?`<img class="dthumb" src="${prev}" alt="">`:`<p class="wait">(зураг ирээгүй)</p>`}
+        <input class="ai-in" id="cIn" maxlength="120" placeholder="Юу зурсныг бич…"><button class="btn" id="cOk" style="flex:none">Илгээх</button></section>`;
+      const send=()=>cSubmit(document.getElementById("cIn")?.value.trim()||"(хоосон)"); document.getElementById("cOk").onclick=send; qTimer(C.dur,null,send); return;
+    }
+  }
+  if(D.view==="c_reveal"){
+    const i=C.reveal, n=C.order.length, a=(C.subs[0]||{})[i], img=(C.subs[1]||{})[i], g=(C.subs[2]||{})[i];
+    const nm=k=>esc(C.names[C.order[(i+k)%n]]||"?");
+    app.innerHTML=`<section class="view">${head}<p class="who-line" style="margin:0">Гинж ${i+1} / ${n}</p>
+      <div class="panel"><span class="eyebrow">✍️ ${nm(0)} бичсэн</span><div class="wh-q" style="font-size:19px">${esc(a||"—")}</div></div>
+      <div class="panel" style="align-items:center"><span class="eyebrow">🎨 ${nm(1)} зурсан</span>${img?`<img class="dthumb" src="${img}" alt="">`:`<p class="wait">(зураггүй)</p>`}</div>
+      <div class="panel"><span class="eyebrow">🤔 ${nm(2)} таасан</span><div class="wh-q" style="font-size:19px">${esc(g||"—")}</div></div>
+      ${D.host?`<div class="row" style="margin-top:auto"><button class="btn" id="cNext">${i+1<n?"Дараагийн гинж":"Дуусгах"}</button></div>`:`<p class="wait">Хост дараагийн гинжийг нээнэ…</p>`}</section>`;
+    const nb=document.getElementById("cNext"); if(nb) nb.onclick=()=>i+1<n?cReveal(i+1):(drHostSend({t:"c_over"}));
+    beep(880,.1,.1); return;
+  }
+  if(D.view==="c_over"){
+    app.innerHTML=`<section class="view">${head}<div class="ai-load"><div class="sp" style="animation:none">🔗</div><h2 style="font-size:24px">Бүх гинж дууслаа!</h2><p class="wait">Хамгийн инээдтэйг нь Story болгож хуваалцаарай.</p></div>
+      <div class="row" style="flex-direction:column"><button class="btn story" id="st">📸 Story зураг хадгалах</button>${D.host?`<button class="btn" id="drAgain">Дахин тоглох</button>`:""}</div></section>`;
+    const n=C.order.length, pick=Math.floor(Math.random()*n); const a=(C.subs[0]||{})[pick], img=(C.subs[1]||{})[pick], g=(C.subs[2]||{})[pick];
+    document.getElementById("st").onclick=()=>shareStory({game:"Утасны зураач", ic:"🔗", big:"Гинжин зураг", line:`✍️ «${a||"…"}»`, sub:`🤔 «${g||"…"}»`, img:img||""});
+    const ag=document.getElementById("drAgain"); if(ag) ag.onclick=()=>{ D.last=null; D.view="lobby"; D.chain=null; drSend({t:"lobby",mode:D.mode}); renderDraw(); };
+  }
+}
+function cReveal(i){ drHostSend({t:"c_reveal",idx:i}); }
+
 /* ---------- Routing ---------- */
 function startGame(id, from){
-  if(DECKS[id]) deck(id,from); else if(id==="spy") spySetup(from); else if(id==="headsup") huPick(from,false); else if(id==="charades") huPick(from,true); else if(id==="bomb") bomb(from); else if(id==="missions") missions(from); else if(id==="match") match(from); else if(id==="picker") picker(from); else if(id==="shagai") shagai(from); else if(id==="wave") wave(from); else if(id==="nandin") nandin(from); else if(id==="spicy") spicy(from); else if(id==="wheel") wheel(from); else if(id==="whisper") whisper(from); else if(id==="ai") aiDeck(from); else if(id==="room") roomMenu(from); else return false;
+  if(DECKS[id]) deck(id,from); else if(id==="spy") spySetup(from); else if(id==="headsup") huPick(from,false); else if(id==="charades") huPick(from,true); else if(id==="bomb") bomb(from); else if(id==="missions") missions(from); else if(id==="match") match(from); else if(id==="picker") picker(from); else if(id==="shagai") shagai(from); else if(id==="wave") wave(from); else if(id==="nandin") nandin(from); else if(id==="spicy") spicy(from); else if(id==="wheel") wheel(from); else if(id==="whisper") whisper(from); else if(id==="ai") aiDeck(from); else if(id==="room") roomMenu(from); else if(id==="draw") drawMenu(from); else return false;
   return true;
 }
 function nav(hash){ if(location.hash===hash) route(); else location.hash=hash; }
 function route(){
   document.querySelectorAll(".touchpad,.boom").forEach(el=>el.remove());
-  gate.hidden=true; stopTimer(); leaveRoom(); aiRerender=null; closeUserMenu();
+  gate.hidden=true; stopTimer(); leaveRoom(); leaveDraw(); aiRerender=null; closeUserMenu();
   const r=location.hash.replace(/^#\/?/,"").split("/");
   try{ gtag("event","page_view",{page_title:document.title, page_location:location.href, page_path:location.pathname+location.hash}); }catch(e){}
   if(r[0]==="mood" && MOODS[r[1]]) mood(r[1]);
   else if(r[0]==="privacy") privacy();
   else if(r[0]==="guide") guide();
   else if(r[0]==="room") { roomMenu("friends", /^\d{4}$/.test(r[1]||"")?r[1]:""); track("game_start",{game_id:"room", mood:"friends"}); }
+  else if(r[0]==="draw") { const c=/^\d{4}$/.test(r[1]||"")?r[1]:""; drawMenu("friends", c, r[2]==="go"); track("game_start",{game_id:"draw", mood:"friends"}); }
   else if(r[0]==="game" && GAMES[r[1]] && MOODS[r[2]] && startGame(r[1],r[2])) track("game_start",{game_id:r[1], mood:r[2]});
   else home();
   window.scrollTo({top:0,behavior:"instant"});
