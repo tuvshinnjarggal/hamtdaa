@@ -283,6 +283,28 @@ h1,h2,h3{font-family:var(--display);font-weight:700;text-wrap:balance;margin:0;l
 .dchat .sys{color:var(--glow);font-weight:800}
 .dthumb{display:block;width:100%;max-width:300px;margin:0 auto;border-radius:14px;background:#fff;aspect-ratio:1;object-fit:contain}
 .hint{letter-spacing:.08em;font-family:monospace;font-size:15px}
+.phgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:4px}
+.phgrid div{position:relative}
+.phgrid img{display:block;width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px}
+.phgrid button{position:absolute;top:-6px;right:-6px;width:24px;height:24px;border-radius:50%;border:none;background:#e5484d;color:#fff;font-size:12px;padding:0;cursor:pointer}
+.phlist{display:flex;flex-direction:column;gap:8px}
+.phrow{display:flex;align-items:center;gap:8px}
+.phrow .nm{flex:1;font-weight:700}
+.phrow em{font-style:normal;font-size:13px;color:var(--ink-soft)}
+.phrow em.ok{color:#3ecf7a;font-weight:800}
+.phimg{display:block;max-width:100%;max-height:48vh;margin:0 auto;border-radius:16px;object-fit:contain;box-shadow:0 6px 24px rgba(0,0,0,.4);-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
+.phimg.sm{max-height:26vh}
+.phopts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.phopt{display:flex;align-items:center;gap:8px;padding:10px;border-radius:14px;border:1px solid var(--line);background:var(--night-2);color:var(--ink);font:inherit;font-weight:700;text-align:left;cursor:pointer;min-height:52px}
+.phopt .avi{flex:none}
+.phopt span:not(.avi){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.phopt:disabled{opacity:.55}
+.phopt.on{opacity:1;border-color:var(--glow);box-shadow:0 0 0 2px var(--glow)}
+.podium{display:flex;align-items:flex-end;justify-content:center;gap:10px}
+.pod{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;max-width:120px;text-align:center}
+.pod b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
+.pod .pts{font-size:12px;color:var(--ink-soft)}
+.pst{width:100%;border-radius:12px 12px 0 0;background:var(--night-2);border:1px solid var(--line);display:grid;place-items:center;font-family:var(--display);font-size:24px;color:var(--glow)}
 </style>
 
 </head>
@@ -302,13 +324,14 @@ h1,h2,h3{font-family:var(--display);font-weight:700;text-wrap:balance;margin:0;l
 <script>
 const MOODS = {
   couples:{name:"Хосуудын орой", ic:"💞", c:"var(--rose)", sub:"Дулаан, ойртуулах яриа", games:["ai","nandin","spicy","wheel","match","wave","picker"]},
-  friends:{name:"Найзуудын цугларалт", ic:"🎉", c:"var(--amber)", sub:"Инээд, өрсөлдөөн, сэжиг", games:["room","draw","ai","whisper","bomb","wave","missions","spy","headsup","shagai","picker"]},
-  family:{name:"Гэр бүл, хүүхдүүд", ic:"🏡", c:"var(--teal)", sub:"Бүх насныханд хөгжилтэй", games:["draw","shagai","bomb","charades","familyDeck","picker","ai"], desc:{picker:"Бүгд дэлгэц дээр хуруугаа тавь. Утас хэн эхлэхийг сонгох эсвэл хоёр баг болгон хуваана."}},
+  friends:{name:"Найзуудын цугларалт", ic:"🎉", c:"var(--amber)", sub:"Инээд, өрсөлдөөн, сэжиг", games:["room","draw","photo","ai","whisper","bomb","wave","missions","spy","headsup","shagai","picker"]},
+  family:{name:"Гэр бүл, хүүхдүүд", ic:"🏡", c:"var(--teal)", sub:"Бүх насныханд хөгжилтэй", games:["draw","photo","shagai","bomb","charades","familyDeck","picker","ai"], desc:{picker:"Бүгд дэлгэц дээр хуруугаа тавь. Утас хэн эхлэхийг сонгох эсвэл хоёр баг болгон хуваана."}},
   strangers:{name:"Шинэ танилууд", ic:"🤝", c:"var(--lilac)", sub:"Мөс хайлуулах асуултууд", games:["ai","iceDeck","missions","picker"]},
 };
 const GAMES = {
   room:{name:"Хэн нь вэ?", ic:"🗳️", desc:"Олон утсаар: асуулт бүх утсан дээр зэрэг гарч, хүн бүр нууцаар санал өгнө. Хэн хэдэн санал авсан нь бүгдэд зэрэг илэрнэ.", tag:"Олон утас"},
   ai:{name:"AI Хувийн багц", ic:"✨", desc:"Нэрс, бүлгийнхээ онцлогийг бич. AI зөвхөн танай бүлэгт зориулсан 15 карт зохионо.", tag:"AI"},
+  photo:{name:"Зураг таах рулет", ic:"📸", desc:"Олон утсаар: хүн бүр утаснаасаа хэдэн зураг сонгоно. Зураг бүх утсан дээр 8 секунд гарахад хэнийх болохыг хамгийн хурдан таасан нь ялна. Зураг серверт хадгалагдахгүй.", tag:"Шинэ"},
   draw:{name:"Утасны зураач", ic:"🎨", desc:"Олон утсаар: нэг нь утсан дээрээ зурж, бусад нь өөрсдийн утсан дээр шууд харж таана. Эсвэл «Гинжин зураг»: бичсэн өгүүлбэр зураг болж, зураг таамаг болж хувирна.", tag:"Шинэ"},
   whisper:{name:"Шивнээ", ic:"🤫", desc:"Нууц асуултыг ганцаараа уншаад хариулт болох хүний нэрийг чанга хэл. Тэр хүн асуултыг мэдэхийн тулд зоос шидэх үү, шийтгэл хүлээх үү?", tag:"Шинэ"},
   nandin:{name:"Нандин", ic:"🌸", desc:"Гурван үе шаттай орой: бидний эхлэл, хэлж чадаагүй үг, нүд рүү харсан 30 секундын талархал.", tag:"Шинэ"},
@@ -1580,7 +1603,7 @@ function roomMenu(from, presetCode){
     const set=()=>{ roomLevel=v; app.querySelectorAll("[data-lv]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.lv===v)); };
     if(v==="hot" && !adultOk) openGate(set,{text:AGE_ROOM, onNo:()=>{}}); else set(); });
   document.getElementById("rmJoin").onclick=()=>{ const n=getName(); if(!n) return; const c=codeIn.value; if(!/^\d{4}$/.test(c)){ msg.textContent="4 оронтой код оруул"; codeIn.focus(); return; } msg.textContent="Өрөө хайж байна…"; const jb=document.getElementById("rmJoin"); jb.disabled=true;
-    detectRoomKind(c).then(k=>{ jb.disabled=false; if(k==="draw"){ nav("#/draw/"+c+"/go"); } else if(k==="vote") connectRoom(c,false,n,from||"friends"); else msg.textContent=`${c} кодтой өрөө олдсонгүй. Кодоо шалгаад дахин оролдоорой.`; }); };
+    detectRoomKind(c).then(k=>{ jb.disabled=false; if(k==="draw"||k==="photo"){ nav("#/"+k+"/"+c+"/go"); } else if(k==="vote") connectRoom(c,false,n,from||"friends"); else msg.textContent=`${c} кодтой өрөө олдсонгүй. Кодоо шалгаад дахин оролдоорой.`; }); };
   const hb=document.getElementById("rmHost"); if(hb) hb.onclick=()=>{ const n=getName(); if(!n) return; connectRoom(String(1000+Math.floor(Math.random()*9000)),true,n,from||"friends"); };
   const hl=document.getElementById("rmHostLink"); if(hl) hl.onclick=()=>nav("#/game/room/friends");
 }
@@ -1590,7 +1613,7 @@ async function detectRoomKind(code){
   const c=await waitSb(); if(!c||!navigator.onLine) return null;
   return new Promise(res=>{ let done=false; const chs=[];
     const fin=async k=>{ if(done) return; done=true; clearTimeout(t); await Promise.all(chs.map(ch=>Promise.resolve().then(()=>c.removeChannel(ch)).catch(()=>{}))); res(k); };
-    [["room-","vote"],["draw-","draw"]].forEach(([pre,k])=>{ const ch=c.channel(pre+code,{config:{presence:{key:"peek-"+myId}}}); chs.push(ch);
+    [["room-","vote"],["draw-","draw"],["photo-","photo"]].forEach(([pre,k])=>{ const ch=c.channel(pre+code,{config:{presence:{key:"peek-"+myId}}}); chs.push(ch);
       ch.on("presence",{event:"sync"},()=>{ const st=ch.presenceState?.()||{}; if(Object.values(st).some(a=>a&&a[0]&&a[0].host)) fin(k); }); ch.subscribe(); });
     const t=setTimeout(()=>fin(null),4000); });
 }
@@ -1626,7 +1649,7 @@ function roomPlayers(raw){
   list.sort((a,b)=>(b.host-a.host)||(a.at-b.at));
   return raw?list:list.slice(0,12);
 }
-function picById(id){ const p=roomPlayers(true).find(x=>x.id===id); return p?p.pic:""; }
+function picById(id){ const p=[...roomPlayers(true),...drPlayers(),...phPlayers()].find(x=>x.id===id); return p?p.pic:""; }
 function roomSend(payload){ if(room) try{ room.ch.send({type:"broadcast", event:"msg", payload}); }catch(e){} }
 function onRoomPresence(){
   const R=room, ps=roomPlayers(), host=ps.find(p=>p.host);
@@ -2062,15 +2085,199 @@ function renderChain(){
 }
 function cReveal(i){ drHostSend({t:"c_reveal",idx:i}); }
 
+/* ---------- Photo roulette: photos live only in this phone's memory; one photo at a time is broadcast ---------- */
+const PH_MAX_PICS=5, PH_MIN_PICS=3, PH_ROUNDS=10, PH_SEC=8, PH_MIN_PLAYERS=3, PH_MAX_PLAYERS=10;
+let ph=null;
+const photoUrl = code => SITE_URL + "#/photo/" + code;
+function leavePhoto(){ if(!ph) return; const d=ph; ph=null; ["tick","endT","nextT","reqT","hostGone","findT"].forEach(k=>{ clearTimeout(d[k]); clearInterval(d[k]); });
+  d.photos=[]; d.round=null;
+  try{ d.ch.untrack?.(); }catch(e){} try{ sbClient()?.removeChannel(d.ch); }catch(e){ try{ d.ch.unsubscribe(); }catch(_){} } }
+function phSend(p){ if(ph) try{ ph.ch.send({type:"broadcast", event:"msg", payload:p}); }catch(e){} }
+function phHostSend(p){ ph.last=p; phSend(p); }
+function phPlayers(){ if(!ph) return []; const st=ph.ch.presenceState?.()||{}, list=[];
+  Object.values(st).forEach(a=>{ const p=a&&a[0]; if(p&&p.id&&!list.some(x=>x.id===p.id)) list.push({id:p.id,name:p.name,host:!!p.host,at:p.at||0,pic:p.pic||"",n:p.n||0}); });
+  return list.sort((a,b)=>(b.host-a.host)||(a.at-b.at)); }
+const phName = id => (ph?.names?.[id]) || phPlayers().find(p=>p.id===id)?.name || "?";
+const phPic = id => phPlayers().find(p=>p.id===id)?.pic || "";
+function phTrack(){ const P=ph; if(!P) return; try{ P.ch.track({id:myId, name:P.me.name, host:P.host, at:P.at, pic:(user?profilePic():"")||"", n:P.photos.length}); }catch(e){} }
+function phCompress(file){ return new Promise((res,rej)=>{ const url=URL.createObjectURL(file), im=new Image();
+  im.onload=()=>{ const s=Math.min(1,480/Math.max(im.naturalWidth,im.naturalHeight)), w=Math.max(1,Math.round(im.naturalWidth*s)), h=Math.max(1,Math.round(im.naturalHeight*s));
+    const c=document.createElement("canvas"); c.width=w; c.height=h; const x=c.getContext("2d"); x.fillStyle="#fff"; x.fillRect(0,0,w,h); x.drawImage(im,0,0,w,h); URL.revokeObjectURL(url);
+    let out=c.toDataURL("image/jpeg",.65); if(out.length>60000) out=c.toDataURL("image/jpeg",.5); res(out); };
+  im.onerror=()=>{ URL.revokeObjectURL(url); rej(new Error("img")); }; im.src=url; }); }
+
+function photoMenu(from, presetCode, autoJoin){
+  stopTimer(); setGlow(MOODS[from||"friends"].c);
+  const joinOnly=presetCode!=null;
+  app.innerHTML=`<section class="view">${joinOnly?topBar("home","Нүүр"):topBar("mood:"+from, MOODS[from].name)}
+    <h2 style="font-size:22px">📸 Зураг таах рулет</h2>
+    <ol class="rules"><li>Нэг хүн өрөө нээж, бусад нь 4 оронтой кодоор утаснаасаа нэгдэнэ (3–10 хүн).</li><li>Хүн бүр утаснаасаа 3–5 зураг сонгоно. Зургууд зөвхөн таны утсанд үлдэнэ.</li><li>Зураг бүх утсан дээр 8 секунд гарна. Хэний зураг болохыг хурдан дарж таа! Хурдан зөв таавал их оноо.</li></ol>
+    <div class="panel names"><label for="phNameIn"><b>Таны нэр</b></label><input id="phNameIn" maxlength="16" value="${esc(myName()||(user?userName().slice(0,16):""))}" placeholder="Нэрээ бич"></div>
+    <div class="panel"><b>Өрөөнд нэгдэх</b><div class="names"><input id="phCode" class="code-in" inputmode="numeric" maxlength="4" placeholder="0000" value="${esc(presetCode||"")}" aria-label="Өрөөний код"></div><button class="btn" id="phJoin">Нэгдэх</button></div>
+    ${joinOnly?`<button class="btn ghost" id="phHostLink" style="flex:none">Эсвэл шинэ өрөө нээх</button>`:`<div class="panel"><b>Шинэ өрөө нээх</b><button class="btn ghost" id="phHost">Өрөө нээх</button></div>`}
+    <p class="note" id="phMsg" style="margin:0">🔒 Зургууд серверт хадгалагдахгүй. Бүгд интернэттэй байх хэрэгтэй.</p></section>`;
+  const msg=document.getElementById("phMsg"), nameIn=document.getElementById("phNameIn"), codeIn=document.getElementById("phCode");
+  const getName=()=>{ const n=nameIn.value.trim().slice(0,16); if(!n){ msg.textContent="Эхлээд нэрээ бич"; nameIn.focus(); return null; } saveMyName(n); return n; };
+  codeIn.oninput=()=>{ codeIn.value=codeIn.value.replace(/\D/g,"").slice(0,4); };
+  document.getElementById("phJoin").onclick=()=>{ const n=getName(); if(!n) return; if(!/^\d{4}$/.test(codeIn.value)){ msg.textContent="4 оронтой код оруул"; return; } connectPhoto(codeIn.value,false,n,from||"friends"); };
+  const hb=document.getElementById("phHost"); if(hb) hb.onclick=()=>{ const n=getName(); if(!n) return; connectPhoto(String(1000+Math.floor(Math.random()*9000)),true,n,from||"friends"); };
+  const hl=document.getElementById("phHostLink"); if(hl) hl.onclick=()=>nav("#/game/photo/friends");
+  if(autoJoin && presetCode && nameIn.value.trim()) document.getElementById("phJoin").click();
+}
+function photoError(text){ leavePhoto();
+  app.innerHTML=`<section class="view">${topBar("home","Нүүр")}<div class="ai-load"><div class="sp" style="animation:none">😕</div><h2 style="font-size:22px">${esc(text)}</h2></div><div class="row"><button class="btn" id="phBack">Дахин оролдох</button></div></section>`;
+  document.getElementById("phBack").onclick=()=>photoMenu("friends","",false); }
+async function connectPhoto(code, isHost, name, from, keep){
+  leavePhoto();
+  app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}<div class="ai-load"><div class="sp">🔌</div><h2 style="font-size:22px">Өрөөнд холбогдож байна…</h2></div></section>`;
+  const c=await waitSb(); if(!c||!navigator.onLine){ photoError("Интернэт холболтоо шалгана уу"); return; }
+  const ch=c.channel("photo-"+code,{config:{broadcast:{self:true,ack:false},presence:{key:myId}}});
+  const P=ph={code,ch,from,host:isHost,me:{id:myId,name},view:"lobby",photos:keep||[],scores:{},names:{},hostSeen:false,at:Date.now(),game:null,round:null};
+  ch.on("broadcast",{event:"msg"},({payload})=>{ if(ph===P) onPhotoMsg(payload||{}); });
+  ch.on("presence",{event:"sync"},()=>{ if(ph===P) onPhotoPresence(); });
+  ch.subscribe(async status=>{
+    if(ph!==P) return;
+    if(status==="SUBSCRIBED"){
+      phTrack();
+      if(isHost){ track("photo_room_created",{}); setTimeout(()=>{ if(ph!==P) return; if(phPlayers().some(p=>p.host&&p.id!==myId)) connectPhoto(String(1000+Math.floor(Math.random()*9000)),true,name,from,P.photos); },1200); }
+      else { track("photo_room_joined",{}); P.findT=setTimeout(()=>{ if(ph===P&&!P.hostSeen) photoError(`${code} кодтой өрөө олдсонгүй`); },5000); }
+      renderPhoto();
+    } else if(status==="CHANNEL_ERROR"||status==="TIMED_OUT") photoError("Өрөөнд холбогдож чадсангүй");
+  });
+}
+function onPhotoPresence(){
+  const P=ph, ps=phPlayers(); ps.forEach(p=>{ if(!P.game) P.names[p.id]=p.name; });
+  const host=ps.find(p=>p.host);
+  if(!P.host){ if(host){ P.hostSeen=true; clearTimeout(P.hostGone); P.hostGone=null; } else if(P.hostSeen&&!P.hostGone){ P.hostGone=setTimeout(()=>{ if(ph===P&&!phPlayers().some(p=>p.host)) photoError("Хост өрөөнөөс гарлаа"); },6000); } }
+  if(P.view==="lobby") phLobbyUpdate();
+  if(P.host){
+    if(P.last && (P.last.t==="p_over"||P.last.t==="p_lobby")) phSend(P.last);
+    if(P.view==="p_show" && P.round && !P.round.ended) phMaybeEnd();
+  }
+}
+const phReady = p => p.n>=PH_MIN_PICS;
+function phPlayersHTML(){ const ps=phPlayers();
+  return `<b>Тоглогчид (${ps.length}/${PH_MAX_PLAYERS})</b><div class="phlist">${ps.map(p=>`<div class="phrow">${avHTML(p.name,p.pic,28)}<span class="nm">${p.host?"⭐ ":""}${esc(p.name)}${p.id===myId?" (та)":""}</span><em class="${phReady(p)?"ok":""}">${phReady(p)?`✓ ${p.n} зураг бэлэн`:p.n?`⏳ ${p.n}/${PH_MIN_PICS}`:"⏳ зураг сонгоогүй"}</em></div>`).join("")}</div>`; }
+function phCanStart(){ const ps=phPlayers().slice(0,PH_MAX_PLAYERS); const r=ps.filter(phReady).length;
+  if(ps.length<PH_MIN_PLAYERS) return [false,`Дор хаяж ${PH_MIN_PLAYERS} хүн хэрэгтэй`];
+  if(r<2) return [false,"Дор хаяж 2 хүн 3+ зураг бэлдэх хэрэгтэй"];
+  return [true,`${r} хүний зураг бэлэн. Бэлэн бол эхлүүл!`]; }
+function phLobbyUpdate(){ const el=document.getElementById("phPlayers"); if(!el){ renderPhoto(); return; } el.innerHTML=phPlayersHTML();
+  const b=document.getElementById("phStart"), n=document.getElementById("phStartNote"); if(b){ const [ok,t]=phCanStart(); b.disabled=!ok; b.style.opacity=ok?"":".5"; n.textContent=t; } }
+
+function renderPhoto(){
+  const P=ph; if(!P) return; const head=topBar("mood:"+P.from,"Гарах");
+  if(P.view==="lobby"){
+    const [ok,t]=phCanStart();
+    app.innerHTML=`<section class="view">${head}
+      <div class="hero" style="text-align:center"><span class="eyebrow">📸 Зураг таах рулет · Өрөөний код</span></div>
+      <div class="room-code">${P.code}</div>${P.host?qrImg(photoUrl(P.code))+`<button class="btn ghost" id="phShare" style="flex:none">🔗 Линк хуваалцах</button>`:""}
+      <div class="panel"><b>Таны зургууд (${P.photos.length}/${PH_MAX_PICS})</b>
+        ${P.photos.length?`<div class="phgrid">${P.photos.map((s,i)=>`<div><img src="${s}" alt="" draggable="false"><button data-rm="${i}" aria-label="Хасах">✕</button></div>`).join("")}</div>`:""}
+        ${P.photos.length<PH_MAX_PICS?`<label class="btn ghost" for="phFile" style="text-align:center;cursor:pointer">📷 Зураг сонгох</label><input type="file" id="phFile" accept="image/*" multiple hidden>`:""}
+        <p class="note" id="phPicMsg" style="margin:0">🔒 Зургууд серверт хадгалагдахгүй — өрөө хаагдахад шууд устана. Тоглолтын үеэр зөвхөн тухайн нэг зураг 8 секунд бусдын утсанд гарна.</p></div>
+      <div class="panel" id="phPlayers">${phPlayersHTML()}</div>
+      ${P.host?`<div class="row" style="margin-top:auto;flex-direction:column"><button class="btn" id="phStart" ${ok?"":"disabled style=\"opacity:.5\""}>Эхлэх</button><p class="note" id="phStartNote" style="margin:0">${t}</p></div>`
+        :`<p class="wait">Зургаа сонгоод хостыг хүлээгээрэй…</p>`}</section>`;
+    const f=document.getElementById("phFile"); if(f) f.onchange=async()=>{ const files=[...f.files].filter(x=>/^image\//.test(x.type)||!x.type).slice(0,PH_MAX_PICS-P.photos.length); const m=document.getElementById("phPicMsg"); if(!files.length) return;
+      if(m) m.textContent="Зураг бэлдэж байна…"; let bad=0;
+      for(const file of files){ try{ const d=await phCompress(file); if(ph!==P) return; if(P.photos.length<PH_MAX_PICS) P.photos.push(d); }catch(e){ bad++; } }
+      if(ph!==P) return; phTrack(); renderPhoto(); if(bad){ const m2=document.getElementById("phPicMsg"); if(m2) m2.textContent=`${bad} зургийг уншиж чадсангүй. Өөр зураг сонгоорой.`; } };
+    app.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{ P.photos.splice(+b.dataset.rm,1); phTrack(); renderPhoto(); });
+    const sh=document.getElementById("phShare"); if(sh) sh.onclick=async e=>{ const url=photoUrl(P.code); try{ if(navigator.share){ await navigator.share({title:"Хамтдаа · Зураг таах рулет",text:`Өрөөний код: ${P.code}`,url}); return; } }catch(err){ if(err&&err.name==="AbortError") return; } try{ await navigator.clipboard.writeText(url); e.target.textContent="✓ Линк хуулагдлаа"; }catch(err){ e.target.textContent=url; } };
+    const st=document.getElementById("phStart"); if(st) st.onclick=()=>{ if(phCanStart()[0]) phStart(); };
+    return;
+  }
+  const G=P.game, R=P.round, cnt=G&&R?`<p class="who-line" style="margin:0">Зураг ${R.r+1} / ${G.total}</p>`:"";
+  if(P.view==="p_wait"){
+    app.innerHTML=`<section class="view">${head}${cnt}<div class="ai-load"><div class="sp">📸</div><h2 style="font-size:22px">Дараагийн зураг ирж байна…</h2></div></section>`; return; }
+  if(P.view==="p_show"){
+    const mine=R.owner===myId, opts=G.players.filter(id=>id!==myId);
+    app.innerHTML=`<section class="view dview">${head}<div class="dhead"><span>Зураг ${R.r+1} / ${G.total}</span><span class="dtimer" id="phT">${PH_SEC}</span></div>
+      <img class="phimg" src="${R.img}" alt="" draggable="false">
+      ${mine?`<p class="wait" style="margin:0;font-weight:800">Чиний зураг гарч байна — чимээгүй байгаарай 🤫</p>`
+        :`<p class="who-line" style="margin:0">Хэний зураг вэ?</p><div class="phopts">${opts.map(id=>`<button class="phopt" data-who="${id}">${avHTML(phName(id),phPic(id),30)}<span>${esc(phName(id))}</span></button>`).join("")}</div>`}
+      <p class="note" id="phProg" style="margin:0"></p></section>`;
+    app.querySelectorAll("[data-who]").forEach(b=>b.onclick=()=>{ if(R.my||R.timeUp) return; R.my=b.dataset.who; const ms=Math.round(performance.now()-R.t0);
+      phSend({t:"p_guess",r:R.r,from:myId,who:R.my,ms}); app.querySelectorAll("[data-who]").forEach(x=>{ x.disabled=true; x.classList.toggle("on",x===b); }); beep(700,.06,.08); buzz(15);
+      const pg=document.getElementById("phProg"); if(pg) pg.textContent="✓ Таамаг илгээгдлээ"; });
+    clearInterval(P.tick); let left=PH_SEC; P.tick=setInterval(()=>{ if(ph!==P||P.round!==R){ clearInterval(P.tick); return; } left--; const t=document.getElementById("phT"); if(t){ t.textContent=Math.max(0,left); t.classList.toggle("low",left<=3); }
+      if(left<=3&&left>0) beep(500,.05,.06); if(left<=0){ clearInterval(P.tick); R.timeUp=true; app.querySelectorAll("[data-who]").forEach(x=>x.disabled=true); } },1000);
+    return;
+  }
+  if(P.view==="p_result"){
+    const res=R.res, fast=res.correct[0], me=res.correct.find(c=>c.id===myId), rows=Object.entries(P.scores).map(([id,v])=>[phName(id),v,id]).sort((a,b)=>b[1]-a[1]);
+    const myLine = R.owner===myId ? `🤫 Чиний зураг байлаа · ${res.correct.length} хүн таалаа` : me ? `🎉 Та зөв таалаа! +${me.pts}` : R.my ? "😅 Буруу таалаа" : "⏰ Та таамаг өгсөнгүй";
+    app.innerHTML=`<section class="view">${head}${cnt}
+      ${res.skipped?`<div class="ai-load"><div class="sp" style="animation:none">📵</div><h2 style="font-size:22px">Зураг ирсэнгүй</h2><p class="wait">${esc(phName(R.owner))} холболтоо шалгаарай</p></div>`:`<img class="phimg sm" src="${R.img}" alt="" draggable="false">
+      <div class="hero" style="text-align:center"><span class="eyebrow">📸 Зургийн эзэн</span><h1 style="margin-top:6px;display:flex;gap:10px;align-items:center;justify-content:center">${avHTML(phName(R.owner),phPic(R.owner),44)}${esc(phName(R.owner))}</h1>
+      <p style="margin:0">${fast?`⚡ Хамгийн хурдан: <b>${esc(phName(fast.id))}</b> (${(fast.ms/1000).toFixed(1)}с, +${fast.pts})`:"Хэн ч таасангүй 🙈"}</p><p style="margin:4px 0 0;font-weight:800">${myLine}</p></div>`}
+      ${tallyHTML(rows)}<p class="wait" style="margin:0">${R.r+1<G.total?"Дараагийн зураг удахгүй…":"Үр дүн гарч байна…"}</p></section>`;
+    return;
+  }
+  if(P.view==="p_over"){
+    const rows=Object.entries(P.scores).map(([id,v])=>[phName(id),v,id]).sort((a,b)=>b[1]-a[1]); while(rows.length<3) rows.push(["—",0,""]);
+    const pod=(r,place,h)=>`<div class="pod"><div>${r[2]?avHTML(r[0],phPic(r[2]),place===1?64:48):""}</div><b>${esc(r[0])}</b><span class="pts">${r[1]} оноо</span><div class="pst" style="height:${h}px">${place}</div></div>`;
+    app.innerHTML=`<section class="view">${head}<div class="hero" style="text-align:center"><span class="eyebrow">📸 Зураг таах рулет · Дууслаа</span><h1 style="margin-top:6px">👑 ${esc(rows[0][0])}</h1></div>
+      <div class="podium">${pod(rows[1],2,70)}${pod(rows[0],1,100)}${pod(rows[2],3,50)}</div>
+      ${tallyHTML(rows.filter(r=>r[2]))}
+      <p class="note" style="margin:0">🔒 Бусдын зургууд таны утаснаас устгагдсан.</p>
+      <div class="row" style="margin-top:auto;flex-direction:column"><button class="btn story" id="st">📸 Story зураг хадгалах</button>${P.host?`<button class="btn" id="phAgain">Дахин тоглох</button>`:""}</div></section>`;
+    const top=rows[0]; const rest=rows.slice(1,3).filter(r=>r[2]).map((r,i)=>`${i+2}-р: ${r[0]} (${r[1]})`).join(" · ");
+    document.getElementById("st").onclick=()=>shareStory({game:"Зураг таах рулет", ic:"📸", who:{name:top[0],pic:top[2]?phPic(top[2]):""}, big:top[0], line:`${top[1]} оноо`, sub:rest||`${Object.keys(P.scores).length} тоглогч`});
+    const ag=document.getElementById("phAgain"); if(ag) ag.onclick=()=>phHostSend({t:"p_lobby"});
+    beep(1200,.3,.15); buzz([60,40,200]);
+  }
+}
+function phStart(){
+  const P=ph, ps=phPlayers().slice(0,PH_MAX_PLAYERS), ready=ps.filter(phReady);
+  const pools=ready.map(p=>({id:p.id, idx:shuffle([...Array(Math.min(p.n,PH_MAX_PICS)).keys()])})), order=[]; let last=null;
+  while(order.length<PH_ROUNDS && pools.some(q=>q.idx.length)){
+    const cand=shuffle(pools.filter(q=>q.idx.length)).sort((a,b)=>b.idx.length-a.idx.length), q=cand.find(c=>c.id!==last)||cand[0];
+    order.push({owner:q.id, idx:q.idx.pop()}); last=q.id; }
+  const names={}; ps.forEach(p=>names[p.id]=p.name);
+  P.order=order; track("photo_game_started",{players:ps.length, rounds:order.length});
+  phHostSend({t:"p_begin", players:ps.map(p=>p.id), names, total:order.length});
+  phNext(0);
+}
+function phNext(r){ const P=ph; if(!P) return; clearTimeout(P.nextT); clearTimeout(P.reqT); clearTimeout(P.endT);
+  if(r>=P.order.length){ phHostSend({t:"p_over", scores:P.scores}); return; }
+  const o=P.order[r]; phHostSend({t:"p_req", r, owner:o.owner, idx:o.idx});
+  P.reqT=setTimeout(()=>{ if(ph===P && P.round && P.round.r===r && !P.round.img) phEndRound(r,true); },6000); }
+function phMaybeEnd(){ const P=ph, R=P.round; if(!R||R.ended||!R.img) return; const present=new Set(phPlayers().map(p=>p.id));
+  const need=P.game.players.filter(id=>id!==R.owner && present.has(id)); if(need.every(id=>R.guesses[id])) setTimeout(()=>phEndRound(R.r),300); }
+function phEndRound(r, skipped){ const P=ph, R=P&&P.round; if(!R||R.r!==r||R.ended) return; R.ended=true; clearTimeout(P.endT); clearTimeout(P.reqT);
+  const correct=Object.entries(R.guesses).filter(([id,g])=>g.who===R.owner).map(([id,g])=>({id, ms:g.ms, pts:Math.max(100,Math.min(200,Math.round(200-100*g.ms/(PH_SEC*1000))))})).sort((a,b)=>a.ms-b.ms);
+  const scores={...P.scores}; correct.forEach(c=>{ scores[c.id]=(scores[c.id]||0)+c.pts; });
+  phHostSend({t:"p_result", r, owner:R.owner, correct, scores, skipped:!!skipped});
+  P.nextT=setTimeout(()=>{ if(ph===P) phNext(r+1); }, skipped?2500:5000); }
+function onPhotoMsg(m){
+  const P=ph;
+  if(m.t==="p_lobby"){ if(P.view==="lobby") return; clearInterval(P.tick); P.view="lobby"; P.game=null; P.round=null; P.last=null; renderPhoto(); return; }
+  if(m.t==="p_begin"){ P.game={players:m.players, total:m.total}; P.names={...P.names, ...m.names}; P.scores={}; P.round=null; P.sentR=null; return; }
+  if(m.t==="p_req"){ if(!P.game||(P.round&&P.round.r>=m.r)) return; clearInterval(P.tick);
+    P.round={r:m.r, owner:m.owner, img:null, guesses:{}, my:null}; P.view="p_wait";
+    if(m.owner===myId && P.photos[m.idx] && P.sentR!==m.r){ P.sentR=m.r; phSend({t:"p_img", r:m.r, owner:myId, img:P.photos[m.idx]}); }
+    renderPhoto(); return; }
+  if(m.t==="p_img"){ const R=P.round; if(!R||m.r!==R.r||R.img||R.ended) return; R.img=m.img; R.t0=performance.now(); P.view="p_show"; renderPhoto(); beep(880,.08,.1);
+    if(P.host){ clearTimeout(P.reqT); clearTimeout(P.endT); P.endT=setTimeout(()=>{ if(ph===P) phEndRound(m.r); },(PH_SEC+1)*1000); } return; }
+  if(m.t==="p_guess"){ const R=P.round; if(!R||m.r!==R.r||R.ended||R.guesses[m.from]||m.from===R.owner) return; R.guesses[m.from]={who:m.who, ms:Math.max(0,+m.ms||0)};
+    const pg=document.getElementById("phProg"); if(pg && R.owner===myId) pg.textContent=`${Object.keys(R.guesses).length} хүн таамаглалаа`;
+    if(P.host) phMaybeEnd(); return; }
+  if(m.t==="p_result"){ const R=P.round; if(!R||m.r!==R.r||P.view==="p_result") return; clearInterval(P.tick); R.ended=true; R.res=m; P.scores=m.scores||{}; P.view="p_result"; renderPhoto();
+    const me=(m.correct||[]).some(c=>c.id===myId); if(me){ beep(990,.12,.12); buzz(30); } else beep(440,.15,.08); return; }
+  if(m.t==="p_over"){ if(P.view==="p_over"||!P.game) return; clearInterval(P.tick); P.scores=m.scores||P.scores; P.round=null; P.view="p_over"; renderPhoto(); return; }
+}
+
 /* ---------- Routing ---------- */
 function startGame(id, from){
-  if(DECKS[id]) deck(id,from); else if(id==="spy") spySetup(from); else if(id==="headsup") huPick(from,false); else if(id==="charades") huPick(from,true); else if(id==="bomb") bomb(from); else if(id==="missions") missions(from); else if(id==="match") match(from); else if(id==="picker") picker(from); else if(id==="shagai") shagai(from); else if(id==="wave") wave(from); else if(id==="nandin") nandin(from); else if(id==="spicy") spicy(from); else if(id==="wheel") wheel(from); else if(id==="whisper") whisper(from); else if(id==="ai") aiDeck(from); else if(id==="room") roomMenu(from); else if(id==="draw") drawMenu(from); else return false;
+  if(DECKS[id]) deck(id,from); else if(id==="spy") spySetup(from); else if(id==="headsup") huPick(from,false); else if(id==="charades") huPick(from,true); else if(id==="bomb") bomb(from); else if(id==="missions") missions(from); else if(id==="match") match(from); else if(id==="picker") picker(from); else if(id==="shagai") shagai(from); else if(id==="wave") wave(from); else if(id==="nandin") nandin(from); else if(id==="spicy") spicy(from); else if(id==="wheel") wheel(from); else if(id==="whisper") whisper(from); else if(id==="ai") aiDeck(from); else if(id==="room") roomMenu(from); else if(id==="draw") drawMenu(from); else if(id==="photo") photoMenu(from); else return false;
   return true;
 }
 function nav(hash){ if(location.hash===hash) route(); else location.hash=hash; }
 function route(){
   document.querySelectorAll(".touchpad,.boom").forEach(el=>el.remove());
-  gate.hidden=true; stopTimer(); leaveRoom(); leaveDraw(); aiRerender=null; closeUserMenu();
+  gate.hidden=true; stopTimer(); leaveRoom(); leaveDraw(); leavePhoto(); aiRerender=null; closeUserMenu();
   const r=location.hash.replace(/^#\/?/,"").split("/");
   try{ gtag("event","page_view",{page_title:document.title, page_location:location.href, page_path:location.pathname+location.hash}); }catch(e){}
   if(r[0]==="mood" && MOODS[r[1]]) mood(r[1]);
@@ -2078,6 +2285,7 @@ function route(){
   else if(r[0]==="guide") guide();
   else if(r[0]==="room") { roomMenu("friends", /^\d{4}$/.test(r[1]||"")?r[1]:""); track("game_start",{game_id:"room", mood:"friends"}); }
   else if(r[0]==="draw") { const c=/^\d{4}$/.test(r[1]||"")?r[1]:""; drawMenu("friends", c, r[2]==="go"); track("game_start",{game_id:"draw", mood:"friends"}); }
+  else if(r[0]==="photo") { const c=/^\d{4}$/.test(r[1]||"")?r[1]:""; photoMenu("friends", c, r[2]==="go"); track("game_start",{game_id:"photo", mood:"friends"}); }
   else if(r[0]==="game" && GAMES[r[1]] && MOODS[r[2]] && startGame(r[1],r[2])) track("game_start",{game_id:r[1], mood:r[2]});
   else home();
   window.scrollTo({top:0,behavior:"instant"});
