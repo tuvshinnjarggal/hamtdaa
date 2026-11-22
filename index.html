@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Бүртгэлгүй, нэг утсаар эсвэл 4 оронтой кодоор шууд тогло. 18+ тоглоом, зураг таах, зураач болон AI хөтөчтэй.">
 <title>Хамтдаа — Найзууд, хосууд, гэр бүлийн монгол тоглоомууд</title>
-<meta name="theme-color" content="#0A0A0C">
+<meta name="theme-color" content="#0D0D10">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Хамтдаа">
 <meta property="og:locale" content="mn_MN">
@@ -47,9 +47,12 @@ if(/^G-[A-Z0-9]+$/.test(GA_ID)){
    Brand accents: coral #FF3B5C (logo "даа", 18+, main CTA) and electric yellow #FFD60A (room codes, highlights, winners).
    Each mood swaps --glow to its own accent: couples coral, friends yellow, family green, strangers sky. */
 :root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
-  --night:#0A0A0C;
-  --night-2:#16161A;
-  --line:#26262C;
+  --night:#0D0D10;
+  --night-2:#18181D;
+  --hover:#222229;
+  --pill:#1C1C23;
+  --edge:rgba(255,255,255,.04);
+  --line:#2A2A31;
   --line-2:#3A3A44;
   --ink:#FFFFFF;
   --ink-soft:#A1A1AA;
@@ -68,12 +71,12 @@ img{max-width:100%}
 [hidden]{display:none!important}
 .view{min-height:0}
 .tr{display:flex;align-items:center;gap:10px}
-.snd{width:40px;height:40px;border-radius:999px;border:1.5px solid var(--line);display:grid;place-items:center;font-size:18px;line-height:1}
+.snd{width:40px;height:40px;border-radius:999px;border:1px solid var(--edge);display:grid;place-items:center;font-size:18px;line-height:1}
 .snd[aria-pressed="true"]{opacity:.6}
 .custom{gap:10px}
 .custom summary{cursor:pointer;font-weight:800;list-style:none}
 .custom summary::-webkit-details-marker{display:none}
-.custom textarea{width:100%;box-sizing:border-box;min-height:96px;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--night);color:var(--ink);font:inherit;resize:vertical}
+.custom textarea{width:100%;box-sizing:border-box;min-height:96px;padding:12px 14px;border-radius:12px;border:1px solid var(--edge);background:var(--night);color:var(--ink);font:inherit;resize:vertical}
 .custom textarea:focus{outline:2px solid var(--glow);border-color:transparent}
 .custom .cnt{font-size:13px;color:var(--ink-soft)}
 .btn.story{background:var(--night-2);color:var(--ink);border:1.5px solid var(--yellow)}
@@ -110,7 +113,7 @@ img{max-width:100%}
 .guide-a{font-size:16px;line-height:1.55}
 .ex-chips{display:flex;flex-wrap:wrap;gap:8px}
 .ex-chips .chip{font-size:13px;text-align:left}
-.ai-in{width:100%;box-sizing:border-box;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--night);color:var(--ink);font:inherit}
+.ai-in{width:100%;box-sizing:border-box;padding:12px 14px;border-radius:12px;border:1px solid var(--edge);background:var(--night);color:var(--ink);font:inherit}
 .ai-in:focus{outline:2px solid var(--glow);border-color:transparent}
 .wh-names{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
 .wh-names .chip{color:var(--ink);font-size:15px}
@@ -129,24 +132,25 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 .top{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:44px}
 .brand{font-family:var(--display);font-weight:800;font-size:18px;letter-spacing:-.02em;color:#fff}
 .brand b{color:var(--coral);font-weight:800}
-.back{display:inline-flex;align-items:center;gap:6px;padding:8px 12px 8px 8px;border-radius:999px;border:1.5px solid var(--line);color:var(--ink-soft);font-weight:600;font-size:14px}
+.back{display:inline-flex;align-items:center;gap:6px;padding:8px 12px 8px 8px;border-radius:999px;border:1px solid var(--edge);color:var(--ink-soft);font-weight:600;font-size:14px}
 .back:hover{color:var(--ink);border-color:var(--ink-soft)}
 .eyebrow{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-soft);font-weight:800;line-height:1.5;display:inline-block;overflow:visible;padding-top:4px;padding-bottom:2px}
 .hero h1{font-size:clamp(28px,8vw,38px)}
 .hero p{color:var(--ink-soft);margin:8px 0 0}
 .moods{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.mood{position:relative;text-align:left;padding:16px 14px 14px 18px;border-radius:16px;background:var(--night-2);border:1.5px solid var(--line);
-  display:flex;flex-direction:column;gap:6px;min-height:150px;overflow:hidden;transition:transform .12s,border-color .12s}
-.mood::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:var(--c)}
-.mood h3::after{content:"";display:block;width:22px;height:3px;border-radius:2px;background:var(--c);margin-top:8px}
-.mood:hover{transform:translateY(-1px);border-color:var(--c)}
+.mood{position:relative;text-align:left;padding:16px 14px 14px;border-radius:18px;background:var(--bg,var(--night-2));border:0;
+  display:flex;flex-direction:column;gap:6px;min-height:150px;overflow:hidden;transition:transform .12s,filter .12s}
+.mood .ic{position:absolute;right:-10px;bottom:-14px;font-size:56px!important;transform:rotate(18deg);opacity:.9}
+.mood h3{font-size:17px!important;margin-top:0!important;max-width:80%}
+.mood small{max-width:68%}
+.mood:hover{transform:translateY(-1px);filter:brightness(1.18)}
 .mood:active{transform:scale(.98)}
 .mood .ic{font-size:28px;line-height:1.5;padding-top:4px;overflow:visible}
 .mood h3{font-size:15px;margin-top:auto}
 .mood small{color:var(--ink-soft);font-size:13px;line-height:1.35}
 .note{font-size:13px;color:var(--ink-soft);text-align:center;margin-top:auto}
 .games{display:flex;flex-direction:column;gap:12px}
-.game{display:flex;gap:14px;align-items:center;text-align:left;padding:16px;border-radius:18px;background:var(--night-2);border:1.5px solid var(--line)}
+.game{display:flex;gap:14px;align-items:center;text-align:left;padding:16px;border-radius:18px;background:var(--night-2);border:1px solid var(--edge)}
 .game:hover{border-color:var(--glow)}
 .game{transition:transform .08s,border-color .08s}
 .game:active{transform:scale(.98)}
@@ -155,7 +159,7 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 .game h3{font-size:15px}
 .game p{margin:2px 0 0;color:var(--ink-soft);font-size:14px;line-height:1.35}
 .tag{display:inline-block;font-size:11px;font-weight:800;letter-spacing:.06em;padding:2px 8px;border-radius:6px;background:var(--coral);color:#fff;margin-left:6px;vertical-align:2px}
-.tabs{display:flex;gap:6px;padding:4px;border-radius:999px;background:var(--night-2);border:1.5px solid var(--line)}
+.tabs{display:flex;gap:6px;padding:4px;border-radius:999px;background:var(--night-2);border:1px solid var(--edge)}
 .tabs button{flex:1;padding:9px 6px;border-radius:999px;font-weight:800;font-size:14px;color:var(--ink-soft)}
 .tabs button[aria-selected="true"]{background:var(--glow);color:var(--glow-ink)}
 .stage{perspective:1200px;flex:1;display:flex;flex-direction:column;justify-content:center;min-height:min(340px,42dvh)}
@@ -174,14 +178,14 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 .btn:hover{transform:translateY(-1px);filter:brightness(1.06)}
 .btn:active{transform:scale(.98);filter:brightness(.95)}
 .btn:disabled{transform:none;filter:none}
-.btn.ghost{background:var(--night-2);color:var(--ink);border:1.5px solid var(--line)}
+.btn.ghost{background:var(--night-2);color:var(--ink);border:1px solid var(--edge)}
 .btn.ghost:hover{border-color:var(--line-2)}
 .btn.good{background:var(--teal);color:#062622}
 .btn.skip{background:#26262C;color:var(--ink)}
-.panel{background:var(--night-2);border:1.5px solid var(--line);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px}
+.panel{background:var(--night-2);border:1px solid var(--edge);border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:14px}
 .stepper{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .stepper .ctl{display:flex;align-items:center;gap:14px}
-.stepper button{width:44px;height:44px;border-radius:50%;border:1.5px solid var(--line);font-size:22px;font-weight:800}
+.stepper button{width:44px;height:44px;border-radius:50%;border:1px solid var(--edge);font-size:22px;font-weight:800}
 .stepper output{font-family:var(--display);font-size:22px;min-width:2ch;text-align:center;font-variant-numeric:tabular-nums}
 .rules{margin:0;padding-left:20px;color:var(--ink-soft);font-size:14px;display:flex;flex-direction:column;gap:4px}
 .reveal{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:18px;text-align:center;border-radius:26px;border:1px dashed var(--line);padding:28px 18px;min-height:min(320px,42dvh)}
@@ -192,7 +196,7 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 .timer.low{color:var(--rose)}
 .hu-word{flex:1;display:grid;place-items:center;text-align:center;font-family:var(--display);font-size:clamp(34px,11vw,54px);border-radius:26px;background:var(--ink);color:#0A0A0C;padding:24px;min-height:min(260px,36dvh);text-wrap:balance}
 .cats{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.cat{padding:16px 12px;border-radius:16px;background:var(--night-2);border:1.5px solid var(--line);font-weight:800;text-align:left;display:flex;flex-direction:column;gap:4px}
+.cat{padding:16px 12px;border-radius:16px;background:var(--night-2);border:1px solid var(--edge);font-weight:800;text-align:left;display:flex;flex-direction:column;gap:4px}
 .cat:hover{border-color:var(--glow)}
 .cat{transition:transform .08s,border-color .08s}
 .cat:active{transform:scale(.98)}
@@ -220,19 +224,19 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 @keyframes flash{from{background:#fff}}
 .names{display:flex;flex-direction:column;gap:8px}
 .names .nm{display:flex;gap:8px}
-.names input{flex:1;min-width:0;padding:12px 14px;border-radius:12px;border:1.5px solid var(--line);background:var(--night);color:var(--ink);font:inherit}
+.names input{flex:1;min-width:0;padding:12px 14px;border-radius:12px;border:1px solid var(--edge);background:var(--night);color:var(--ink);font:inherit}
 .names input:focus{outline:2px solid var(--glow);border-color:transparent}
-.names .rm{width:44px;border-radius:12px;border:1.5px solid var(--line);color:var(--ink-soft);font-size:20px}
+.names .rm{width:44px;border-radius:12px;border:1px solid var(--edge);color:var(--ink-soft);font-size:20px}
 .mission{font-family:var(--display);font-weight:500;font-size:clamp(19px,5.4vw,23px);line-height:1.4;text-wrap:balance}
 .target{display:inline-block;padding:6px 14px;border-radius:999px;background:var(--glow);color:var(--glow-ink);font-weight:800}
 .mlist{display:flex;flex-direction:column;gap:10px}
-.mitem{display:flex;gap:12px;align-items:flex-start;text-align:left;padding:14px;border-radius:16px;background:var(--night-2);border:1.5px solid var(--line)}
+.mitem{display:flex;gap:12px;align-items:flex-start;text-align:left;padding:14px;border-radius:16px;background:var(--night-2);border:1px solid var(--edge)}
 .mitem[aria-pressed="true"]{border-color:var(--teal)}
 .mitem .ck{flex:none;width:28px;height:28px;border-radius:50%;border:2px solid var(--line);display:grid;place-items:center;font-weight:800}
 .mitem[aria-pressed="true"] .ck{background:var(--teal);border-color:var(--teal);color:#062622}
 .mitem div{min-width:0}.mitem b{display:block}.mitem small{color:var(--ink-soft);font-size:14px}
 .opts{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.opt{padding:18px 12px;border-radius:16px;background:var(--night-2);border:1.5px solid var(--line);font-weight:800;font-size:16px}
+.opt{padding:18px 12px;border-radius:16px;background:var(--night-2);border:1px solid var(--edge);font-weight:800;font-size:16px}
 .opt:hover{border-color:var(--glow)}
 .opt{transition:transform .08s,border-color .08s}
 .opt:active{transform:scale(.98)}
@@ -258,7 +262,7 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 @keyframes shake{20%{transform:rotate(-12deg)}40%{transform:rotate(10deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(6deg)}}
 .verdict{text-align:center;font-family:var(--display);font-size:22px;min-height:1.4em;text-wrap:balance}
 .hist{display:flex;flex-wrap:wrap;gap:6px;justify-content:center}
-.hist span{font-size:13px;padding:3px 10px;border-radius:999px;background:var(--night-2);border:1.5px solid var(--line);color:var(--ink-soft)}
+.hist span{font-size:13px;padding:3px 10px;border-radius:999px;background:var(--night-2);border:1px solid var(--edge);color:var(--ink-soft)}
 .dial{width:100%;max-width:100%;display:block;touch-action:none}
 .dial .arc{fill:var(--night-2);stroke:var(--line);stroke-width:2}
 .dial text{fill:var(--ink-soft);font:700 13px var(--body)}
@@ -266,13 +270,13 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 .spectrum span{max-width:45%}.spectrum span:last-child{text-align:right}
 .range{width:100%;accent-color:var(--glow)}
 .pkmodes{position:absolute;left:0;right:0;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);display:flex;justify-content:center;gap:6px;padding-inline:16px;z-index:2}
-.pkmodes button{padding:10px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--night-2);font-weight:800;font-size:14px;color:var(--ink-soft)}
+.pkmodes button{padding:10px 14px;border-radius:999px;border:1px solid var(--edge);background:var(--night-2);font-weight:800;font-size:14px;color:var(--ink-soft)}
 .pkmodes button[aria-pressed="true"]{background:var(--glow);color:var(--glow-ink);border-color:var(--glow)}
 .tdcard{position:absolute;left:max(16px,env(safe-area-inset-left,0px));right:max(16px,env(safe-area-inset-right,0px));top:50%;transform:translateY(-50%);z-index:3;max-width:420px;margin:0 auto}
 .dot .lbl{position:absolute;inset:0;display:grid;place-items:center;font-family:var(--display);font-size:22px;color:var(--night)}
 .stakes{display:flex;flex-direction:column;gap:10px}
 .stakes .chips{display:flex;flex-wrap:wrap;gap:8px}
-.chip{padding:10px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--night-2);font-weight:800;font-size:14px;color:var(--ink-soft)}
+.chip{padding:10px 14px;border-radius:999px;border:1px solid var(--edge);background:var(--night-2);font-weight:800;font-size:14px;color:var(--ink-soft)}
 .chip[aria-pressed="true"]{background:var(--glow);color:var(--glow-ink);border-color:var(--glow)}
 .penalty{display:flex;flex-direction:column;gap:6px;padding:16px;border-radius:18px;background:color-mix(in srgb,var(--glow) 16%,var(--night-2));border:1px solid var(--glow);text-align:left}
 .penalty b{font-family:var(--display);font-weight:500;font-size:18px;line-height:1.35}
@@ -291,19 +295,19 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 .dview{gap:10px}
 .dhead{display:flex;justify-content:space-between;align-items:center;gap:10px;font-weight:700}
 .dhead b{color:var(--glow)}
-.dtimer{font-family:var(--display);font-size:22px;min-width:52px;text-align:center;padding:4px 10px;border-radius:12px;background:var(--night-2);border:1.5px solid var(--line)}
+.dtimer{font-family:var(--display);font-size:22px;min-width:52px;text-align:center;padding:4px 10px;border-radius:12px;background:var(--night-2);border:1px solid var(--edge)}
 .dtimer.low{color:#ff6b6b;border-color:#ff6b6b}
 .dbox{width:100%;max-width:520px;margin:0 auto;border-radius:16px;overflow:hidden;box-shadow:0 6px 24px rgba(0,0,0,.35);background:#fff;aspect-ratio:1}
 .dpad{display:block;touch-action:none;-webkit-user-select:none;user-select:none}
 .dtools{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:center}
 .dcol{width:36px;height:36px;border-radius:50%;border:2px solid var(--line);padding:0;font-size:16px;cursor:pointer}
 .dcol.on{outline:3px solid var(--glow);outline-offset:2px}
-.dw{width:36px;height:36px;border-radius:10px;border:1.5px solid var(--line);background:var(--night-2);display:grid;place-items:center;cursor:pointer;padding:0}
+.dw{width:36px;height:36px;border-radius:10px;border:1px solid var(--edge);background:var(--night-2);display:grid;place-items:center;cursor:pointer;padding:0}
 .dw i{display:block;border-radius:50%;background:var(--ink)}
 .dw.on{border-color:var(--glow);background:var(--night)}
 .dbr{flex-basis:100%;height:0}
 .dsep{width:1px;height:24px;background:var(--line)}
-.dbtn{width:44px;height:36px;border-radius:10px;border:1.5px solid var(--line);background:var(--night-2);font-size:17px;cursor:pointer;padding:0}
+.dbtn{width:44px;height:36px;border-radius:10px;border:1px solid var(--edge);background:var(--night-2);font-size:17px;cursor:pointer;padding:0}
 .dchat{display:flex;flex-direction:column;gap:2px;font-size:14px;min-height:22px;color:var(--ink-soft)}
 .dchat .sys{color:var(--glow);font-weight:800}
 .dthumb{display:block;width:100%;max-width:300px;margin:0 auto;border-radius:14px;background:#fff;aspect-ratio:1;object-fit:contain}
@@ -320,7 +324,7 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 .phimg{display:block;max-width:100%;max-height:48vh;margin:0 auto;border-radius:16px;object-fit:contain;box-shadow:0 6px 24px rgba(0,0,0,.4);-webkit-touch-callout:none;user-select:none;-webkit-user-select:none}
 .phimg.sm{max-height:26vh}
 .phopts{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.phopt{display:flex;align-items:center;gap:8px;padding:10px;border-radius:14px;border:1.5px solid var(--line);background:var(--night-2);color:var(--ink);font:inherit;font-weight:700;text-align:left;cursor:pointer;min-height:52px}
+.phopt{display:flex;align-items:center;gap:8px;padding:10px;border-radius:14px;border:1px solid var(--edge);background:var(--night-2);color:var(--ink);font:inherit;font-weight:700;text-align:left;cursor:pointer;min-height:52px}
 .phopt .avi{flex:none}
 .phopt span:not(.avi){overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .phopt:disabled{opacity:.55}
@@ -329,7 +333,38 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 .pod{display:flex;flex-direction:column;align-items:center;gap:4px;flex:1;max-width:120px;text-align:center}
 .pod b{font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%}
 .pod .pts{font-size:12px;color:var(--ink-soft)}
-.pst{width:100%;border-radius:12px 12px 0 0;background:var(--night-2);border:1.5px solid var(--line);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:24px;color:var(--yellow)}
+.pst{width:100%;border-radius:12px 12px 0 0;background:var(--night-2);border:1px solid var(--edge);display:grid;place-items:center;font-family:var(--display);font-weight:800;font-size:24px;color:var(--yellow)}
+
+/* ---- Borderless "Spotify" surfaces (overrides) ---- */
+.panel,.game,.cat,.opt,.mitem,.reveal{border-radius:18px}
+.panel,.game,.cat,.opt,.mitem{border:1px solid var(--edge)}
+.game,.cat,.opt,.mitem{transition:background .12s,transform .08s}
+.game:hover,.cat:hover,.opt:hover{background:var(--hover);border-color:var(--edge)}
+.game .ic{background:rgba(255,255,255,.06)!important;border-radius:12px}
+.btn{border-radius:999px}
+.btn.ghost,.btn.story,.btn.soft{background:var(--pill);color:var(--ink);border:0}
+.btn.ghost:hover,.btn.story:hover,.btn.soft:hover{background:var(--hover);filter:none}
+.btn.soft .spark{color:var(--yellow)}
+.btn.soft .sub{color:var(--ink-soft);font-weight:700}
+.btn.skip{background:var(--hover)}
+.chip{background:var(--pill);border:0;color:var(--ink-soft)}
+.chip:hover{background:var(--hover);color:var(--ink)}
+.chip[aria-pressed="true"]{background:var(--glow);color:var(--glow-ink)}
+.back,.snd{background:var(--pill);border:0}
+.back:hover{background:var(--hover)}
+.login{background:#FFFFFF;color:#0D0D10;border:0;padding:9px 16px}
+.login:hover{background:#E8E8EC}
+.tabs{background:var(--pill);border:0}
+.names input,.ai-in,.custom textarea{background:var(--pill);border:1px solid transparent}
+.stakes{padding:2px 0 14px;margin-bottom:2px;border-bottom:1px solid rgba(255,255,255,.06)}
+.stakes b{font-size:14px;color:var(--ink-soft);font-weight:700}
+.front{border:0}
+.reveal{border:1px dashed rgba(255,255,255,.12)}
+.tag{border-radius:999px;padding:2px 8px;font-weight:800}
+.tag.new{background:var(--coral);color:#fff}
+.tag.soft{background:rgba(255,255,255,.08);color:#D4D4D8}
+.tag.adult{background:rgba(255,59,92,.18);color:#FF5C77}
+.av{border-color:transparent}
 </style>
 
 </head>
@@ -348,26 +383,26 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 
 <script>
 const MOODS = {
-  couples:{name:"Хосуудын орой", ic:"💞", c:"var(--rose)", sub:"Дулаан, ойртуулах яриа", games:["ai","nandin","spicy","wheel","match","wave","picker"]},
-  friends:{name:"Найзуудын цугларалт", ic:"🎉", c:"var(--amber)", sub:"Инээд, өрсөлдөөн, сэжиг", games:["room","draw","photo","ai","whisper","bomb","wave","missions","spy","headsup","shagai","picker"]},
-  family:{name:"Гэр бүл, хүүхдүүд", ic:"🏡", c:"var(--teal)", sub:"Бүх насныханд хөгжилтэй", games:["draw","photo","shagai","bomb","charades","familyDeck","picker","ai"], desc:{picker:"Бүгд дэлгэц дээр хуруугаа тавь. Утас хэн эхлэхийг сонгох эсвэл хоёр баг болгон хуваана."}},
-  strangers:{name:"Шинэ танилууд", ic:"🤝", c:"var(--lilac)", sub:"Мөс хайлуулах асуултууд", games:["ai","iceDeck","missions","picker"]},
+  couples:{name:"Хосуудын орой", ic:"💞", c:"var(--rose)", bg:"#2B141B", sub:"Дулаан, ойртуулах яриа", games:["ai","nandin","spicy","wheel","match","wave","picker"]},
+  friends:{name:"Найзуудын цугларалт", ic:"🎉", c:"var(--amber)", bg:"#261F10", sub:"Инээд, өрсөлдөөн, сэжиг", games:["room","draw","photo","ai","whisper","bomb","wave","missions","spy","headsup","shagai","picker"]},
+  family:{name:"Гэр бүл, хүүхдүүд", ic:"🏡", c:"var(--teal)", bg:"#11241A", sub:"Бүх насныханд хөгжилтэй", games:["draw","photo","shagai","bomb","charades","familyDeck","picker","ai"], desc:{picker:"Бүгд дэлгэц дээр хуруугаа тавь. Утас хэн эхлэхийг сонгох эсвэл хоёр баг болгон хуваана."}},
+  strangers:{name:"Шинэ танилууд", ic:"🤝", c:"var(--lilac)", bg:"#111F2E", sub:"Мөс хайлуулах асуултууд", games:["ai","iceDeck","missions","picker"]},
 };
 const GAMES = {
-  room:{name:"Хэн нь вэ?", ic:"🗳️", desc:"Олон утсаар: асуулт бүх утсан дээр зэрэг гарч, хүн бүр нууцаар санал өгнө. Хэн хэдэн санал авсан нь бүгдэд зэрэг илэрнэ.", tag:"Олон утас"},
+  room:{name:"Хэн нь вэ?", ic:"🗳️", desc:"Олон утсаар: асуулт бүх утсан дээр зэрэг гарч, хүн бүр нууцаар санал өгнө. Хэн хэдэн санал авсан нь бүгдэд зэрэг илэрнэ.", tag:"Шинэ", tag2:"Олон утас"},
   ai:{name:"AI Хувийн багц", ic:"✨", desc:"Нэрс, бүлгийнхээ онцлогийг бич. AI зөвхөн танай бүлэгт зориулсан 15 карт зохионо.", tag:"AI"},
-  photo:{name:"Зураг таах рулет", ic:"📸", desc:"Олон утсаар: хүн бүр утаснаасаа хэдэн зураг сонгоно. Зураг бүх утсан дээр 8 секунд гарахад хэнийх болохыг хамгийн хурдан таасан нь ялна. Зураг серверт хадгалагдахгүй.", tag:"Шинэ"},
-  draw:{name:"Утасны зураач", ic:"🎨", desc:"Олон утсаар: нэг нь утсан дээрээ зурж, бусад нь өөрсдийн утсан дээр шууд харж таана. Эсвэл «Гинжин зураг»: бичсэн өгүүлбэр зураг болж, зураг таамаг болж хувирна.", tag:"Шинэ"},
-  whisper:{name:"Шивнээ", ic:"🤫", desc:"Нууц асуултыг ганцаараа уншаад хариулт болох хүний нэрийг чанга хэл. Тэр хүн асуултыг мэдэхийн тулд зоос шидэх үү, шийтгэл хүлээх үү?", tag:"Шинэ"},
-  nandin:{name:"Нандин", ic:"🌸", desc:"Гурван үе шаттай орой: бидний эхлэл, хэлж чадаагүй үг, нүд рүү харсан 30 секундын талархал.", tag:"Шинэ"},
+  photo:{name:"Зураг таах рулет", ic:"📸", desc:"Олон утсаар: хүн бүр утаснаасаа хэдэн зураг сонгоно. Зураг бүх утсан дээр 8 секунд гарахад хэнийх болохыг хамгийн хурдан таасан нь ялна. Зураг серверт хадгалагдахгүй.", tag:"Шинэ", tag2:"Олон утас"},
+  draw:{name:"Утасны зураач", ic:"🎨", desc:"Олон утсаар: нэг нь утсан дээрээ зурж, бусад нь өөрсдийн утсан дээр шууд харж таана. Эсвэл «Гинжин зураг»: бичсэн өгүүлбэр зураг болж, зураг таамаг болж хувирна.", tag:"Шинэ", tag2:"Олон утас"},
+  whisper:{name:"Шивнээ", ic:"🤫", desc:"Нууц асуултыг ганцаараа уншаад хариулт болох хүний нэрийг чанга хэл. Тэр хүн асуултыг мэдэхийн тулд зоос шидэх үү, шийтгэл хүлээх үү?"},
+  nandin:{name:"Нандин", ic:"🌸", desc:"Гурван үе шаттай орой: бидний эхлэл, хэлж чадаагүй үг, нүд рүү харсан 30 секундын талархал."},
   spicy:{name:"Үнэн үү, Халуухан шийтгэл үү?", ic:"🔥", desc:"Халуухан асуултад хариул. Ичвэл санамсаргүй шийтгэл биелүүлнэ.", tag:"18+"},
   wheel:{name:"Хайрын хүрд", ic:"🎡", desc:"Хоёр хүрд биеийн хэсэг ба үйлдлийг сонгоно, 60 секунд биелүүлнэ.", tag:"18+"},
-  picker:{name:"Хурууны рулет", ic:"🖐️", desc:"Бүгд дэлгэц дээр хуруугаа тавь. Утас нэгийг сонгох, Үнэн үү Зориг уу асуух, эсвэл баг хуваана.", tag:"Шинэ"},
-  shagai:{name:"Шагай", ic:"🦴", desc:"Утсаар шагай сэгсэрч буулга. Морь, тэмээ, хонь, ямаа аль нь буух бол?", tag:"Шинэ"},
-  wave:{name:"Нэг долгион дээр", ic:"📡", desc:"Нэг нь нууц цэгийг харж ганц үгээр санаа өгнө, бусад нь зүүг тааруулна.", tag:"Шинэ"},
-  bomb:{name:"Бөмбөг", ic:"💣", desc:"Сэдэвт тохирох үг хэлээд утсаа дамжуул. Хэзээ дэлбэрэхийг хэн ч мэдэхгүй.", tag:"Шинэ"},
-  missions:{name:"Нууц даалгавар", ic:"🕶️", desc:"Хүн бүр нууц даалгавар авна. Бүх орой баригдалгүй биелүүлж, төгсгөлд нь илчил.", tag:"Шинэ"},
-  match:{name:"Хэр сайн мэддэг вэ?", ic:"🎯", desc:"Нэг нь өөрийнхөө тухай нууцаар хариулна, нөгөө нь таана. Хэдэн хувь таарахыг үз.", tag:"Шинэ"},
+  picker:{name:"Хурууны рулет", ic:"🖐️", desc:"Бүгд дэлгэц дээр хуруугаа тавь. Утас нэгийг сонгох, Үнэн үү Зориг уу асуух, эсвэл баг хуваана."},
+  shagai:{name:"Шагай", ic:"🦴", desc:"Утсаар шагай сэгсэрч буулга. Морь, тэмээ, хонь, ямаа аль нь буух бол?"},
+  wave:{name:"Нэг долгион дээр", ic:"📡", desc:"Нэг нь нууц цэгийг харж ганц үгээр санаа өгнө, бусад нь зүүг тааруулна."},
+  bomb:{name:"Бөмбөг", ic:"💣", desc:"Сэдэвт тохирох үг хэлээд утсаа дамжуул. Хэзээ дэлбэрэхийг хэн ч мэдэхгүй."},
+  missions:{name:"Нууц даалгавар", ic:"🕶️", desc:"Хүн бүр нууц даалгавар авна. Бүх орой баригдалгүй биелүүлж, төгсгөлд нь илчил."},
+  match:{name:"Хэр сайн мэддэг вэ?", ic:"🎯", desc:"Нэг нь өөрийнхөө тухай нууцаар хариулна, нөгөө нь таана. Хэдэн хувь таарахыг үз."},
   couplesDeck:{name:"Бид хоёр", ic:"🕯️", desc:"Гурван түвшний асуулт, даалгавар. Эхнээсээ ойртох тусам гүнзгийрнэ.", tag:"18+ хэсэгтэй"},
   spy:{name:"Хэн нь тагнуул вэ?", ic:"🕵️", desc:"Бүгдэд нэг үг, тагнуулд арай өөр үг ирнэ. Ярилцаад тагнуулыг ол."},
   headsup:{name:"Толгой дээрээ", ic:"🤳", desc:"Утсаа духан дээрээ барь, найзууд чинь тайлбарлана. 60 секундэд аль болох олныг таа."},
@@ -514,7 +549,7 @@ const STAKES = {
 };
 function penalty(){ const keys=stakes.size?[...stakes]:["fun"]; const k=keys[Math.floor(Math.random()*keys.length)], L=STAKES[k].list; return {kind:STAKES[k].label, text:L[Math.floor(Math.random()*L.length)]}; }
 function penaltyHTML(title){ const p=penalty(); return `<div class="penalty"><span class="eyebrow">${esc(title||"Шийтгэл")} · ${p.kind}</span><b>${esc(p.text)}</b></div>`; }
-function stakesPanel(){ return `<div class="panel stakes"><b>Өнөөдөр ямар дүрмээр тоглох вэ?</b><div class="chips">${Object.entries(STAKES).map(([k,v])=>`<button class="chip" data-stake="${k}" aria-pressed="${stakes.has(k)}">${v.label}</button>`).join("")}</div><small style="color:var(--ink-soft)">Хожигдсон, алдсан хүн эдгээрээс санамсаргүй шийтгэл авна. Хэдийг ч сонгож болно.</small></div>`; }
+function stakesPanel(){ return `<div class="stakes"><b>Өнөөдөр ямар дүрмээр тоглох вэ?</b><div class="chips">${Object.entries(STAKES).map(([k,v])=>`<button class="chip" data-stake="${k}" aria-pressed="${stakes.has(k)}">${v.label}</button>`).join("")}</div><small style="color:var(--ink-soft)">Хожигдсон, алдсан хүн эдгээрээс санамсаргүй шийтгэл авна. Хэдийг ч сонгож болно.</small></div>`; }
 const NANDIN_STAGES = [
   {name:"Бидний эхлэл", note:"Хоорондоо хэрхэн эхэлснээ дурсаарай.", items:()=>DECKS.couplesDeck.levels[0].items.filter(q=>!q.startsWith("Даалгавар:"))},
   {name:"Хэлж чадаагүй үг", note:"Удаан бодож байгаад үнэнээ хэлээрэй.", items:()=>DECKS.couplesDeck.levels[1].items.filter(q=>!q.startsWith("Даалгавар:"))},
@@ -548,9 +583,9 @@ function home(){
   app.innerHTML = `<section class="view">
     <div class="top"><span class="brand">Хамт<b>даа</b></span><div class="tr"><span class="eyebrow">Нэг утас · олон хүн</span>${sndBtn()}${authBtn()}</div></div>
     <div class="hero"><h1>Өнөөдөр ямар орой вэ?</h1><p>Нөхцөл байдлаа сонго, бид тохирох тоглоомыг санал болгоно.</p></div>
-    <button class="btn story" data-go-hash="#/guide" style="flex:none">✨ Юу тоглох вэ? AI Хөтчөөс асуу</button>
+    <button class="btn soft" data-go-hash="#/guide" style="flex:none"><span class="spark">✨</span> Юу тоглох вэ? <span class="sub">AI Хөтчөөс асуу</span></button>
     <div class="moods">${Object.entries(MOODS).map(([k,m])=>`
-      <button class="mood" style="--c:${m.c}" data-mood="${k}"><span class="ic">${m.ic}</span><h3>${m.name}</h3><small>${m.sub}</small></button>`).join("")}
+      <button class="mood" style="--c:${m.c};--bg:${m.bg}" data-mood="${k}"><h3>${m.name}</h3><small>${m.sub}</small><span class="ic" aria-hidden="true">${m.ic}</span></button>`).join("")}
     </div>
     <button class="btn ghost" data-go-hash="#/room" style="flex:none">🔑 Өрөөнд нэгдэх</button>
     <p class="note">Бүртгэл хэрэггүй. Утсаа ширээн дээр тавиад дамжуулан тогло.</p>
@@ -558,13 +593,14 @@ function home(){
   </section>`;
 }
 /* ---------- Mood ---------- */
+function tagsHTML(G){ return [G.tag,G.tag2].filter(Boolean).map(t=>`<span class="tag ${t==="Шинэ"?"new":/18\+/.test(t)?"adult":"soft"}">${t}</span>`).join(""); }
 function mood(k){
   stopTimer(); const m = MOODS[k]; setGlow(m.c);
   app.innerHTML = `<section class="view">${topBar("home","Нүүр")}
     <div class="hero"><span class="eyebrow">${m.ic} ${m.name}</span><h1 style="margin-top:6px">Тоглоомоо сонго</h1></div>
     ${(k==="couples"||k==="friends")?stakesPanel():""}
     <div class="games">${m.games.map(g=>{const G=GAMES[g];return `
-      <button class="game" data-game="${g}" data-from="${k}"><span class="ic">${G.ic}</span><div><h3>${G.name}${G.tag?`<span class="tag">${G.tag}</span>`:""}</h3><p>${(m.desc&&m.desc[g])||G.desc}</p></div></button>`}).join("")}
+      <button class="game" data-game="${g}" data-from="${k}"><span class="ic">${G.ic}</span><div><h3>${G.name}${tagsHTML(G)}</h3><p>${(m.desc&&m.desc[g])||G.desc}</p></div></button>`}).join("")}
     </div></section>`;
   app.querySelectorAll("[data-stake]").forEach(b=>b.onclick=()=>{ const v=b.dataset.stake; stakes.has(v)?stakes.delete(v):stakes.add(v); b.setAttribute("aria-pressed",stakes.has(v)); try{sessionStorage.setItem("stakes",JSON.stringify([...stakes]))}catch(e){} });
 }
@@ -1164,9 +1200,9 @@ async function shareStory({game, ic, big, line, sub, who, img}){
   try{ await document.fonts?.ready; }catch(e){}
   const W=1080, H=1920, cv=document.createElement("canvas"); cv.width=W; cv.height=H; const x=cv.getContext("2d");
   const CORAL="#FF3B5C", YEL="#FFD60A", INK="#FFFFFF", SOFT="#A1A1AA", glow=YEL;
-  x.fillStyle="#0A0A0C"; x.fillRect(0,0,W,H);
+  x.fillStyle="#0D0D10"; x.fillRect(0,0,W,H);
   x.fillStyle=CORAL; x.fillRect(0,0,W,14);                                   // flat brand bar
-  x.strokeStyle="#26262C"; x.lineWidth=3; x.beginPath(); x.roundRect(48,240,W-96,1250,40); x.stroke();   // flat card frame
+  x.fillStyle="#18181D"; x.beginPath(); x.roundRect(48,240,W-96,1250,44); x.fill();   // flat card frame
   const D='"Manrope","Montserrat","Arial Black",sans-serif', B='"Manrope","Inter","Segoe UI",sans-serif';
   x.textAlign="center"; x.textBaseline="alphabetic";
   x.font=`800 64px ${D}`; { const w1=x.measureText("Хамт").width, w2=x.measureText("даа").width, x0=W/2-(w1+w2)/2; x.textAlign="left"; x.fillStyle=INK; x.fillText("Хамт", x0, 160); x.fillStyle=CORAL; x.fillText("даа", x0+w1, 160); x.textAlign="center"; }
