@@ -365,6 +365,23 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 .tag.soft{background:rgba(255,255,255,.08);color:#D4D4D8}
 .tag.adult{background:rgba(255,59,92,.18);color:#FF5C77}
 .av{border-color:transparent}
+
+/* Алхам 1 */
+.game > div{flex:1;min-width:0}
+.game .chev{margin-left:auto;color:var(--ink-soft);font-size:24px;line-height:1;padding-left:8px;flex:none}
+.ghead{margin:18px 2px 4px;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-soft)}
+.btn.join{background:#FFD60A;color:#0D0D10;border:0}
+.login{background:rgba(255,255,255,.10);color:#fff;border:0;padding:9px 16px}
+.linkbtn{background:none;border:0;color:var(--ink-soft);font:inherit;padding:0;cursor:pointer;text-decoration:underline;text-underline-offset:3px;opacity:.85}
+.howto{background:#18181D;border-radius:18px;padding:14px 16px;text-align:left}
+.howto > b{font-size:15px}
+.howto p{margin:6px 0 0;line-height:1.5;color:var(--ink)}
+.howmore{margin-top:8px}
+.howmore summary{cursor:pointer;color:var(--ink-soft);font-size:13px;font-weight:700}
+.howmore ol.rules{margin-top:8px}
+.tag.new{background:rgba(34,197,94,.18);color:#4ADE80}
+.tag.adult{background:#FF3B5C;color:#fff}
+.tag.soft{background:rgba(255,255,255,.08);color:#A1A1AA}
 </style>
 
 </head>
@@ -383,10 +400,10 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 
 <script>
 const MOODS = {
-  couples:{name:"Хосуудын орой", ic:"💞", c:"var(--rose)", bg:"#2B141B", sub:"Дулаан, ойртуулах яриа", games:["ai","nandin","spicy","wheel","match","wave","picker"]},
-  friends:{name:"Найзуудын цугларалт", ic:"🎉", c:"var(--amber)", bg:"#261F10", sub:"Инээд, өрсөлдөөн, сэжиг", games:["room","draw","photo","ai","whisper","bomb","wave","missions","spy","headsup","shagai","picker"]},
-  family:{name:"Гэр бүл, хүүхдүүд", ic:"🏡", c:"var(--teal)", bg:"#11241A", sub:"Бүх насныханд хөгжилтэй", games:["draw","photo","shagai","bomb","charades","familyDeck","picker","ai"], desc:{picker:"Бүгд дэлгэц дээр хуруугаа тавь. Утас хэн эхлэхийг сонгох эсвэл хоёр баг болгон хуваана."}},
-  strangers:{name:"Шинэ танилууд", ic:"🤝", c:"var(--lilac)", bg:"#111F2E", sub:"Мөс хайлуулах асуултууд", games:["ai","iceDeck","missions","picker"]},
+  couples:{name:"Хосуудын орой", ic:"💞", c:"var(--rose)", bg:"#2B141B", sub:"Дулаан, ойртуулах яриа", games:["nandin","spicy","wheel","match","wave","picker"], desc:{wave:"Нэг нь нууц цэгийг хараад ганц үгээр санаа өгнө, нөгөө нь зүүг тааруулна. Хэр нэг долгион дээр байгаагаа шалгаарай.", picker:"Хоёулаа дэлгэц дээр хуруугаа тавь. Утас хэн нь эхлэхийг сонгох эсвэл Үнэн үү, Зориг уу асууна."}},
+  friends:{name:"Найзуудын цугларалт", ic:"🎉", c:"var(--amber)", bg:"#261F10", sub:"Инээд, өрсөлдөөн, сэжиг", games:["room","photo","draw","whisper","bomb","spy","headsup","missions","wave","shagai","picker"], groups:[["Олон утсаар · Өрөөний код",["room","photo","draw"]],["Нэг утсаар дамжуулах",["whisper","bomb","spy","headsup","missions","wave","shagai","picker"]]]},
+  family:{name:"Гэр бүл, хүүхдүүд", ic:"🏡", c:"var(--teal)", bg:"#11241A", sub:"Бүх насныханд хөгжилтэй", games:["draw","photo","shagai","bomb","charades","familyDeck","picker"], groups:[["Олон утсаар · Өрөөний код",["draw","photo"]],["Нэг утсаар дамжуулах",["shagai","bomb","charades","familyDeck","picker"]]], desc:{picker:"Бүгд дэлгэц дээр хуруугаа тавь. Утас хэн эхлэхийг сонгох эсвэл хоёр баг болгон хуваана."}},
+  strangers:{name:"Шинэ танилууд", ic:"🤝", c:"var(--lilac)", bg:"#111F2E", sub:"Мөс хайлуулах асуултууд", games:["iceDeck","missions","picker"]},
 };
 const GAMES = {
   room:{name:"Хэн нь вэ?", ic:"🗳️", desc:"Олон утсаар: асуулт бүх утсан дээр зэрэг гарч, хүн бүр нууцаар санал өгнө. Хэн хэдэн санал авсан нь бүгдэд зэрэг илэрнэ.", tag:"Шинэ", tag2:"Олон утас"},
@@ -547,7 +564,7 @@ const STAKES = {
   romance:{label:"💋 Романтик / Үнсэлт", list:["Хамтрагчийнхаа хацар дээр үнс.","Хамтрагчаа 10 секунд чанга тэврэ.","Хамтрагчийнхаа гарыг үнс.","Хамтрагчийнхаа чихэнд сайхан үг шивнэ.","Хамтрагчийнхаа духан дээр үнс.","Хамтрагчдаа 3 магтаал хэл."]},
   fun:{label:"😂 Хөгжилтэй даалгавар", list:["Нэг дуу чангаар дуул.","10 удаа суугаад бос.","Тахианы бүжиг бүжиглэ.","Нэг амьтан дуурай.","Дараагийн тойрог хүртэл зөвхөн шивнэж ярь.","Хамгийн инээдтэй царайгаа гарга, бусад нь зураг авна."]},
 };
-function penalty(){ const keys=stakes.size?[...stakes]:["fun"]; const k=keys[Math.floor(Math.random()*keys.length)], L=STAKES[k].list; return {kind:STAKES[k].label, text:L[Math.floor(Math.random()*L.length)]}; }
+function penalty(){ const keys=stakes.size?[...stakes]:["fun"]; const k=keys[Math.floor(Math.random()*keys.length)], L=forFrom(STAKES[k].list); return {kind:STAKES[k].label, text:pickFresh("pen:"+k+(curFrom==="couples"?":2":""), L)}; }
 function penaltyHTML(title){ const p=penalty(); return `<div class="penalty"><span class="eyebrow">${esc(title||"Шийтгэл")} · ${p.kind}</span><b>${esc(p.text)}</b></div>`; }
 function stakesPanel(){ return `<div class="stakes"><b>Өнөөдөр ямар дүрмээр тоглох вэ?</b><div class="chips">${Object.entries(STAKES).map(([k,v])=>`<button class="chip" data-stake="${k}" aria-pressed="${stakes.has(k)}">${v.label}</button>`).join("")}</div><small style="color:var(--ink-soft)">Хожигдсон, алдсан хүн эдгээрээс санамсаргүй шийтгэл авна. Хэдийг ч сонгож болно.</small></div>`; }
 const NANDIN_STAGES = [
@@ -568,6 +585,26 @@ const WHEEL = {
 const app = document.getElementById("app");
 let timerId = null;
 const shuffle = a => { a=[...a]; for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]]} return a; };
+/* No-repeat memory: shown cards are remembered per deck in localStorage ("seen:<key>" = text hashes). Unseen cards always come first;
+   once every card of a deck has been seen the memory for that deck resets and it starts over freshly shuffled. */
+const hk = v => { const t=typeof v==="string"?v:JSON.stringify(v); let h=5381; for(let i=0;i<t.length;i++) h=((h*33)^t.charCodeAt(i))>>>0; return h.toString(36); };
+function seenGet(k){ try{ return new Set(JSON.parse(localStorage.getItem("seen:"+k)||"[]")); }catch(e){ return new Set(); } }
+function seenSave(k,set){ try{ localStorage.setItem("seen:"+k, JSON.stringify([...set].slice(-800))); }catch(e){} }
+function markSeen(k,v){ if(v==null) return; const st=seenGet(k); st.add(hk(v)); seenSave(k,st); }
+function freshOrder(k,arr){ const st=seenGet(k), un=arr.filter(v=>!st.has(hk(v))); if(!un.length){ seenSave(k,new Set()); return shuffle(arr); } return shuffle(un).concat(shuffle(arr.filter(v=>st.has(hk(v))))); }
+function pickFresh(k,arr){ const v=freshOrder(k,arr)[0]; markSeen(k,v); return v; }
+function clearSeen(){ try{ Object.keys(localStorage).filter(k=>k.startsWith("seen:")).forEach(k=>localStorage.removeItem(k)); }catch(e){} }
+/* "Who is here?" filter for Шивнээ / Хэн нь вэ?: level "couple" = the normal questions minus romance/crush ones. */
+const ROMANCE_RE=/краш|үнс|үерх|хайр|болзо|сэтгэлтэй|дурлад|дуртай хүн|романт|тэвэр|экс|хуучин найз|таалагд|гэрлэ|хурим|нууц сонирхол|татагд|секси|үзэсгэлэн|царайлаг|ээждээ танилцуул|арал дээр|хамт унт|орондоо/i;
+const levelPool = (src, lv) => lv==="couple" ? src.fun.filter(q=>!ROMANCE_RE.test(q)) : (src[lv]||src.fun);
+const aiLevel4 = lv => lv==="hot" ? "hot" : "fun";
+const aiCtx4 = (ctx, lv) => lv==="couple" ? (ctx+" Бүлэгт хостой хүмүүс байгаа тул романтик, краш, үнсэлт, үерхлийн асуулт битгий бич.").trim() : ctx;
+const GROUP_LV = [["fun","😄 Зүгээр найзууд"],["couple","💑 Хостой хүмүүс байгаа"],["hot","😈 Задгай 18+"]];
+const groupChips = cur => GROUP_LV.map(([v,l])=>`<button class="chip" data-lv="${v}" aria-pressed="${cur===v}">${l}</button>`).join("");
+/* Couples evening = exactly two people: drop group-only lines from shared pools. */
+const GROUP_ONLY_RE=/бусад|баг\b|багаа|бүгд|хүн бүр|хүмүүс|баруун талын|зүүн талын|хамгийн ойр|энд байгаа/i;
+let curFrom="friends";
+const forFrom = arr => curFrom==="couples" ? (arr.filter(t=>!GROUP_ONLY_RE.test(t)).length ? arr.filter(t=>!GROUP_ONLY_RE.test(t)) : arr) : arr;
 const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function setGlow(c){ document.documentElement.style.setProperty("--glow", c || "var(--amber)"); }
 function stopTimer(){ if(timerId){clearInterval(timerId); timerId=null;} }
@@ -587,21 +624,23 @@ function home(){
     <div class="moods">${Object.entries(MOODS).map(([k,m])=>`
       <button class="mood" style="--c:${m.c};--bg:${m.bg}" data-mood="${k}"><h3>${m.name}</h3><small>${m.sub}</small><span class="ic" aria-hidden="true">${m.ic}</span></button>`).join("")}
     </div>
-    <button class="btn ghost" data-go-hash="#/room" style="flex:none">🔑 Өрөөнд нэгдэх</button>
+    <button class="btn join" data-go-hash="#/room" style="flex:none">🔑 Өрөөнд нэгдэх</button>
     <p class="note">Бүртгэл хэрэггүй. Утсаа ширээн дээр тавиад дамжуулан тогло.</p>
-    <div class="foot-links"><a href="#/privacy">Нууцлалын бодлого</a></div>
+    <div class="foot-links"><a href="#/privacy">Нууцлалын бодлого</a><button class="linkbtn" id="clrSeen">↺ Асуултын түүх цэвэрлэх</button></div>
   </section>`;
+  document.getElementById("clrSeen").onclick=e=>{ clearSeen(); e.target.textContent="✓ Түүх цэвэрлэгдлээ. Асуултууд дахин эхнээс гарна."; };
 }
 /* ---------- Mood ---------- */
 function tagsHTML(G){ return [G.tag,G.tag2].filter(Boolean).map(t=>`<span class="tag ${t==="Шинэ"?"new":/18\+/.test(t)?"adult":"soft"}">${t}</span>`).join(""); }
 function mood(k){
+  curFrom=k;
   stopTimer(); const m = MOODS[k]; setGlow(m.c);
   app.innerHTML = `<section class="view">${topBar("home","Нүүр")}
     <div class="hero"><span class="eyebrow">${m.ic} ${m.name}</span><h1 style="margin-top:6px">Тоглоомоо сонго</h1></div>
     ${(k==="couples"||k==="friends")?stakesPanel():""}
-    <div class="games">${m.games.map(g=>{const G=GAMES[g];return `
-      <button class="game" data-game="${g}" data-from="${k}"><span class="ic">${G.ic}</span><div><h3>${G.name}${tagsHTML(G)}</h3><p>${(m.desc&&m.desc[g])||G.desc}</p></div></button>`}).join("")}
-    </div></section>`;
+    ${(m.groups||[[null,m.games]]).map(([title,ids])=>`${title?`<h4 class="ghead">${title}</h4>`:""}<div class="games">${ids.map(g=>{const G=GAMES[g];return `
+      <button class="game" data-game="${g}" data-from="${k}"><span class="ic">${G.ic}</span><div><h3>${G.name}${tagsHTML(G)}</h3><p>${(m.desc&&m.desc[g])||G.desc}</p></div><span class="chev" aria-hidden="true">›</span></button>`}).join("")}
+    </div>`).join("")}</section>`;
   app.querySelectorAll("[data-stake]").forEach(b=>b.onclick=()=>{ const v=b.dataset.stake; stakes.has(v)?stakes.delete(v):stakes.add(v); b.setAttribute("aria-pressed",stakes.has(v)); try{sessionStorage.setItem("stakes",JSON.stringify([...stakes]))}catch(e){} });
 }
 /* ---------- Question decks ---------- */
@@ -610,12 +649,12 @@ function deck(id, from, levelIdx=0){
   stopTimer(); setGlow(MOODS[from].c);
   const D = DECKS[id], L = D.levels[levelIdx];
   if(L.adult && !adultOk){ openGate(()=>deck(id,from,levelIdx)); return; }
-  deckState = {id, from, levelIdx, order:shuffle(L.items.concat(CUSTOM[id]||[])), i:0};
+  deckState = {id, from, levelIdx, order:freshOrder("deck:"+id+":"+levelIdx, L.items).concat(CUSTOM[id]||[]), i:0};
   renderDeck();
 }
 function renderDeck(){
   const {id,from,levelIdx,order,i} = deckState; const D=DECKS[id], L=D.levels[levelIdx], G=GAMES[id];
-  const q = order[i], isTask = q.startsWith("Даалгавар:");
+  const q = order[i], isTask = q.startsWith("Даалгавар:"); markSeen("deck:"+id+":"+levelIdx, q);
   app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
     <h2 style="font-size:22px">${G.ic} ${G.name}</h2>
     ${D.levels.length>1?`<div class="tabs" role="tablist">${D.levels.map((l,n)=>`<button role="tab" aria-selected="${n===levelIdx}" data-level="${n}">${l.name}</button>`).join("")}</div>`:""}
@@ -633,7 +672,7 @@ function renderDeck(){
   const flip = () => { card.classList.toggle("flipped"); flipSound(); };
   card.onclick = flip; card.onkeydown = e => { if(e.key==="Enter"||e.key===" "){e.preventDefault();flip();} };
   document.getElementById("next").onclick = () => {
-    if(deckState.i+1<deckState.order.length) deckState.i++; else { deckState.order=shuffle(deckState.order); deckState.i=0; }
+    if(deckState.i+1<deckState.order.length) deckState.i++; else { const L2=DECKS[deckState.id].levels[deckState.levelIdx]; deckState.order=freshOrder("deck:"+deckState.id+":"+deckState.levelIdx, L2.items).concat(CUSTOM[deckState.id]||[]); deckState.i=0; }
     renderDeck();
     requestAnimationFrame(()=>requestAnimationFrame(()=>document.getElementById("card")?.classList.add("flipped"))); flipSound();
   };
@@ -677,7 +716,7 @@ function spySetup(from){
   });
   document.getElementById("go").onclick=()=>{
     const src = spy.ai && spy.useAi ? spy.ai.pairs : SPY_PAIRS;
-    let [a,b] = src[Math.floor(Math.random()*src.length)]; if(Math.random()<.5)[a,b]=[b,a];
+    let [a,b] = (spy.ai && spy.useAi) ? src[Math.floor(Math.random()*src.length)] : pickFresh("spy", src); if(Math.random()<.5)[a,b]=[b,a];
     const idx = shuffle([...Array(spy.players).keys()]).slice(0,spy.spies);
     spy.round = {common:a, odd:b, spyIdx:idx, cur:0, shown:false, from};
     spyReveal();
@@ -727,13 +766,13 @@ function huPick(from, kids){
   if(!kids) bindAiHelper("hu", topic=>({mode:"headsup_words", topic}), (items, topic)=>{ const k="ai"+Date.now(); HU_CATS[k]={name:topic, ic:"✨", words:items}; setTimeout(()=>{ huPick(from,false); const m=document.getElementById("ahMsg-hu"); if(m) m.textContent=`✓ «${topic}» ангилал нэмэгдлээ (${items.length} үг). Дээрээс сонго.`; },0); return ""; });
 }
 function huPlay(from, cat, kids){
-  const words = shuffle(cat.words); let i=0, left=60; const got=[], skipped=[];
+  const huKey="hu:"+cat.name, words = freshOrder(huKey, cat.words); let i=0, left=60; const got=[], skipped=[];
   app.innerHTML = `<section class="view">${topBar("mood:"+from, "Зогсоох")}
     <div class="timer" id="t">60</div>
     <div class="hu-word" id="w">${esc(words[0])}</div>
     <div class="row"><button class="btn skip" id="skip">Алгас</button><button class="btn good" id="ok">Зөв</button></div></section>`;
   const w=document.getElementById("w"), t=document.getElementById("t");
-  const step = ok => { (ok?got:skipped).push(words[i]); i++; if(i>=words.length) return end(); w.textContent=words[i]; };
+  const step = ok => { (ok?got:skipped).push(words[i]); markSeen(huKey, words[i]); i++; if(i>=words.length) return end(); w.textContent=words[i]; };
   document.getElementById("ok").onclick=()=>step(true);
   document.getElementById("skip").onclick=()=>step(false);
   timerId=setInterval(()=>{left--; t.textContent=left; t.classList.toggle("low",left<=10); if(left<=0) end();},1000);
@@ -768,7 +807,7 @@ function boomSound(){ if(muted) return; const a=audio(); if(!a) return; const n=
   const src=a.createBufferSource(), f=a.createBiquadFilter(), g=a.createGain(); f.type="lowpass"; f.frequency.value=900; g.gain.value=.9; src.buffer=b; src.connect(f).connect(g).connect(a.destination); src.start(); }
 function bomb(from){
   stopTimer(); setGlow(MOODS[from].c);
-  const prompt = () => BOMB_PROMPTS[Math.floor(Math.random()*BOMB_PROMPTS.length)];
+  const prompt = () => pickFresh("bomb", BOMB_PROMPTS);
   app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
     <h2 style="font-size:22px">💣 Бөмбөг</h2>
     <ol class="rules"><li>Дугуйлан суу. Бөмбөг асахад сэдэв гарна.</li><li>Утсаа барьсан хүн сэдэвт тохирох үг хэлээд дараагийн хүнд дамжуулна. Хэлсэн үгийг давтаж болохгүй.</li><li>Дэлбэрэх үед утас хэний гарт байна, тэр хожигдоно.</li></ol>
@@ -831,10 +870,11 @@ function missions(from){
     const get = bindNames(3,12,render);
     document.getElementById("go").onclick=()=>{
       const names=get(); if(names.length<3){ document.getElementById("go").textContent="Дор хаяж 3 нэр оруул"; return; }
-      const t=shuffle(MISSIONS_T), n=shuffle(MISSIONS_N);
+      const t=freshOrder("misT",MISSIONS_T).reverse(), n=freshOrder("misN",MISSIONS_N).reverse();
       const list = names.map((name,i)=>{ const useT = i%2===0 && t.length;
         if(useT){ const others=names.filter(x=>x!==name); return {name, text:t.pop(), target:others[Math.floor(Math.random()*others.length)], done:false}; }
         return {name, text:(n.pop()||t.pop()), target:null, done:false}; });
+      list.forEach(x=>{ markSeen("misT",x.text); markSeen("misN",x.text); });
       deal(list,0,false);
     };
   };
@@ -877,7 +917,7 @@ function match(from){
     <div class="row" style="margin-top:auto"><button class="btn" id="go">Эхлэх</button></div></section>`;
   document.getElementById("go").onclick=()=>{
     a=document.getElementById("ma").value.trim()||"Нэгдүгээр хүн"; b=document.getElementById("mb").value.trim()||"Хоёрдугаар хүн";
-    const qs=shuffle(MATCH_Q).slice(0,10); let i=0, hits=0;
+    const qs=freshOrder("match",MATCH_Q).slice(0,10); qs.forEach(q=>markSeen("match",q)); let i=0, hits=0;
     ask();
     function ask(){
       if(i>=qs.length) return result();
@@ -927,7 +967,7 @@ let pickMode="one";
 function picker(from){
   stopTimer(); setGlow(MOODS[from].c);
   const colors=["var(--rose)","var(--amber)","var(--teal)","var(--lilac)","#7fb2ff","#ff9f6b","#9be36b","#f27fe0"];
-  const MODES= from==="family" ? {one:"Сонгох", team:"Баг хуваах"} : {one:"Сонгох", td:"Үнэн / Зориг", team:"Баг хуваах"};
+  const MODES= from==="family" ? {one:"Сонгох", team:"Баг хуваах"} : from==="couples" ? {one:"Хэн эхлэх вэ?", td:"Үнэн / Зориг"} : {one:"Сонгох", td:"Үнэн / Зориг", team:"Баг хуваах"};
   if(!MODES[pickMode]) pickMode="one";
   const pad=document.createElement("div"); pad.className="touchpad";
   pad.innerHTML=`<button class="back close" id="pkClose">‹ Буцах</button><div class="hint" id="pkHint"></div><div id="pkCard"></div>
@@ -937,7 +977,7 @@ function picker(from){
   const hint=pad.querySelector("#pkHint"), cardBox=pad.querySelector("#pkCard"), modes=pad.querySelector("#pkModes");
   const idle=()=>{ hint.innerHTML = pickMode==="team"
     ? `<b>Хуруугаа тавь</b>4–8 хүн хуруугаа тавиад барь. Утас хоёр багт хуваана.`
-    : `<b>Хуруугаа тавь</b>2–8 хүн дэлгэц дээр нэг нэг хуруугаа тавиад хөдөлгөлгүй барь.`; };
+    : from==="couples" ? `<b>Хуруугаа тавь</b>Хоёулаа дэлгэц дээр нэг нэг хуруугаа тавиад хөдөлгөлгүй барь.` : `<b>Хуруугаа тавь</b>2–8 хүн дэлгэц дээр нэг нэг хуруугаа тавиад хөдөлгөлгүй барь.`; };
   idle();
   pad.querySelector("#pkClose").onclick=()=>{ clearTimeout(wait); pad.remove(); nav("#/mood/"+from); };
   modes.querySelectorAll("[data-pm]").forEach(b=>b.onclick=()=>{ pickMode=b.dataset.pm; modes.querySelectorAll("[data-pm]").forEach(x=>x.setAttribute("aria-pressed",x===b)); reset(); });
@@ -954,10 +994,10 @@ function picker(from){
       hint.innerHTML=`<b>Багууд бэлэн!</b>Ногоон нь А баг, ягаан нь Б баг. Дахин хуваахын тулд бүгд хуруугаа ав.`; return; }
     const w=ids[Math.floor(Math.random()*ids.length)];
     pts.forEach((el,id)=>el.classList.add(id===w?"win":"lose"));
-    if(pickMode==="one"){ const pk = stakes.size && Math.random()<.6 ? penalty().text : PICK_TASKS[Math.floor(Math.random()*PICK_TASKS.length)]; hint.innerHTML=`<b>${esc(pk)}</b>Дахин сонгохын тулд бүгд хуруугаа аваад шинээр тавь.`; return; }
+    if(pickMode==="one"){ const pk = stakes.size && Math.random()<.6 ? penalty().text : pickFresh("pick"+(from==="couples"?":2":""), forFrom(PICK_TASKS)); hint.innerHTML=`<b>${esc(pk)}</b>Дахин сонгохын тулд бүгд хуруугаа аваад шинээр тавь.`; return; }
     hint.innerHTML=`<b>Чи сонгогдлоо!</b>`;
     cardBox.innerHTML=`<div class="tdcard panel"><h2 style="text-align:center">Үнэн үү, Зориг уу?</h2><div class="row"><button class="btn ghost" id="tdT">Үнэн</button><button class="btn" id="tdD">Зориг</button></div></div>`;
-    const show=(kind,list)=>{ cardBox.innerHTML=`<div class="tdcard panel"><span class="eyebrow">${kind}</span><div class="mission">${esc(list[Math.floor(Math.random()*list.length)])}</div><button class="btn" id="tdNext" style="flex:none">Дараагийн тойрог</button></div>`;
+    const show=(kind,list)=>{ cardBox.innerHTML=`<div class="tdcard panel"><span class="eyebrow">${kind}</span><div class="mission">${esc(pickFresh("td:"+kind+(from==="couples"?":2":""), forFrom(list)))}</div><button class="btn" id="tdNext" style="flex:none">Дараагийн тойрог</button></div>`;
       cardBox.querySelector("#tdNext").onclick=reset; };
     cardBox.querySelector("#tdT").onclick=()=>show("Үнэн",TRUTHS);
     cardBox.querySelector("#tdD").onclick=()=>show("Зориг",DARES);
@@ -1005,7 +1045,7 @@ function wave(from){
   let score=0, round=0, curSp=["",""];
   app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
     <h2 style="font-size:22px">📡 Нэг долгион дээр</h2>
-    <ol class="rules"><li>Санаа өгөгч утсаа авч нууц цэгийг харна.</li><li>Хоёр туйлын хооронд тэр цэгт тохирох ганц үг, нэр, зүйл хэлнэ. Жишээ нь "Хүйтэн ↔ Халуун" дээр 80% бол "халуун цай".</li><li>Бусад нь ярилцаж зүүг тааруулна. Ойртох тусам оноо их.</li></ol>
+    <ol class="rules"><li>Санаа өгөгч утсаа авч нууц цэгийг харна.</li><li>Хоёр туйлын хооронд тэр цэгт тохирох ганц үг, нэр, зүйл хэлнэ. Жишээ нь "Хүйтэн ↔ Халуун" дээр 80% бол "халуун цай".</li><li>${from==="couples"?"Нөгөө нь":"Бусад нь ярилцаж"} зүүг тааруулна. Ойртох тусам оноо их.</li></ol>
     <div class="row" style="margin-top:auto"><button class="btn" id="go">Эхлэх</button></div></section>`;
   document.getElementById("go").onclick=start;
   function dial(target, guess, showTarget){
@@ -1021,7 +1061,7 @@ function wave(from){
       <text x="${cx-R}" y="176">0</text><text x="${cx+R-22}" y="176">100</text></svg>`;
   }
   function start(){
-    round++; const sp=SPECTRA[Math.floor(Math.random()*SPECTRA.length)], target=5+Math.floor(Math.random()*91); curSp=sp;
+    round++; const sp=pickFresh("wave",SPECTRA), target=5+Math.floor(Math.random()*91); curSp=sp;
     const spec=`<div class="spectrum"><span>← ${esc(sp[0])}</span><span>${esc(sp[1])} →</span></div>`;
     app.innerHTML=`<section class="view">${topBar("mood:"+from, "Зогсоох")}
       <p class="who-line">Тойрог ${round} · Зөвхөн санаа өгөгч хар</p>${spec}${dial(target,null,true)}
@@ -1068,7 +1108,7 @@ function nandin(from){
   intro();
   function intro(){
     if(st>=2) return finale();
-    const S=NANDIN_STAGES[st]; cards=shuffle(S.items()).slice(0,PER); i=0;
+    const S=NANDIN_STAGES[st]; cards=freshOrder("nandin:"+st,S.items()).slice(0,PER); cards.forEach(c=>markSeen("nandin:"+st,c)); i=0;
     app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}${dots()}
       <div class="reveal"><p>${st+1}-р үе шат</p><div class="who">${esc(S.name)}</div><p>${esc(S.note)} Ээлжээрээ ${PER} асуултад хариулна.</p>
       <button class="btn" id="go" style="flex:none;width:100%">Эхлэх</button></div></section>`;
@@ -1103,19 +1143,19 @@ function nandin(from){
 function spicy(from){
   if(!adultOk){ openGate(()=>spicy(from)); return; }
   stopTimer(); setGlow(MOODS[from].c);
-  const qs=shuffle(SPICY_TRUTHS()); let i=0;
+  const qs=freshOrder("spicy",SPICY_TRUTHS()); let i=0;
   show();
   function show(pen){
     app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
       <h2 style="font-size:22px">🔥 Үнэн үү, Халуухан шийтгэл үү?</h2>
       <p class="who-line">${i%2?"Хоёрдугаар":"Нэгдүгээр"} хүний ээлж</p>
-      <div class="stage"><div class="card flipped"><div class="face front"></div><div class="face back-face"><span class="kind">Халуухан үнэн</span><div class="q">${esc(qs[i%qs.length])}</div><div class="foot"><span>${i+1}</span><span>18+</span></div></div></div></div>
+      <div class="stage"><div class="card flipped"><div class="face front"></div><div class="face back-face"><span class="kind">Халуухан үнэн</span><div class="q">${esc(qs[i%qs.length])}</div>${(markSeen("spicy",qs[i%qs.length]),"")}<div class="foot"><span>${i+1}</span><span>18+</span></div></div></div></div>
       <div id="pen">${pen||""}</div>
       <div class="row"><button class="btn ghost" id="shy">😳 Ичиж байна → Шийтгэл</button><button class="btn" id="ok">Хариуллаа ✓</button></div></section>`;
     document.getElementById("ok").onclick=()=>{ i++; show(); };
     document.getElementById("shy").onclick=()=>{
       const pool = SPICY_PEN.concat(stakes.has("drink")?["1 балга уу.","Хамтрагчтайгаа хамт 2 балга уу."]:[]);
-      const t=pool[Math.floor(Math.random()*pool.length)]; beep(520,.15,.15);
+      const t=pickFresh("spicyPen",pool); beep(520,.15,.15);
       document.getElementById("pen").innerHTML=`<div class="penalty"><span class="eyebrow">Халуухан шийтгэл</span><b>${esc(t)}</b></div>`;
       document.getElementById("shy").hidden=true; document.getElementById("ok").textContent="Биелүүллээ ✓";
     };
@@ -1444,26 +1484,25 @@ function whisper(from){
     app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
       <h2 style="font-size:22px">🤫 Шивнээ</h2>
       <ol class="rules"><li>Утас барьсан хүн нууц асуултыг ганцаараа уншина.</li><li>Хариулт болох хүний нэрийг <b>чангаар</b> хэлнэ. Асуултыг хэлэхгүй!</li><li>Нэрлэгдсэн хүн асуултыг мэдмээр бол зоос шиднэ, эсвэл шийтгэл хүлээгээд мэднэ. Дараагийн ээлжинд тэр хүн асуулт уншина.</li></ol>
-      <div class="panel"><b>Түвшин</b><div class="wh-names" style="justify-content:flex-start">
-        <button class="chip" data-lv="fun" aria-pressed="${whLevel==="fun"}">😄 Энгийн</button>
-        <button class="chip" data-lv="hot" aria-pressed="${whLevel==="hot"}">😈 Дэггүй 18+</button></div></div>
+      <div class="panel"><b>Хэн хэн байна?</b><div class="wh-names" style="justify-content:flex-start">${groupChips(whLevel)}</div>
+        ${whLevel==="couple"?`<span class="cnt" style="font-size:13px;color:var(--ink-soft)">Краш, үнсэлт, үерхлийн асуултууд гарахгүй.</span>`:""}</div>
       <div class="panel"><b>Тоглогчид</b>${namesEditor(3,12)}</div>
       ${aiHelperBox("whisper",{title:"Бидний тухай AI асуулт нэмэх", placeholder:"Жишээ: 12Б анги, маргааш зугаалгатай, Болд үргэлж хоцордог", btn:"Үүсгэх"})}
       ${customBox("whisper")}
       <div class="row" style="margin-top:auto"><button class="btn" id="go">Эхлэх</button></div>${AIQ.whisper.length?`<p class="note" style="margin:0">✨ ${AIQ.whisper.length} AI асуулт холигдсон</p>`:""}</section>`;
     const get=bindNames(3,12,render);
-    bindAiHelper("whisper", ctx=>({mode:"whisper", names:[...document.querySelectorAll("#names input")].map(i=>i.value.trim()).filter(Boolean), context:ctx, level:whLevel}),
-      items=>{ AIQ.whisper.push(...items); return `✓ ${items.length} AI асуулт холигдлоо (нийт ${AIQ.whisper.length})`; });
+    bindAiHelper("whisper", ctx=>({mode:"whisper", names:[...document.querySelectorAll("#names input")].map(i=>i.value.trim()).filter(Boolean), context:aiCtx4(ctx,whLevel), level:aiLevel4(whLevel)}),
+      items=>{ if(whLevel==="couple") items=items.filter(q=>!ROMANCE_RE.test(q)); AIQ.whisper.push(...items); return `✓ ${items.length} AI асуулт холигдлоо (нийт ${AIQ.whisper.length})`; });
     app.querySelectorAll("[data-lv]").forEach(b=>b.onclick=()=>{ const v=b.dataset.lv;
-      const set=()=>{ whLevel=v; app.querySelectorAll("[data-lv]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.lv===v)); };
-      if(v==="hot" && !adultOk) openGate(set,{text:"«Дэггүй» түвшин нь найзуудын дундах краш, нууц сонирхол, зоригтой сонголтын асуулттай. Зөвхөн 18 нас хүрсэн хүмүүс тоглоно. Бүгд 18+ үү?", onNo:()=>{}}); else set(); });
+      const set=()=>{ whLevel=v; render(); };
+      if(v==="hot" && !adultOk) openGate(set,{text:"«Задгай 18+» түвшин нь найзуудын дундах краш, нууц сонирхол, зоригтой сонголтын асуулттай. Зөвхөн 18 нас хүрсэн хүмүүс тоглоно. Бүгд 18+ үү?", onNo:()=>{}}); else set(); });
     bindCustom("whisper");
     document.getElementById("go").onclick=()=>{ const names=get(); if(names.length<3){ document.getElementById("go").textContent="Дор хаяж 3 нэр оруул"; return; } play(names); };
   };
   function play(names){
-    const pool=()=>shuffle(WHISPER_Q[whLevel].concat(CUSTOM.whisper, AIQ.whisper));
+    const wk="wh:"+whLevel, pool=()=>freshOrder(wk, levelPool(WHISPER_Q,whLevel)).reverse().concat(shuffle(CUSTOM.whisper.concat(AIQ.whisper)));
     let deckQ=pool(), reader=names[Math.floor(Math.random()*names.length)];
-    const tally={}, nextQ=()=>{ if(!deckQ.length) deckQ=pool(); return deckQ.pop(); };
+    const tally={}, nextQ=()=>{ if(!deckQ.length) deckQ=pool(); const q=deckQ.pop(); markSeen(wk,q); return q; };
     const head=`${topBar("mood:"+from, MOODS[from].name)}`;
     const pass=()=>{
       app.innerHTML=`<section class="view">${head}
@@ -1660,7 +1699,7 @@ function roomMenu(from, presetCode){
       <div class="names"><input id="rmCode" class="code-in" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="0000" value="${esc(presetCode||"")}" aria-label="Өрөөний код"></div>
       <button class="btn" id="rmJoin">Нэгдэх</button></div>
     ${joinOnly?`<button class="btn ghost" id="rmHostLink" style="flex:none">Эсвэл шинэ өрөө нээх</button>`:`<div class="panel"><b>Шинэ өрөө нээх</b>
-      <div class="wh-names" style="justify-content:flex-start"><button class="chip" data-lv="fun" aria-pressed="${roomLevel==="fun"}">😄 Энгийн</button><button class="chip" data-lv="hot" aria-pressed="${roomLevel==="hot"}">😈 Дэггүй 18+</button></div>
+      <b style="font-size:14px;color:var(--ink-soft)">Хэн хэн байна?</b><div class="wh-names" style="justify-content:flex-start">${groupChips(roomLevel)}</div>
       <button class="btn ghost" id="rmHost">Өрөө нээх</button></div>`}
     <p class="note" id="rmMsg" style="margin:0">Бүгд интернэттэй байх хэрэгтэй.</p></section>`;
   const msg=document.getElementById("rmMsg"), nameIn=document.getElementById("rmName"), codeIn=document.getElementById("rmCode");
@@ -1762,9 +1801,9 @@ function roomFinish(){
 function roomNext(){
   const R=room, ps=roomPlayers();
   if(ps.length<2){ const m=document.getElementById("rmHint"); if(m) m.textContent="Дор хаяж 2 хүн хэрэгтэй"; return; }
-  if(!R.deck.length) R.deck=shuffle(ROOM_Q[R.level].concat(R.aiQ||[]));
+  if(!R.deck.length) R.deck=freshOrder("room:"+R.level, levelPool(ROOM_Q,R.level)).reverse().concat(shuffle(R.aiQ||[]));
   R.votes={}; R.result=null;
-  hostBroadcast({t:"round", n:(R.round?.n||0)+1, q:R.deck.pop(), level:R.level, players:ps.map(p=>({id:p.id,name:p.name}))});
+  hostBroadcast({t:"round", n:(R.round?.n||0)+1, q:(()=>{ const q=R.deck.pop(); markSeen("room:"+R.level,q); return q; })(), level:R.level, players:ps.map(p=>({id:p.id,name:p.name}))});
 }
 function roomEnd(){
   const R=room, rows=Object.entries(R.totals).map(([id,t])=>[t.name,t.v,id]).sort((a,b)=>b[1]-a[1]);
@@ -1789,14 +1828,14 @@ function renderRoom(){
         <p class="note" style="margin:0">Найзууд чинь QR-ыг уншуулах, эсвэл сайтын «Өрөөнд нэгдэх» хэсэгт кодыг оруулна.</p>
         <button class="btn ghost" id="rmShare" style="flex:none">🔗 Линк хуваалцах</button>
         <div class="panel"><b>Тоглогчид (${ps.length}/12)</b><div class="wh-names" style="justify-content:flex-start">${chips}</div></div>
-        <div class="panel"><b>Горим</b><div class="wh-names" style="justify-content:flex-start"><button class="chip" data-lv="fun" aria-pressed="${R.level==="fun"}">😄 Энгийн</button><button class="chip" data-lv="hot" aria-pressed="${R.level==="hot"}">😈 Дэггүй 18+</button></div></div>
+        <div class="panel"><b>Хэн хэн байна?</b><div class="wh-names" style="justify-content:flex-start">${groupChips(R.level)}</div>${R.level==="couple"?'<p class="note" style="margin:6px 0 0;text-align:left">Романтик, краш, үнсэлтийн асуулт гарахгүй.</p>':""}</div>
         ${aiHelperBox("room",{title:"Бидний тухай AI асуулт нэмэх", placeholder:"Жишээ: Ажлынхан, шинэ жилийн үдэшлэг, Бат үргэлж оройтдог", btn:"Үүсгэх"})}
         <div class="row" style="margin-top:auto;flex-direction:column"><button class="btn" id="rmStart" ${ps.length<2?"disabled style=\"opacity:.5\"":""}>Эхлэх</button><p class="note" id="rmHint" style="margin:0">${ps.length<2?"Дор хаяж 2 хүн нэгдэхийг хүлээж байна…":"Бүгд нэгдсэн бол эхлүүл"}</p></div></section>`;
       document.getElementById("rmStart").onclick=roomNext;
       { const d=document.getElementById("ah-room"), inp=document.getElementById("ahIn-room"); if(R.aiOpen) d.open=true; inp.value=R.aiDraft||""; if(R.aiMsg) document.getElementById("ahMsg-room").textContent=R.aiMsg;
         d.ontoggle=()=>{ R.aiOpen=d.open; }; inp.oninput=()=>{ R.aiDraft=inp.value; };
-        bindAiHelper("room", ctx=>({mode:"room_questions", names:roomPlayers().map(p=>p.name), context:ctx, level:R.level}),
-          items=>{ R.aiQ=(R.aiQ||[]).concat(items); R.deck=[]; R.aiDraft=""; R.aiMsg=`✓ ${items.length} AI асуулт холигдлоо (нийт ${R.aiQ.length})`; return R.aiMsg; }); }
+        bindAiHelper("room", ctx=>({mode:"room_questions", names:roomPlayers().map(p=>p.name), context:aiCtx4(ctx,R.level), level:aiLevel4(R.level)}),
+          items=>{ if(R.level==="couple") items=items.filter(q=>!ROMANCE_RE.test(q)); R.aiQ=(R.aiQ||[]).concat(items); R.deck=[]; R.aiDraft=""; R.aiMsg=`✓ ${items.length} AI асуулт холигдлоо (нийт ${R.aiQ.length})`; return R.aiMsg; }); }
       document.getElementById("rmShare").onclick=async e=>{ const url=roomUrl(R.code);
         try{ if(navigator.share){ await navigator.share({title:"Хамтдаа · Хэн нь вэ?", text:`Өрөөний код: ${R.code}`, url}); return; } }catch(err){ if(err&&err.name==="AbortError") return; }
         try{ await navigator.clipboard.writeText(url); e.target.textContent="✓ Линк хуулагдлаа"; }catch(err){ e.target.textContent=url; } };
@@ -1808,7 +1847,7 @@ function renderRoom(){
         <div class="hero" style="text-align:center"><span class="eyebrow">🗳️ Хэн нь вэ? · Өрөө</span></div>
         <div class="room-code">${R.code}</div>
         <div class="panel"><b>Тоглогчид (${ps.length})</b><div class="wh-names" style="justify-content:flex-start">${chips}</div></div>
-        <p class="wait">${R.level==="hot"?"😈 Дэггүй 18+ горим<br>":""}Хост тоглоомыг эхлүүлэхийг хүлээж байна…</p></section>`;
+        <p class="wait">${R.level==="hot"?"😈 Задгай 18+ горим<br>":R.level==="couple"?"💑 Хостой хүмүүс байгаа горим<br>":""}Хост тоглоомыг эхлүүлэхийг хүлээж байна…</p></section>`;
     }
     return;
   }
@@ -2001,7 +2040,7 @@ function qNextTurn(){ const D=dr; const present=new Set(drPlayers().map(p=>p.id)
   do{ D.turnIdx++; }while(D.turnIdx<D.order.length && !present.has(D.order[D.turnIdx]));
   if(D.turnIdx>=D.order.length) return drHostSend({t:"q_over",best:D.best||null});
   drHostSend({t:"q_turn",n:D.turnIdx+1,total:D.order.length,drawer:D.order[D.turnIdx],bank:D.aiWords.length>=3?D.aiWords:null,names:D.names}); }
-function qWordChoices(bank){ return shuffle(bank&&bank.length>=3?bank:DRAW_WORDS).slice(0,3); }
+function qWordChoices(bank){ return bank&&bank.length>=3 ? shuffle(bank).slice(0,3) : freshOrder("drawWords",DRAW_WORDS).slice(0,3); }
 function onDrawMsg(m){
   const D=dr;
   if(m.t==="lobby"){ D.mode=m.mode||"quick"; if(D.view!=="lobby"){ D.view="lobby"; } renderDraw(); return; }
@@ -2081,7 +2120,7 @@ function renderQuick(){
     const ag=document.getElementById("drAgain"); if(ag) ag.onclick=()=>{ D.last=null; D.view="lobby"; D.turn=null; drSend({t:"lobby",mode:D.mode}); renderDraw(); };
   }
 }
-function qBeginDraw(word){ const D=dr, T=D.turn; T.word=word; T.left=DRAW_SEC.draw; T.players=drPlayers().map(p=>p.id); D.myStrokes=[]; D.view="q_draw";
+function qBeginDraw(word){ const D=dr, T=D.turn; T.word=word; markSeen("drawWords",word); T.left=DRAW_SEC.draw; T.players=drPlayers().map(p=>p.id); D.myStrokes=[]; D.view="q_draw";
   const hint=word.split("").map(ch=>ch===" "?"  ":"_").join(" ");
   drSend({t:"q_start",n:T.n,hint,dur:DRAW_SEC.draw}); renderDraw();
   qTimer(DRAW_SEC.draw,null,()=>qEndTurn()); const tick=D.tick;
@@ -2336,15 +2375,41 @@ function onPhotoMsg(m){
   if(m.t==="p_over"){ if(P.view==="p_over"||!P.game) return; clearInterval(P.tick); P.scores=m.scores||P.scores; P.round=null; P.view="p_over"; renderPhoto(); return; }
 }
 
+
+/* ---------- «ℹ️ Яаж тоглох вэ?» short rules ---------- */
+let curGame=null;
+const HOW = {
+  spy:"Утсыг дамжуулж үгээ нууцаар хар. Бүгд ижил үгтэй, ганц тагнуул л өөр үгтэй. Ээлжээр нэг нэг сэжүүр хэлээд тагнуулыг санал хураан ол.",
+  bomb:"Гарсан сэдэвт тохирох үг хэлээд утсаа хажуугийн хүнд дамжуул. Хэний гарт дэлбэрнэ, тэр хүн шийтгэл авна.",
+  missions:"Хүн бүр утсаа ганцаараа хараад нууц даалгавраа авна. Оройн турш баригдалгүй биелүүл. Төгсгөлд хэн хэдийг биелүүлснийг тоолно.",
+  match:"Нэг нь өөрийнхөө тухай асуултад нууцаар хариулна, нөгөө нь түүнийг таана. Хэдэн хувь таарсныг утас тоолно.",
+  shagai:"Ээлжээр утсаа аваад «Сэгсрэх» дар. Морь буувал оноо авна. Хамгийн түрүүнд 10 морь цуглуулсан хүн хожно.",
+  wave:f=>`Нэг нь нууц цэгийг хараад тэр цэгт тохирох ганц үг хэлнэ. ${f==="couples"?"Нөгөө нь":"Бусад нь ярилцаж"} зүүг тэр цэг рүү тааруулна. Ойртох тусам оноо их.`,
+  whisper:"Утас барьсан хүн нууц асуултыг ганцаараа уншаад, хариулт болох хүний нэрийг чанга хэлнэ. Нэрлэгдсэн хүн асуултыг мэдмээр бол зоос шиднэ.",
+  room:"Нэг хүн өрөө нээнэ, бусад нь кодоор утаснаасаа нэгдэнэ. Асуулт гарахад тохирох хүнийхээ нэр дээр нууцаар санал өгнө.",
+  draw:"Нэг хүн өрөө нээнэ, бусад нь кодоор нэгдэнэ. Нэг нь утсан дээрээ зурна, бусад нь юу болохыг бичиж таана.",
+  photo:"Нэг хүн өрөө нээнэ, бусад нь кодоор нэгдэнэ. Хүн бүр 3–5 зураг сонгоно. Гарсан зураг хэнийх болохыг хамгийн хурдан таасан нь хожно."
+};
+function applyHow(){
+  if(!curGame || !HOW[curGame]) return;
+  const ol=app.querySelector(".view > ol.rules"); if(!ol) return;
+  const t=typeof HOW[curGame]==="function"?HOW[curGame](curFrom):HOW[curGame];
+  const box=document.createElement("div"); box.className="howto";
+  box.innerHTML=`<b>ℹ️ Яаж тоглох вэ?</b><p>${esc(t)}</p><details class="howmore"><summary>Дэлгэрэнгүй дүрэм</summary></details>`;
+  ol.replaceWith(box); box.querySelector("details").appendChild(ol);
+}
+new MutationObserver(applyHow).observe(app,{childList:true});
+
 /* ---------- Routing ---------- */
 function startGame(id, from){
+  curFrom=from; curGame=id;
   if(DECKS[id]) deck(id,from); else if(id==="spy") spySetup(from); else if(id==="headsup") huPick(from,false); else if(id==="charades") huPick(from,true); else if(id==="bomb") bomb(from); else if(id==="missions") missions(from); else if(id==="match") match(from); else if(id==="picker") picker(from); else if(id==="shagai") shagai(from); else if(id==="wave") wave(from); else if(id==="nandin") nandin(from); else if(id==="spicy") spicy(from); else if(id==="wheel") wheel(from); else if(id==="whisper") whisper(from); else if(id==="ai") aiDeck(from); else if(id==="room") roomMenu(from); else if(id==="draw") drawMenu(from); else if(id==="photo") photoMenu(from); else return false;
   return true;
 }
 function nav(hash){ if(location.hash===hash) route(); else location.hash=hash; }
 function route(){
   document.querySelectorAll(".touchpad,.boom").forEach(el=>el.remove());
-  gate.hidden=true; stopTimer(); leaveRoom(); leaveDraw(); leavePhoto(); aiRerender=null; closeUserMenu();
+  curGame=null; gate.hidden=true; stopTimer(); leaveRoom(); leaveDraw(); leavePhoto(); aiRerender=null; closeUserMenu();
   const r=location.hash.replace(/^#\/?/,"").split("/");
   try{ gtag("event","page_view",{page_title:document.title, page_location:location.href, page_path:location.pathname+location.hash}); }catch(e){}
   if(r[0]==="mood" && MOODS[r[1]]) mood(r[1]);
