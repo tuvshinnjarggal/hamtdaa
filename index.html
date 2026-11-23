@@ -1257,7 +1257,12 @@ const AI_ERR = {
   ai_timeout:"AI хэт удаж байна. Дахин оролдоорой.",
   ai_empty:"AI карт зохиож чадсангүй. Тайлбараа өөрчлөөд дахин оролдоорой.",
   offline:"Интернэт холболт алга. AI багцад интернэт хэрэгтэй.",
+  network:"AI сервер рүү хүрч чадсангүй. Интернэтээ шалгаад дахин оролдоорой.",
+  ai_error:"AI (Gemini) алдаа буцаалаа. Түр хүлээгээд дахин оролдоорой.",
+  unauthorized:"Сайтын түлхүүр AI сервертэй таарсангүй.",
+  server_not_configured:"AI серверийн тохиргоо дутуу байна.",
 };
+const errCode = c => c ? ` (код: ${c})` : "";
 function aiDeck(from){
   stopTimer(); setGlow(MOODS[from].c);
   if(from==="family" && aiLevel==="hot") aiLevel="fun";
@@ -1313,7 +1318,7 @@ function aiDeck(from){
     if(!location.hash.startsWith("#/game/ai/")) return;
     if(err){
       app.innerHTML=`<section class="view">${head()}<div class="ai-load"><div class="sp" style="animation:none">😕</div><h2 style="font-size:22px">Карт үүсгэж чадсангүй</h2>
-        <p class="note" style="margin:0">${esc(AI_ERR[err]||"Сервертэй холбогдож чадсангүй. Дахин оролдоорой.")}</p>
+        <p class="note" style="margin:0">${esc((AI_ERR[err]||"Сервертэй холбогдож чадсангүй. Дахин оролдоорой.")+errCode(err))}</p>
         <p class="note" style="margin:0">Оролдлого хасагдаагүй.</p></div>
         <div class="row" style="flex-direction:column"><button class="btn" id="retry">Дахин оролдох</button><button class="btn ghost" id="bk">Буцах</button></div></section>`;
       document.getElementById("retry").onclick=()=>generate(names, context);
@@ -1368,12 +1373,12 @@ async function aiCall(body){
   try{
     const r=await fetch(SUPA_URL+"/functions/v1/generate-deck",{method:"POST",signal:ctl.signal,headers:{"Content-Type":"application/json","apikey":SUPA_KEY},body:JSON.stringify(body)});
     const j=await r.json().catch(()=>({}));
-    if(!r.ok) throw {code:j.error||("http_"+r.status)};
+    if(!r.ok){ try{ console.warn("generate-deck", r.status, j); }catch(_){} throw {code:j.error||("http_"+r.status)}; }
     return j;
   }catch(e){ throw (e&&e.code)?e:{code:(e&&e.name==="AbortError")?"ai_timeout":"network"}; }
   finally{ clearTimeout(to); }
 }
-const aiErrText = code => AI_ERR[code] || "AI-тай холбогдож чадсангүй. Дахин оролдоорой.";
+const aiErrText = code => (AI_ERR[code] || "AI-тай холбогдож чадсангүй. Дахин оролдоорой.") + errCode(code);
 // A small "✨" panel inside a game's start screen. getBody() returns the request (or a string error); onItems(items, input) applies the result.
 function aiHelperBox(key, {title, placeholder, btn}){
   return `<details class="panel custom" id="ah-${key}"><summary>✨ ${esc(title)}</summary>
