@@ -382,6 +382,19 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 .tag.new{background:rgba(34,197,94,.18);color:#4ADE80}
 .tag.adult{background:#FF3B5C;color:#fff}
 .tag.soft{background:rgba(255,255,255,.08);color:#A1A1AA}
+
+/* Story 2.0 + suggest modal */
+.studio{position:fixed;inset:0;z-index:30;background:#0D0D10;overflow-y:auto;display:flex;justify-content:center;padding:16px max(16px,env(safe-area-inset-left,0px))}
+.studio-in{width:100%;max-width:460px;display:flex;flex-direction:column;gap:12px;margin:auto 0}
+.studio-top{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.studio-top b{font-size:17px}
+.studio-prev{display:flex;justify-content:center}
+.studio-prev canvas{height:min(52vh,560px);width:auto;aspect-ratio:9/16;border-radius:16px;box-shadow:0 8px 30px rgba(0,0,0,.5)}
+.studio-row{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;align-items:center}
+.studio-themes{display:flex;gap:6px;flex-wrap:wrap;justify-content:center}
+.pill-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:999px;background:#1C1C23;color:#fff;font-weight:700;font-size:14px;border:0;cursor:pointer}
+.studio select{flex:1;min-width:0;padding:10px 12px;border-radius:999px;background:#1C1C23;color:#fff;border:0;font:inherit;font-weight:700;font-size:14px}
+.sg-link{align-self:center;margin-top:4px}
 </style>
 
 </head>
@@ -627,8 +640,10 @@ function home(){
     <button class="btn join" data-go-hash="#/room" style="flex:none">🔑 Өрөөнд нэгдэх</button>
     <p class="note">Бүртгэл хэрэггүй. Утсаа ширээн дээр тавиад дамжуулан тогло.</p>
     <div class="foot-links"><a href="#/privacy">Нууцлалын бодлого</a><button class="linkbtn" id="clrSeen">↺ Асуултын түүх цэвэрлэх</button></div>
+    <button class="linkbtn" id="sgHome" style="align-self:center">💡 Асуулт / шийтгэл санал болгох</button>
   </section>`;
   document.getElementById("clrSeen").onclick=e=>{ clearSeen(); e.target.textContent="✓ Түүх цэвэрлэгдлээ. Асуултууд дахин эхнээс гарна."; };
+  document.getElementById("sgHome").onclick=openSuggest;
 }
 /* ---------- Mood ---------- */
 function tagsHTML(G){ return [G.tag,G.tag2].filter(Boolean).map(t=>`<span class="tag ${t==="Шинэ"?"new":/18\+/.test(t)?"adult":"soft"}">${t}</span>`).join(""); }
@@ -1236,42 +1251,157 @@ async function drawAvatar(x, cx, cy, r, name, pic, ring){
   x.restore();
   try{ x.getImageData(cx,cy,1,1); }catch(e){ /* tainted: repaint as initial */ x.save(); x.beginPath(); x.arc(cx,cy,r,0,Math.PI*2); x.clip(); x.fillStyle=avColor(name); x.fillRect(cx-r,cy-r,r*2,r*2); x.restore(); }
 }
-async function shareStory({game, ic, big, line, sub, who, img}){
-  try{ await document.fonts?.ready; }catch(e){}
-  const W=1080, H=1920, cv=document.createElement("canvas"); cv.width=W; cv.height=H; const x=cv.getContext("2d");
-  const CORAL="#FF3B5C", YEL="#FFD60A", INK="#FFFFFF", SOFT="#A1A1AA", glow=YEL;
-  x.fillStyle="#0D0D10"; x.fillRect(0,0,W,H);
-  x.fillStyle=CORAL; x.fillRect(0,0,W,14);                                   // flat brand bar
-  x.fillStyle="#18181D"; x.beginPath(); x.roundRect(48,240,W-96,1250,44); x.fill();   // flat card frame
-  const D='"Manrope","Montserrat","Arial Black",sans-serif', B='"Manrope","Inter","Segoe UI",sans-serif';
-  x.textAlign="center"; x.textBaseline="alphabetic";
-  x.font=`800 64px ${D}`; { const w1=x.measureText("Хамт").width, w2=x.measureText("даа").width, x0=W/2-(w1+w2)/2; x.textAlign="left"; x.fillStyle=INK; x.fillText("Хамт", x0, 160); x.fillStyle=CORAL; x.fillText("даа", x0+w1, 160); x.textAlign="center"; }
-  if(who){ await drawAvatar(x, W/2, 400, 120, who.name, who.pic, YEL); x.textAlign="center"; x.font=`84px ${B}`; x.fillText(ic, W/2+120, 510); }
-  else {
-    if(user){ const nm=userName(); x.font=`700 40px ${B}`; const tw=x.measureText(nm).width, total=72+18+tw, x0=W/2-total/2;
-      await drawAvatar(x, x0+36, 312, 36, nm, profilePic(), INK); x.textAlign="left"; x.fillStyle=INK; x.font=`700 40px ${B}`; x.fillText(nm, x0+72+18, 326); x.textAlign="center"; }
-    x.font=`150px ${B}`; x.fillText(ic, W/2, 500);
-  }
-  x.fillStyle=CORAL; x.font=`800 44px ${B}`; x.fillText(game.toUpperCase(), W/2, 600);
-  let pic=null; if(img){ try{ pic=await loadImg(img); }catch(e){} }
-  if(pic){
-    x.fillStyle=glow; const bs=fitFont(x, big, 800, D, 104, W-140, 50); x.font=`800 ${bs}px ${D}`; x.fillText(big, W/2, 712);
-    const ps=500, px=W/2-ps/2, py=800; x.save(); x.translate(W/2,py+ps/2); x.rotate(-.025); x.fillStyle="#fff"; x.beginPath(); x.roundRect(-ps/2-18,-ps/2-18,ps+36,ps+36,28); x.fill(); x.drawImage(pic,-ps/2,-ps/2,ps,ps); x.restore();
-    x.fillStyle=INK; x.font=`800 48px ${D}`; const ll=wrapLines(x, line, W-160).slice(0,2); ll.forEach((l,i)=>x.fillText(l, W/2, 1395+i*56));
-    x.fillStyle=SOFT; x.font=`600 40px ${B}`; wrapLines(x, sub||"", W-180).slice(0,1).forEach(l=>x.fillText(l, W/2, 1395+ll.length*56+18));
-  } else {
-  x.fillStyle=glow; const bs=fitFont(x, big, 800, D, 260, W-140); x.font=`800 ${bs}px ${D}`; x.fillText(big, W/2, 930);
-  x.fillStyle=INK; x.font=`800 68px ${D}`; wrapLines(x, line, W-160).slice(0,3).forEach((l,i)=>x.fillText(l, W/2, 1110+i*92));
-  x.fillStyle=SOFT; x.font=`600 46px ${B}`; wrapLines(x, sub||"", W-180).slice(0,2).forEach((l,i)=>x.fillText(l, W/2, 1370+i*64));
-  }
-  try{ const qr=await loadImg("qr.png"); const qs=230, qx=W/2-qs/2, qy=1560; x.fillStyle="#fff"; x.beginPath(); x.roundRect(qx-14,qy-14,qs+28,qs+28,24); x.fill(); x.imageSmoothingEnabled=false; x.drawImage(qr,qx,qy,qs,qs); x.imageSmoothingEnabled=true; }catch(e){}
-  x.font=`800 46px ${D}`; { const w1=x.measureText("Хамт").width, w2=x.measureText("даа").width, x0=W/2-(w1+w2)/2; x.textAlign="left"; x.fillStyle=INK; x.fillText("Хамт", x0, 1868); x.fillStyle=CORAL; x.fillText("даа", x0+w1, 1868); x.textAlign="center"; }
-  const blob=await new Promise(res=>cv.toBlob(res,"image/png")); if(!blob) return;
-  const file=new File([blob], "hamtdaa-story.png", {type:"image/png"});
-  try{ if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], title:"Хамтдаа"}); track("story_share",{game}); return; } }catch(e){ if(e && e.name==="AbortError") return; }
-  const url=URL.createObjectURL(blob), a=document.createElement("a"); a.href=url; a.download="hamtdaa-story.png"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),4000);
-  track("story_download",{game});
+/* ---------- Story 2.0: themes, praise titles, own photo (RAM only) ---------- */
+const STORY_THEMES = {
+  night:{label:"🖤 Шөнийн улаан", bg:["#0D0D10"], card:"#18181D", ink:"#FFFFFF", soft:"#A1A1AA", acc:"#FF3B5C", hi:"#FFD60A", ringA:"#FF3B5C", ringB:"#FFD60A", bar:"#FF3B5C"},
+  pink:{label:"🌸 Ягаан", bg:["#FFC2DC","#C9A7FF"], card:"rgba(255,255,255,.42)", ink:"#2A1035", soft:"#6B4A7E", acc:"#E11D74", hi:"#7C3AED", ringA:"#FFFFFF", ringB:"#E11D74", bar:"#E11D74"},
+  gold:{label:"✨ Алтлаг VIP", bg:["#050505","#1C1608"], card:"#13110B", ink:"#FFF7E0", soft:"#BFA76A", acc:"#D4AF37", hi:"#F5D76E", ringA:"#F5D76E", ringB:"#8C6A1C", bar:"#D4AF37"},
+  white:{label:"🤍 Цэвэрхэн цагаан", bg:["#FFFFFF"], card:"#F4F4F5", ink:"#0D0D10", soft:"#71717A", acc:"#FF3B5C", hi:"#FF3B5C", ringA:"#FF3B5C", ringB:"#0D0D10", bar:"#FF3B5C"}
+};
+const PRAISE_ANY = ["✨ Хөөрхөн {n}","🔥 Мундаг {n}","👑 Ангийн нууц од — {n}","😎 Ширээний жинхэнэ босс — {n}","🌟 Өнөө оройн од — {n}","🦁 Зоригт {n}","🍀 Азтай {n}","🧠 Тархи ухаантай {n}","💎 Үнэт эрдэнэ {n}","🎉 Үдэшлэгийн сүнс — {n}","🚀 Зогсоох аргагүй {n}","😇 Сахиусан тэнгэр {n}","🐺 Чоно шиг ухаалаг {n}","🥇 Аварга {n}","💅 Гоёмсог {n}","🫶 Бүгдийн хайртай {n}"];
+const PRAISE_GAME = {
+  "Шивнээ":["🤫 Хамгийн аюултай нууцлаг дүр — {n}","👀 Бүгдийн нүдэнд өртсөн {n}","🕵️ Нууцын эзэн {n}","🌶️ Хамгийн халуун сэдэв — {n}"],
+  "Хэн нь вэ?":["🗳️ Ард түмний сонголт — {n}","👑 Олны танил {n}","📣 Санал хураалтын хаан — {n}","🏆 Нэр дэвшигч №1 — {n}"],
+  "Утасны зураач":["🎨 Монголын шинэ Пикассо — {n}","🖌️ Алтан бийр {n}","🖼️ Галерейн од — {n}","✏️ Нэг зурлагаар гайхуулагч {n}"],
+  "Зураг таах рулет":["📸 Нууцлаг галерейн эзэн — {n}","🔎 Шерлок {n}","⚡ Хурдан нүдтэй {n}","🧩 Бүгдийг мэддэг {n}"],
+  "Хэр сайн мэддэг вэ?":["💞 Сэтгэл нэгт хос","🧠 Тархи нэгтэй хос","🔐 Нууцгүй хос","💘 Бие биеэ мэддэг хос"],
+  "Нэг долгион дээр":["📡 Нэг долгионы хос","🧠 Тархи нэгтэй баг","🎯 Онож буудагчид","🌊 Давалгааны эзэд"]
+};
+let storyPic = "";            // own photo picked in the Story window; RAM only, never uploaded
+const storyImgCache = new Map();
+async function cachedImg(src){ if(!src) return null; if(storyImgCache.has(src)) return storyImgCache.get(src); let im=null; try{ im=await loadImg(src); }catch(e){} storyImgCache.set(src,im); return im; }
+function praiseList(game, name){
+  const g=(PRAISE_GAME[game]||[]), base=name?g.concat(PRAISE_ANY):g.filter(t=>!t.includes("{n}"));
+  const list=base.length?base:["🎉 Гайхалтай орой","🔥 Мундаг баг","✨ Хөөрхөн бид","😎 Ширээний жинхэнэ боссууд"];
+  return list.map(t=>t.replace("{n}", name||"").replace(/\s—\s*$/,"").trim());
 }
+function storyBg(x, T, W, H){
+  if(T.bg.length>1){ const gr=x.createLinearGradient(0,0,W*.4,H); gr.addColorStop(0,T.bg[0]); gr.addColorStop(1,T.bg[1]); x.fillStyle=gr; } else x.fillStyle=T.bg[0];
+  x.fillRect(0,0,W,H);
+}
+async function storyAvatar(x, cx, cy, r, name, pic, T, ic){
+  x.save(); x.beginPath(); x.arc(cx,cy,r+26,0,Math.PI*2); x.fillStyle=T.ringA; x.fill();
+  x.beginPath(); x.arc(cx,cy,r+13,0,Math.PI*2); x.fillStyle=T.ringB; x.fill(); x.restore();
+  const im=await cachedImg(pic);
+  x.save(); x.beginPath(); x.arc(cx,cy,r,0,Math.PI*2); x.clip();
+  if(im){ const w=im.naturalWidth||im.width, h=im.naturalHeight||im.height, s=Math.min(w,h)||1; x.drawImage(im,(w-s)/2,(h-s)/2,s,s,cx-r,cy-r,r*2,r*2); }
+  else if(name){ x.fillStyle=avColor(name); x.fillRect(cx-r,cy-r,r*2,r*2); x.fillStyle="#0A0A0C"; x.textAlign="center"; x.textBaseline="middle"; x.font=`800 ${Math.round(r*.95)}px "Manrope","Arial Black",sans-serif`; x.fillText(String(name).slice(0,1).toUpperCase(), cx, cy+r*.05); }
+  else { x.fillStyle=T.card; x.fillRect(cx-r,cy-r,r*2,r*2); x.textAlign="center"; x.textBaseline="middle"; x.font=`${Math.round(r*1.05)}px "Manrope",sans-serif`; x.fillStyle=T.ink; x.fillText(ic||"🎉", cx, cy+r*.06); }
+  x.textBaseline="alphabetic"; x.restore();
+  try{ x.getImageData(cx,cy,1,1); }catch(e){ x.save(); x.beginPath(); x.arc(cx,cy,r,0,Math.PI*2); x.clip(); x.fillStyle=avColor(name||"?"); x.fillRect(cx-r,cy-r,r*2,r*2); x.restore(); }
+}
+function storyLogo(x, T, W, y, size){ const D='"Manrope","Montserrat","Arial Black",sans-serif'; x.font=`800 ${size}px ${D}`; const w1=x.measureText("Хамт").width, w2=x.measureText("даа").width, x0=W/2-(w1+w2)/2; x.textAlign="left"; x.fillStyle=T.ink; x.fillText("Хамт", x0, y); x.fillStyle=T.acc; x.fillText("даа", x0+w1, y); x.textAlign="center"; }
+async function renderStory(o, st){
+  try{ await document.fonts?.ready; }catch(e){}
+  const T=STORY_THEMES[st.theme]||STORY_THEMES.night;
+  const W=1080, H=1920, cv=document.createElement("canvas"); cv.width=W; cv.height=H; const x=cv.getContext("2d");
+  const D='"Manrope","Montserrat","Arial Black",sans-serif', B='"Manrope","Inter","Segoe UI",sans-serif';
+  storyBg(x,T,W,H); x.fillStyle=T.bar; x.fillRect(0,0,W,14);
+  x.fillStyle=T.card; x.beginPath(); x.roundRect(48,220,W-96,1290,48); x.fill();
+  storyLogo(x,T,W,150,64);
+  // content is drawn on its own layer, then centred vertically inside the card
+  const CH=1290, lc=document.createElement("canvas"); lc.width=W; lc.height=CH; const main=x; { const x=lc.getContext("2d");
+  const pic=await cachedImg(o.img);
+  const R=pic?118:150, cy=R+26;
+  await storyAvatar(x, W/2, cy, R, st.name, st.pic, T, o.ic);
+  if(st.name || st.pic){ x.font=`${pic?64:84}px ${B}`; x.textAlign="center"; x.fillText(o.ic, W/2+R*.78, cy+R*.95); }
+  let y=cy+R+110;
+  x.textAlign="center"; x.fillStyle=T.acc; x.font=`800 40px ${B}`; x.fillText(o.game.toUpperCase(), W/2, y);
+  y+=104; x.fillStyle=T.hi; const ts=fitFont(x, st.title, 800, D, 88, W-150, 50); x.font=`800 ${ts}px ${D}`;
+  const tl=ts<=50 ? (x.font=`800 64px ${D}`, wrapLines(x, st.title, W-150).slice(0,2)) : [st.title]; tl.forEach((l,i)=>x.fillText(l, W/2, y+i*78)); y+=(tl.length-1)*78;
+  const big = o.big && o.big!==st.name ? o.big : "";
+  if(pic){
+    const ps=430, py=y+50; x.save(); x.translate(W/2,py+ps/2); x.rotate(-.025); x.fillStyle="#fff"; x.beginPath(); x.roundRect(-ps/2-16,-ps/2-16,ps+32,ps+32,26); x.fill(); x.drawImage(pic,-ps/2,-ps/2,ps,ps); x.restore();
+    y=py+ps+100; x.fillStyle=T.ink; x.font=`800 46px ${D}`; const ll=wrapLines(x, (big?big+" · ":"")+o.line, W-170).slice(0,2); ll.forEach((l,i)=>x.fillText(l, W/2, y+i*54));
+    y+=ll.length*54+12; x.fillStyle=T.soft; x.font=`600 38px ${B}`; const sl=wrapLines(x, o.sub||"", W-180).slice(0,1); sl.forEach(l=>x.fillText(l, W/2, y)); y+=sl.length?10:-54;
+  } else {
+    if(big){ y+=170; x.fillStyle=T.ink; const bs=fitFont(x, big, 800, D, 190, W-160); x.font=`800 ${bs}px ${D}`; x.fillText(big, W/2, y); }
+    y+=120; x.fillStyle=T.ink; x.font=`800 60px ${D}`; const ll=wrapLines(x, o.line, W-170).slice(0,2); ll.forEach((l,i)=>x.fillText(l, W/2, y+i*74));
+    y+=(ll.length-1)*74+74; x.fillStyle=T.soft; x.font=`600 42px ${B}`; const sl=wrapLines(x, o.sub||"", W-180).slice(0,2); sl.forEach((l,i)=>x.fillText(l, W/2, y+i*56)); y+=sl.length?(sl.length-1)*56+14:-60;
+  }
+  main.drawImage(lc, 0, 220+Math.max(30,(CH-y)/2)); }
+  const qr=await cachedImg("qr.png");
+  if(qr){ const qs=220, qx=W/2-qs/2, qy=1575; x.fillStyle="#fff"; x.beginPath(); x.roundRect(qx-14,qy-14,qs+28,qs+28,24); x.fill(); x.imageSmoothingEnabled=false; x.drawImage(qr,qx,qy,qs,qs); x.imageSmoothingEnabled=true; }
+  storyLogo(x,T,W,1872,44);
+  return cv;
+}
+function shrinkPhoto(file){ return new Promise((res,rej)=>{ const u=URL.createObjectURL(file), im=new Image();
+  im.onload=()=>{ const s=Math.min(im.naturalWidth,im.naturalHeight), n=Math.min(640,s), c=document.createElement("canvas"); c.width=c.height=n;
+    c.getContext("2d").drawImage(im,(im.naturalWidth-s)/2,(im.naturalHeight-s)/2,s,s,0,0,n,n); URL.revokeObjectURL(u); res(c.toDataURL("image/jpeg",.85)); };
+  im.onerror=()=>{ URL.revokeObjectURL(u); rej(new Error("img")); }; im.src=u; }); }
+function shareStory(o){
+  const name = o.who?.name || (o.who ? "" : (user ? userName() : ""));
+  const basePic = o.who ? (o.who.pic||"") : (user ? profilePic() : "");
+  let theme="night"; try{ theme=localStorage.getItem("storyTheme")||"night"; }catch(e){}
+  if(!STORY_THEMES[theme]) theme="night";
+  const titles=praiseList(o.game, name);
+  const st={theme, name, pic:storyPic||basePic, title:titles[Math.floor(Math.random()*titles.length)]};
+  document.querySelectorAll(".studio").forEach(e=>e.remove());
+  const ov=document.createElement("div"); ov.className="studio"; ov.setAttribute("role","dialog"); ov.setAttribute("aria-modal","true");
+  ov.innerHTML=`<div class="studio-in">
+    <div class="studio-top"><b>📸 Story карт</b><button class="back" data-x>✕ Хаах</button></div>
+    <div class="studio-prev"><canvas id="stPrev" width="540" height="960" aria-label="Story урьдчилан харах"></canvas></div>
+    <div class="studio-row"><label class="pill-btn">📷 Зургаа солих / оруулах<input type="file" accept="image/*" id="stFile" hidden></label>${storyPic?`<button class="pill-btn" id="stNoPic">✕ Зураг авах</button>`:""}</div>
+    <div class="studio-themes">${Object.entries(STORY_THEMES).map(([k,t])=>`<button class="chip" data-th="${k}" aria-pressed="${k===st.theme}">${t.label}</button>`).join("")}</div>
+    <div class="studio-row"><select id="stTitle" aria-label="Цол">${titles.map(t=>`<option${t===st.title?" selected":""}>${esc(t)}</option>`).join("")}</select><button class="pill-btn" id="stDice">🎲 Цол солих</button></div>
+    <p class="note" style="margin:0">Зураг зөвхөн таны утсан дээр зурагдана, хаашаа ч илгээгдэхгүй.</p>
+    <button class="btn story" id="stGo">📲 Story-д хуваалцах / хадгалах</button></div>`;
+  document.body.appendChild(ov);
+  const prev=ov.querySelector("#stPrev"), px=prev.getContext("2d"); let ticket=0;
+  const draw=async()=>{ const my=++ticket; const cv=await renderStory(o, st); if(my!==ticket) return; px.clearRect(0,0,540,960); px.drawImage(cv,0,0,540,960); };
+  draw();
+  ov.querySelector("[data-x]").onclick=()=>ov.remove();
+  ov.querySelectorAll("[data-th]").forEach(b=>b.onclick=()=>{ st.theme=b.dataset.th; try{ localStorage.setItem("storyTheme",st.theme); }catch(e){} ov.querySelectorAll("[data-th]").forEach(c=>c.setAttribute("aria-pressed",c.dataset.th===st.theme)); draw(); });
+  const sel=ov.querySelector("#stTitle"); sel.onchange=()=>{ st.title=sel.value; draw(); };
+  ov.querySelector("#stDice").onclick=()=>{ let t; do{ t=titles[Math.floor(Math.random()*titles.length)]; }while(titles.length>1 && t===st.title); st.title=t; sel.value=t; draw(); };
+  ov.querySelector("#stFile").onchange=async e=>{ const f=e.target.files&&e.target.files[0]; if(!f) return; try{ storyPic=await shrinkPhoto(f); st.pic=storyPic; draw(); track("story_photo",{game:o.game}); }catch(err){} };
+  const np=ov.querySelector("#stNoPic"); if(np) np.onclick=()=>{ storyPic=""; st.pic=basePic; np.remove(); draw(); };
+  ov.querySelector("#stGo").onclick=async()=>{
+    const cv=await renderStory(o, st), blob=await new Promise(res=>cv.toBlob(res,"image/png")); if(!blob) return;
+    const file=new File([blob], "hamtdaa-story.png", {type:"image/png"});
+    try{ if(navigator.canShare && navigator.canShare({files:[file]})){ await navigator.share({files:[file], title:"Хамтдаа"}); track("story_share",{game:o.game, theme:st.theme}); return; } }catch(e){ if(e && e.name==="AbortError") return; }
+    const url=URL.createObjectURL(blob), a=document.createElement("a"); a.href=url; a.download="hamtdaa-story.png"; document.body.appendChild(a); a.click(); a.remove(); setTimeout(()=>URL.revokeObjectURL(url),4000);
+    track("story_download",{game:o.game, theme:st.theme});
+  };
+}
+/* ---------- 💡 Community prompt suggestions (Supabase table community_prompts, insert-only) ---------- */
+const SUGGEST_CATS = ["Найзууд","Хосууд","Шивнээ","Хэн нь вэ?","Шийтгэл"];
+function openSuggest(){
+  document.querySelectorAll(".studio").forEach(e=>e.remove());
+  const def = curGame==="whisper" ? "Шивнээ" : curGame==="room" ? "Хэн нь вэ?" : curFrom==="couples" ? "Хосууд" : "Найзууд";
+  let cat=def;
+  const ov=document.createElement("div"); ov.className="studio"; ov.setAttribute("role","dialog"); ov.setAttribute("aria-modal","true");
+  ov.innerHTML=`<div class="studio-in" style="max-width:420px">
+    <div class="studio-top"><b>💡 Асуулт / шийтгэл санал болгох</b><button class="back" data-x>✕</button></div>
+    <p class="note" style="margin:0;text-align:left">Гоё санаагаа бичээрэй. Бид шалгаад тоглоомдоо нэмнэ.</p>
+    <div class="studio-themes">${SUGGEST_CATS.map(c=>`<button class="chip" data-cat="${esc(c)}" aria-pressed="${c===cat}">${esc(c)}</button>`).join("")}</div>
+    <div class="panel custom"><textarea id="sgText" maxlength="220" placeholder="Жишээ: Энэ өрөөнд хэн хамгийн сүүлд уйлсан бэ?"></textarea><span class="cnt" id="sgCnt">0 / 220</span></div>
+    <button class="btn" id="sgGo">Илгээх</button><p class="note" id="sgMsg" style="margin:0"></p></div>`;
+  document.body.appendChild(ov);
+  const ta=ov.querySelector("#sgText"), msg=ov.querySelector("#sgMsg"), go=ov.querySelector("#sgGo");
+  ov.querySelector("[data-x]").onclick=()=>ov.remove();
+  ov.addEventListener("click",e=>{ if(e.target===ov) ov.remove(); });
+  ov.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>{ cat=b.dataset.cat; ov.querySelectorAll("[data-cat]").forEach(c=>c.setAttribute("aria-pressed",c.dataset.cat===cat)); });
+  ta.oninput=()=>{ ov.querySelector("#sgCnt").textContent=`${ta.value.length} / 220`; };
+  ta.focus();
+  go.onclick=async()=>{
+    const text=ta.value.trim(); if(text.length<5){ msg.textContent="Арай урт бичээрэй 🙂"; return; }
+    let last=0; try{ last=+localStorage.getItem("sgLast")||0; }catch(e){}
+    if(Date.now()-last<20000){ msg.textContent="Түр хүлээгээд дахин илгээгээрэй."; return; }
+    go.disabled=true; go.style.opacity=.5; msg.textContent="Илгээж байна…";
+    try{
+      const c=await waitSb(); if(!c) throw new Error("offline");
+      const {error}=await c.from("community_prompts").insert({category:cat, text, game:curGame||null, mood:curFrom||null});
+      if(error) throw error;
+      try{ localStorage.setItem("sgLast",String(Date.now())); }catch(e){}
+      track("prompt_suggested",{category:cat});
+      ov.querySelector(".studio-in").innerHTML=`<div class="studio-top"><b>✓ Баярлалаа!</b><button class="back" data-x>✕</button></div><p style="margin:0">Бид шалгаад тоглоомдоо нэмнэ.</p><button class="btn" data-x>Хаах</button>`;
+      ov.querySelectorAll("[data-x]").forEach(b=>b.onclick=()=>ov.remove());
+    }catch(e){ go.disabled=false; go.style.opacity=""; msg.textContent="Илгээж чадсангүй. Интернэтээ шалгаад дахин оролдоорой."+errCode(e&&(e.code||e.message)); }
+  };
+}
+// a small «💡 санал болгох» link under every result screen that has a Story button
+new MutationObserver(()=>{ const s=app.querySelector(".btn.story"); if(s && !app.querySelector(".sg-link")){ const b=document.createElement("button"); b.className="linkbtn sg-link"; b.textContent="💡 Асуулт / шийтгэл санал болгох"; b.onclick=openSuggest; s.parentElement.appendChild(b); } }).observe(app,{childList:true});
 /* ---------- Analytics helper (GA4; silent until a real GA_ID is set) ---------- */
 function track(name, params={}){ try{ gtag("event", name, params); }catch(e){} }
 /* ---------- AI personal deck (Supabase Edge Function -> Gemini) ---------- */
@@ -2408,7 +2538,7 @@ function startGame(id, from){
 }
 function nav(hash){ if(location.hash===hash) route(); else location.hash=hash; }
 function route(){
-  document.querySelectorAll(".touchpad,.boom").forEach(el=>el.remove());
+  document.querySelectorAll(".touchpad,.boom,.studio").forEach(el=>el.remove());
   curGame=null; gate.hidden=true; stopTimer(); leaveRoom(); leaveDraw(); leavePhoto(); aiRerender=null; closeUserMenu();
   const r=location.hash.replace(/^#\/?/,"").split("/");
   try{ gtag("event","page_view",{page_title:document.title, page_location:location.href, page_path:location.pathname+location.hash}); }catch(e){}
