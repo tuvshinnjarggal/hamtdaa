@@ -414,6 +414,16 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 .wbtns .btn{padding:14px 6px;font-size:15px}
 .sharechk{display:flex;gap:8px;align-items:center;font-size:14px;font-weight:700;cursor:pointer}
 .sharechk input{width:18px;height:18px;accent-color:var(--glow)}
+.toggle{display:flex;align-items:center;gap:12px;cursor:pointer;font-weight:600;font-size:15px;line-height:1.35}
+.toggle input{position:absolute;opacity:0;width:1px;height:1px}
+.toggle .sw{flex:none;width:46px;height:26px;border-radius:99px;background:var(--line);position:relative;transition:background .2s}
+.toggle .sw::after{content:"";position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform .2s}
+.toggle input:checked+.sw{background:var(--glow)}
+.toggle input:checked+.sw::after{transform:translateX(20px)}
+.toggle input:focus-visible+.sw{outline:2px solid var(--glow);outline-offset:2px}
+.prompt.flash{animation:pflash .7s ease}
+@keyframes pflash{0%{transform:scale(.9);opacity:.2}50%{transform:scale(1.06);color:var(--glow)}100%{transform:none;opacity:1}}
+.swapbar{height:4px;margin:6px 0 0;opacity:.6}
 </style>
 
 </head>
@@ -433,8 +443,8 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 <script>
 const MOODS = {
   couples:{name:"Хосуудын орой", ic:"💞", c:"var(--rose)", bg:"#2B141B", sub:"Дулаан, ойртуулах яриа", games:["nandin","spicy","wheel","match","wish","wave","picker"], desc:{wave:"Нэг нь нууц цэгийг хараад ганц үгээр санаа өгнө, нөгөө нь зүүг тааруулна. Хэр нэг долгион дээр байгаагаа шалгаарай.", picker:"Хоёулаа дэлгэц дээр хуруугаа тавь. Утас хэн нь эхлэхийг сонгох эсвэл Үнэн үү, Зориг уу асууна."}},
-  friends:{name:"Найзуудын цугларалт", ic:"🎉", c:"var(--amber)", bg:"#261F10", sub:"Инээд, өрсөлдөөн, сэжиг", games:["room","photo","draw","whisper","bomb","spy","headsup","missions","wave","shagai","picker"], groups:[["Олон утсаар · Өрөөний код",["room","photo","draw"]],["Нэг утсаар дамжуулах",["whisper","bomb","spy","headsup","missions","wave","shagai","picker"]]]},
-  family:{name:"Гэр бүл, хүүхдүүд", ic:"🏡", c:"var(--teal)", bg:"#11241A", sub:"Бүх насныханд хөгжилтэй", games:["draw","photo","shagai","bomb","charades","familyDeck","picker"], groups:[["Олон утсаар · Өрөөний код",["draw","photo"]],["Нэг утсаар дамжуулах",["shagai","bomb","charades","familyDeck","picker"]]], desc:{picker:"Бүгд дэлгэц дээр хуруугаа тавь. Утас хэн эхлэхийг сонгох эсвэл хоёр баг болгон хуваана."}},
+  friends:{name:"Найзуудын цугларалт", ic:"🎉", c:"var(--amber)", bg:"#261F10", sub:"Инээд, өрсөлдөөн, сэжиг", games:["room","photo","draw","whisper","bomb","spy","headsup","missions","wave","picker","shagai"], groups:[["Олон утсаар · Өрөөний код",["room","photo","draw"]],["Нэг утсаар дамжуулах",["whisper","bomb","spy","headsup","missions","wave","picker"]],["Уламжлалт тоглоом",["shagai"]]]},
+  family:{name:"Гэр бүл, хүүхдүүд", ic:"🏡", c:"var(--teal)", bg:"#11241A", sub:"Бүх насныханд хөгжилтэй", games:["familyDeck","bomb","charades","picker","draw","photo","shagai"], groups:[["Нэг утсаар дамжуулах",["familyDeck","bomb","charades","picker"]],["Олон утсаар · Өрөөний код",["draw","photo"]],["Уламжлалт тоглоом",["shagai"]]], desc:{picker:"Бүгд дэлгэц дээр хуруугаа тавь. Утас хэн эхлэхийг сонгох эсвэл хоёр баг болгон хуваана."}},
   strangers:{name:"Шинэ танилууд", ic:"🤝", c:"var(--lilac)", bg:"#111F2E", sub:"Мөс хайлуулах асуултууд", games:["iceDeck","missions","picker"]},
 };
 const GAMES = {
@@ -447,7 +457,7 @@ const GAMES = {
   spicy:{name:"Үнэн үү, Халуухан шийтгэл үү?", ic:"🔥", desc:"Халуухан асуултад хариул. Ичвэл сонгосон төрлөөс шийтгэл биелүүлнэ. 10 тойрог тутамд дүгнэлт.", tag:"18+"},
   wheel:{name:"Хайрын хүрд", ic:"🎡", desc:"Хоёр хүрд биеийн хэсэг ба үйлдлийг сонгоно, 10–30 секунд биелүүлнэ.", tag:"18+"},
   picker:{name:"Хурууны рулет", ic:"🖐️", desc:"Бүгд дэлгэц дээр хуруугаа тавь. Утас нэгийг сонгох, Үнэн үү Зориг уу асуух, эсвэл баг хуваана."},
-  shagai:{name:"Шагай", ic:"🦴", desc:"Утсаар шагай сэгсэрч буулга. Морь, тэмээ, хонь, ямаа аль нь буух бол?"},
+  shagai:{name:"Шагай", ic:"🦴", desc:"Ээлжээр шагай шидэж оноо цуглуул. 1 эсвэл 3 тойргийн дараа ялагч тодорно."},
   wave:{name:"Нэг долгион дээр", ic:"📡", desc:"Нэг нь нууц цэгийг харж ганц үгээр санаа өгнө, бусад нь зүүг тааруулна."},
   bomb:{name:"Бөмбөг", ic:"💣", desc:"Сэдэвт тохирох үг хэлээд утсаа дамжуул. Хэзээ дэлбэрэхийг хэн ч мэдэхгүй."},
   missions:{name:"Нууц даалгавар", ic:"🕶️", desc:"Хүн бүр нууц даалгавар авна. Бүх орой баригдалгүй биелүүлж, төгсгөлд нь илчил."},
@@ -457,7 +467,7 @@ const GAMES = {
   spy:{name:"Хэн нь тагнуул вэ?", ic:"🕵️", desc:"Бүгдэд нэг үг, тагнуулд арай өөр үг ирнэ. Ярилцаад тагнуулыг ол."},
   headsup:{name:"Толгой дээрээ", ic:"🤳", desc:"Утсаа духан дээрээ барь, найзууд чинь тайлбарлана. 60 секундэд аль болох олныг таа."},
   charades:{name:"Дүрээр үзүүл", ic:"🎭", desc:"Үгийг дуугүй дүрсэлж үзүүл, бусад нь таана. Хүүхдүүдэд зориулсан үгс."},
-  familyDeck:{name:"Ширээний яриа", ic:"🍲", desc:"Оройн хоолны үеэр бүгдээрээ хариулах хөгжилтэй асуултууд."},
+  familyDeck:{name:"Ширээний яриа", ic:"🍲", desc:"Гэр бүлийн гол тоглоом: дурсамж, хөгжилтэй, дотно гэсэн 3 уур амьсгал, AI-аар танай гэрт зориулсан асуулт."},
   iceDeck:{name:"Танилцъя", ic:"🧊", desc:"Шинэ хүмүүстэй эвгүй чимээгүй байдлыг эвдэх асуултууд."},
 };
 const DECKS = {
@@ -848,20 +858,24 @@ function bomb(from){
     <h2 style="font-size:22px">💣 Бөмбөг</h2>
     <ol class="rules"><li>Дугуйлан суу. Бөмбөг асахад сэдэв гарна.</li><li>Утсаа барьсан хүн сэдэвт тохирох үг хэлээд дараагийн хүнд дамжуулна. Хэлсэн үгийг давтаж болохгүй.</li><li>Дэлбэрэх үед утас хэний гарт байна, тэр хожигдоно.</li></ol>
     <div class="bomb" aria-hidden="true">💣</div>
+    <div class="panel">${penToggle("bomb","🎭 Дэлбэрсэн хүнд шийтгэл гаргах")}</div>
     <div class="row" style="margin-top:auto"><button class="btn" id="light">Бөмбөгийг асаах</button></div></section>`;
   document.getElementById("light").onclick = () => { audio(); noise(.5,600,.2,"lowpass"); buzz(40); run(); };
   function run(){
-    const total = 20000 + Math.random()*30000, start = Date.now(); let nextTick = 0;
+    const total = 20000 + Math.random()*30000, start = Date.now(); let nextTick = 0, lastSwap = start;
     app.innerHTML = `<section class="view">${topBar("mood:"+from, "Зогсоох")}
-      <div class="who-line">Сэдэв</div><div class="prompt" id="pr">${esc(prompt())}</div>
+      <div class="who-line">Сэдэв</div><div class="prompt" id="pr">${esc(prompt())}</div><div class="mprog swapbar"><i id="sw" style="width:0%"></i></div>
       <div class="bomb" id="bm" aria-hidden="true">💣</div>
       <p class="note" style="margin:0">Үгээ хэлээд хурдан дамжуул!</p>
       <div class="row" style="margin-top:auto"><button class="btn ghost" id="np">Сэдэв солих</button></div></section>`;
-    document.getElementById("np").onclick=()=>{ document.getElementById("pr").textContent=prompt(); };
+    const pr=document.getElementById("pr"), swb=document.getElementById("sw");
+    const swap=auto=>{ pr.textContent=prompt(); lastSwap=Date.now(); pr.classList.remove("flash"); void pr.offsetWidth; pr.classList.add("flash"); if(auto){ beep(1320,.08,.08); setTimeout(()=>beep(1760,.08,.08),90); } };
+    document.getElementById("np").onclick=()=>swap(false);
     const bm=document.getElementById("bm");
     timerId=setInterval(()=>{
       const el=Date.now()-start, left=total-el;
       if(left<=0){ stopTimer(); return explode(); }
+      const se=Date.now()-lastSwap; if(se>=20000) swap(true); swb.style.width=Math.min(100,se/200)+"%";
       const gap = left>10000?900:left>4000?550:260;
       bm.style.setProperty("--beat", gap/1000+"s");
       if(el>=nextTick){ beep(left>4000?820:1100); buzz(left>4000?12:25); nextTick=el+gap; }
@@ -874,7 +888,7 @@ function bomb(from){
     setTimeout(()=>{ o.remove();
       app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
         <div class="hero" style="text-align:center"><span class="eyebrow">Тойрог дууслаа</span><h1 style="margin-top:6px">Утас барьж байсан хүн хожигдлоо</h1></div>
-        ${penaltyHTML("Хожигдсон хүнд")}
+        ${penOn("bomb")?penaltyHTML("Хожигдсон хүнд"):""}
         <div class="row" style="margin-top:auto"><button class="btn" id="again">Дахин асаах</button></div></section>`;
       document.getElementById("again").onclick=()=>{ audio(); run(); };
     },1800);
@@ -1065,32 +1079,150 @@ function picker(from){
   pad.addEventListener("pointerup",up); pad.addEventListener("pointercancel",up);
 }
 /* ---------- Shagai ---------- */
+/* ---------- Penalty on/off switches (per game, remembered) ---------- */
+function penOn(k,def=true){ try{ const v=localStorage.getItem("penOn:"+k); return v==null?def:v==="1"; }catch(e){ return def; } }
+function penSet(k,v){ try{ localStorage.setItem("penOn:"+k,v?"1":"0"); }catch(e){} }
+function penToggle(k,label,def=true){ return `<label class="toggle"><input type="checkbox" data-pentg="${k}" ${penOn(k,def)?"checked":""}><span class="sw" aria-hidden="true"></span><span>${label}</span></label>`; }
+document.addEventListener("change",e=>{ const k=e.target&&e.target.dataset&&e.target.dataset.pentg; if(k) penSet(k,e.target.checked); });
+/* ---------- 🍲 Ширээний яриа (family main game) ---------- */
+const FAMILY_MOODS = {
+  past:{label:"👴👵 Дурсамж ба өнгөрсөн", pen:false, items:["Аав ээж минь, та хоёр анх хаана, яаж танилцсан бэ?","Эмээ, өвөө минь, та нар залуудаа ямар хувцас өмсөх дуртай байсан бэ?","Хүүхэд байхдаа хамгийн их дуртай байсан тоглоом чинь юу байсан бэ?","Таны анхны ажил юу байсан бэ? Анхны цалингаараа юу авсан бэ?","Сургуульд байхдаа хамгийн их загнуулж байсан явдал чинь юу вэ?","Таны багын хамгийн дотны найз хэн байсан, одоо хаана байгаа вэ?","Хүүхэд байхдаа том болоод хэн болно гэж мөрөөддөг байсан бэ?","Таны залуу насны хамгийн дуртай дуу, дуучин хэн байсан бэ?","Анх удаа хот эсвэл хөдөө рүү явж байсан тухайгаа яриач.","Таны хүүхэд насны Цагаан сар ямар байсан бэ?","Таны амьдралын хамгийн инээдтэй явдал юу вэ?","Залуудаа хийж байсан хамгийн зоригтой зүйл чинь юу вэ?","Аав ээжээсээ сонссон хамгийн гоё зөвлөгөө юу байсан бэ?","Таныг бага байхад гэрт тань ямар мал, тэжээвэр амьтан байсан бэ?","Хүүхэд байхдаа хамгийн их айдаг зүйл чинь юу байсан бэ?","Таны залуу үед болзоо ямар байдаг байсан бэ?","Манай гэр бүлийн хамгийн анхны зураг хаана, хэзээ авахуулсан бэ?","Бага байхдаа хамгийн дуртай хоол чинь юу байсан, хэн хийж өгдөг байсан бэ?","Таны амьдралд хамгийн их нөлөөлсөн багш хэн байсан бэ?","Таныг хүүхэд байхад утас, интернэт байгаагүй бол оройдоо юу хийдэг байсан бэ?","Таны хамгийн анхны дугуй, морь эсвэл машин ямар байсан бэ?","Хүүхдүүд чинь бага байхад хийсэн хамгийн хөөрхөн зүйл юу байсан бэ?","Таны амьдралын хамгийн аз жаргалтай өдөр аль нь байсан бэ?","Залуудаа хаашаа аялж байсан бэ? Хамгийн тод дурсамж чинь юу вэ?","Манай гэр бүлд үеэс үед дамжиж ирсэн түүх, домог байна уу?","Залуу насныхаа нэг өдөр рүү буцаж очиж болдог бол аль өдөр рүүгээ очих вэ?"]},
+  fun:{label:"😂 Хөгжилтэй гэр бүл", pen:true, items:["Манай гэр бүл кино байсан бол ямар нэртэй кино байх вэ?","Зомби гарвал гэр бүлийн хэн нь хамгийн түрүүнд баригдах вэ?","Нэг өдөр аав ээжийнхээ оронд байвал юу хийх вэ?","Манай гэрийн муур, нохой ярьдаг болбол хамгийн түрүүнд юу гэх вэ?","Гэр бүлээрээ сансарт амьдардаг бол хэн нь ямар ажил хийх вэ?","Гэр бүлийн хэн нь хамгийн чанга хурхирдаг вэ?","Бүх хоолыг ганцхан хоол болгодог бол аль хоолыг сонгох вэ?","Гэр бүлийн гишүүн бүрт супер хүч өгвөл хэнд ямар хүч өгөх вэ?","Хэн нь угаалгын өрөөнд хамгийн удаан суудаг вэ?","Нэг өдөр ямар ч дүрэм байхгүй бол юу хийх вэ?","Гэр бүлийн хэн нь хамгийн сайн бүжиглэдэг вэ? Одоо 10 секунд үзүүлээрэй!","Шоргоолж шиг жижигхэн болчихвол эхлээд юу хийх вэ?","Амьтадтай ярьж чаддаг бол аль амьтнаас юу асуух вэ?","Гэр бүлийн хэн нь хамгийн мартамхай вэ? Нэг жишээ хэлээрэй.","Манай гэрт нууц өрөө байдаг бол дотор нь юу байх вэ?","Цаг хугацааны машинтай бол динозаврын үе рүү явах уу, ирээдүй рүү явах уу?","Гэр бүлийн хамгийн инээдтэй зураг эсвэл бичлэг аль нь вэ?","Өдөр бүр зайрмаг иддэг байсан бол ямар амттайг идэх вэ?","Гэр бүлийн хэн нь хамгийн сайн тогооч вэ?","Аав эсвэл ээжийнхээ байнга хэлдэг нэг үгийг дуурайгаад үзүүлээч!","Гэр бүлийн туг зохиовол дээр нь юу зурах вэ?","Нэг өдөр үл үзэгдэгч болбол юу хийх вэ?","Гэр бүлийн хэн нь хамгийн их хоол иддэг вэ?","Манай гэр бүлд шинэ баяр зохиовол ямар баяр байх вэ?","Хамгийн их хүсдэг ч аав ээж зөвшөөрдөггүй зүйл чинь юу вэ?","Гэр бүлээрээ YouTube суваг нээвэл юуны тухай бичлэг хийх вэ?"]},
+  warm:{label:"💛 Дотно яриа", pen:false, items:["Гэр бүлийн гишүүн бүрт хэлмээр байгаа нэг талархлаа хэлээч.","Чамайг хамгийн их баярлуулдаг гэр бүлийн уламжлал юу вэ?","Энэ жил гэр бүлээрээ хамтдаа хийсэн хамгийн гоё зүйл юу байсан бэ?","Хүнд үед чинь гэр бүлийн хэн хамгийн их тусалсан бэ?","Гэр бүлдээ хэлж чадаагүй ч хэлмээр байгаа зүйл байна уу?","Манай гэр бүлийн хамгийн чухал үнэт зүйл юу гэж боддог вэ?","Ирэх жил гэр бүлээрээ хамтдаа ямар мөрөөдлөө биелүүлэх вэ?","Аав ээжээсээ өвлөж авсан нэг сайн зан чанараа хэлээч.","Хажууд чинь суугаа хүний ямар зан чанар чамд хамгийн их таалагддаг вэ?","Хамгийн сүүлд гэр бүлээрээ хөхрөтлөө инээсэн нь хэзээ байсан бэ?","Чамайг гэртээ хамгийн аюулгүй, дулаахан мэдрүүлдэг зүйл юу вэ?","Гэр бүлдээ илүү их цаг гаргахын тулд юуг өөрчилмөөр байна?","Том болоод өөрийн хүүхдүүддээ манай гэр бүлийн ямар уламжлалыг үлдээх вэ?","Энэ гэр бүлийн гишүүн болсондоо хамгийн их бахархдаг зүйл чинь юу вэ?","Гэр бүлийн хэнээс хамгийн их зүйл сурсан бэ?","Гэр бүлд чинь чамайг хамгийн сайн ойлгодог хүн хэн бэ, яагаад?","Гэр бүлдээ мөнгөөр худалдаж авах боломжгүй нэг бэлэг өгөх бол юу өгөх вэ?","Сүүлийн үед санаа зовоож байгаа зүйлээ гэр бүлтэйгээ хуваалцмаар байна уу?","Гэр бүлийн хэн нэгнээс уучлалт гуймаар зүйл байна уу?","Бие биедээ илүү сайн туслахын тулд нэг шинэ гэр бүлийн дүрэм тохирье.","Гэр бүлийн хамгийн дуртай оройн цаг чинь ямар байдаг вэ?","10 жилийн дараа манай гэр бүл ямар байгаасай гэж хүсдэг вэ?","Хажууд суугаа хүндээ “Чи миний хувьд…” гэж эхэлсэн өгүүлбэр хэлээч.","Найзууддаа гэр бүлийнхээ тухай хамгийн их юу ярьдаг вэ?","Өнөөдөр гэр бүлийнхээ хэн нэгэнд хийж өгч болох нэг жижиг сайн үйлс юу вэ?","Эмээ өвөөгөөсөө асуумаар байсан ч асууж амжаагүй асуулт байна уу?"]}
+};
+const FAMILY_ENDS = ["📸 Яг одоо гэр бүлээрээ нэг зураг дараарай!","🤗 Хажууд суугаа хүнээ тэврээд баярлалаа гэж хэлээрэй.","👏 Бүгдээрээ нэг нэг сайхан үг хэлээд хамтдаа алга ташаарай.","🍵 Хамгийн залуу нь хамгийн ахмадад цай аягалж өгөөрэй.","😂 Бүгдээрээ хамгийн инээдтэй царайгаа гаргаад 5 секунд зогсоорой.","💌 Өнөө оройн хамгийн гоё хариултыг хэн өгснийг бүгдээрээ сонгоорой.","🎶 Гэр бүлээрээ нэг дууг хамтдаа дуулаарай.","🙌 Хажууд суугаа хүнийхээ нэг сайн чанарыг чанга хэлээрэй."];
+const FAMILY_PEN = ["Тахиа шиг дуугараад ширээг нэг тойроод ир.","10 секунд хөдөлгөөнгүй хөшөө болж зогс.","Хамгийн инээдтэй царайгаа 5 секунд гарга.","Хажууд суугаа хүндээ 3 магтаал хэл.","Нэг амьтны дууг дуурай, бусад нь таана.","Нэг хөл дээрээ 10 секунд зогс.","Хамгийн дуртай дуугаа 2 мөр дуул.","Бүгдэд нэг хошин шог ярьж өг.","Хамгийн бага хүүхдийн хүссэн нэг даалгаврыг биелүүл.","Робот шиг ярьж дараагийн асуултыг уншиж өг."];
+let famMood="fun";
+function familyTalk(from){
+  stopTimer(); setGlow(MOODS[from].c);
+  try{ const m=localStorage.getItem("famMood"); if(FAMILY_MOODS[m]) famMood=m; }catch(e){}
+  let aiQ=[], aiDraft="";
+  setup();
+  function setup(){
+    app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+      <h2 style="font-size:22px">🍲 Ширээний яриа</h2>
+      <ol class="rules"><li>Утсаа ширээн дээр тавиад ээлжээрээ картыг уншиж, бүгдээрээ хариулна.</li><li>10 карт тутамд гэр бүлээрээ хийх дулаахан нэг зүйл гарна.</li><li>Шийтгэлийг асаавал хариулахаас татгалзсан хүн хөгжилтэй шийтгэл авна.</li></ol>
+      <div class="panel"><b>Өнөө оройн уур амьсгал</b><div class="wh-names" style="justify-content:flex-start">${Object.entries(FAMILY_MOODS).map(([k,v])=>`<button class="chip" data-fm="${k}" aria-pressed="${k===famMood}">${v.label}</button>`).join("")}</div>
+        ${penToggle("family","🎭 Хариулахаас татгалзвал хөгжилтэй шийтгэлтэй", FAMILY_MOODS[famMood].pen)}</div>
+      <details class="panel custom" id="famAi"><summary>✨ AI-аар манай гэр бүлд тохирсон 10 асуулт</summary>
+        <input class="ai-in" id="famAiIn" maxlength="80" placeholder="Жишээ: Аав, ээж, эмээ, 9 настай хүү" value="${esc(aiDraft)}">
+        <div class="row" style="align-items:center"><span class="cnt" id="famAiMsg" style="flex:1">${aiQ.length?`✓ ${aiQ.length} AI асуулт холилдоно`:`Өнөөдөр ${quotaLeft("helper",HELP_LIMIT())} AI оролдлого үлдсэн`}</span><button class="btn" id="famAiGo" style="flex:none">Үүсгэх</button></div></details>
+      ${ownBox("family",[["q","асуулт","Жишээ: Аав минь, таны хамгийн анхны машин ямар байсан бэ?"]])}
+      <div class="row" style="margin-top:auto"><button class="btn" id="go">Эхлэх</button></div></section>`;
+    app.querySelectorAll("[data-fm]").forEach(b=>b.onclick=()=>{ famMood=b.dataset.fm; try{ localStorage.setItem("famMood",famMood); }catch(e){} penSet("family",FAMILY_MOODS[famMood].pen);
+      app.querySelectorAll("[data-fm]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.fm===famMood)); const t=app.querySelector('[data-pentg="family"]'); if(t) t.checked=FAMILY_MOODS[famMood].pen; });
+    const inp=document.getElementById("famAiIn"), msg=document.getElementById("famAiMsg"), go=document.getElementById("famAiGo");
+    inp.oninput=()=>{ aiDraft=inp.value; };
+    go.onclick=async()=>{
+      const line=inp.value.trim(); const names=line.split(/\s*(?:,|，|、|;| ба | болон )\s*/).map(s=>s.trim().slice(0,20)).filter(Boolean).slice(0,8);
+      if(names.length<2){ msg.textContent="Гишүүдээ таслалаар тусгаарлаж бич (дор хаяж 2)"; inp.focus(); return; }
+      if(!quotaLeft("helper",HELP_LIMIT())){ msg.textContent="Өнөөдрийн AI оролдлого дууслаа"; return; }
+      go.disabled=true; go.textContent="✨ …"; msg.textContent="AI бодож байна…";
+      try{ const j=await aiCall({mode:"deck", mood:"family", level:"fun", names, context:`Гэр бүлийн оройн хоолны ширээний яриа. Бүрэлдэхүүн: ${line}. Уур амьсгал: ${FAMILY_MOODS[famMood].label}. Бүх насанд тохирсон, дулаахан, хөгжилтэй асуулт.`});
+        const cards=(j.cards||[]).filter(c=>c&&c.text).slice(0,10); if(!cards.length) throw {code:"ai_empty"};
+        quotaUse("helper"); track("ai_helper",{mode:"family_deck", n:cards.length}); beep(990,.15,.12);
+        aiQ=aiQ.concat(cards.map(c=>({t:c.text, who:c.target}))); const m=document.getElementById("famAiMsg"); if(m) m.textContent=`✓ ${cards.length} AI асуулт бэлэн. Эхлэхэд холилдоно.`; }
+      catch(e){ const m=document.getElementById("famAiMsg"); if(m) m.textContent=aiErrText(e.code); track("ai_helper_error",{mode:"family_deck", code:e.code}); }
+      finally{ const g=document.getElementById("famAiGo"); if(g){ g.disabled=false; g.textContent="Үүсгэх"; } }
+    };
+    document.getElementById("go").onclick=()=>{ const own=ownRead("family","q"); if(own.length&&ownShare("family")) sharePrompts(own.map(t=>({c:"Найзууд",t}))); play(own); };
+  }
+  function play(own){
+    const key="fam:"+famMood, M=FAMILY_MOODS[famMood];
+    const kinds=new Map(); own.forEach(t=>kinds.set(t,"Өөрсдийн асуулт")); aiQ.forEach(a=>kinds.set(a.t,a.who?`✨ AI · ${a.who}`:"✨ AI"));
+    const deck=insertEarly(weave(freshOrder(key, M.items), shuffle(aiQ.map(a=>a.t))), own); aiQ=[];
+    let i=0;
+    card();
+    function card(){
+      const q=deck[i%deck.length], k=i%10, pen=penOn("family",M.pen); markSeen(key,q);
+      app.innerHTML=`<section class="view">${topBar("mood:"+from,"Зогсоох")}
+        <div class="mprog"><i style="width:${k/10*100}%"></i></div>
+        <p class="who-line">${esc(M.label)}</p>
+        <div class="stage"><div class="card flipped"><div class="face front"></div><div class="face back-face"><span class="kind">${esc(kinds.get(q)||"Ширээний яриа")}</span><div class="q">${esc(q)}</div><div class="foot"><span>${k+1} / 10</span><span>Хамтдаа</span></div></div></div></div>
+        <div id="pen"></div>
+        <div class="row">${pen?`<button class="btn ghost" id="no">🙈 Татгалзах</button>`:""}<button class="btn" id="nx">${k<9?"Дараагийн карт":"Дуусгах ✨"}</button></div></section>`;
+      document.getElementById("nx").onclick=()=>{ i++; if(i%10===0) ending(); else card(); };
+      const no=document.getElementById("no"); if(no) no.onclick=()=>{ const t=pickFresh("famPen",FAMILY_PEN); beep(520,.15,.12);
+        document.getElementById("pen").innerHTML=`<div class="penalty"><span class="eyebrow">Хөгжилтэй шийтгэл</span><b>${esc(t)}</b></div>`; no.hidden=true; };
+    }
+    function ending(){
+      const e=pickFresh("famEnd",FAMILY_ENDS);
+      app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+        <div class="reveal"><p>${i} карт дууслаа</p><div class="who" style="font-size:24px;line-height:1.35">${esc(e)}</div></div>
+        <div class="row" style="flex-direction:column"><button class="btn" id="more">Дахиад 10 карт үргэлжлүүлэх</button><button class="btn ghost" id="re">Уур амьсгал солих</button>
+        <button class="linkbtn" id="sg" style="align-self:center">💡 Асуулт / шийтгэл санал болгох</button></div></section>`;
+      beep(660,.3,.12); track("family_round10",{mood:famMood});
+      document.getElementById("more").onclick=card; document.getElementById("re").onclick=setup; document.getElementById("sg").onclick=openSuggest;
+    }
+  }
+}
+function weave(base, extra){ const out=[]; base.forEach(x=>{ out.push(x); if(extra.length) out.push(extra.shift()); }); return out.concat(extra); }
+/* ---------- 🦴 Шагай: fixed number of throws, then a winner ---------- */
 function shagai(from){
   stopTimer(); setGlow(MOODS[from].c);
-  const hist=[];
+  let rounds=1; try{ rounds=+localStorage.getItem("shagaiR")||1; }catch(e){}
   const roll=()=>{ const r=Math.random(); let a=0; for(const s of SHAGAI){ a+=s.p; if(r<a) return s; } return SHAGAI[3]; };
-  app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
-    <h2 style="font-size:22px">🦴 Шагай</h2>
-    <ol class="rules"><li>Ээлжээрээ утсаа авч "Сэгсрэх" товчийг дар.</li><li>Буусан морь бүр нэг оноо. Хамгийн түрүүнд 10 морь цуглуулсан хүн хожно.</li><li>Морь, тэмээ, хонь, ямаа дөрвүүлээ буувал Дөрвөн бэрх. Тэр хүн хүссэн хүндээ даалгавар өгнө.</li></ol>
-    <div class="shagai-row cup" id="row">${SHAGAI.map(s=>`<div class="bone"><span>${s.ic}</span><small>${s.n}</small></div>`).join("")}</div>
-    <div class="verdict" id="vd" aria-live="polite">Шагайгаа сэгсэр!</div>
-    <div class="hist" id="hs"></div>
-    <div class="row" style="margin-top:auto"><button class="btn" id="toss">Сэгсрэх</button></div></section>`;
-  const row=document.getElementById("row"), vd=document.getElementById("vd");
-  document.getElementById("toss").onclick=()=>{ audio();
-    row.classList.remove("shake"); void row.offsetWidth; row.classList.add("shake");
-    for(let k=0;k<6;k++) setTimeout(()=>{ beep(300+Math.random()*500,.03,.12); noise(.05,900+Math.random()*1500,.25); },k*60); buzz([30,30,30,30,30,30,60]);
-    setTimeout(()=>{
-      const res=[roll(),roll(),roll(),roll()];
-      row.innerHTML=res.map(s=>`<div class="bone roll"><span>${s.ic}</span><small>${s.n}</small></div>`).join("");
-      const horses=res.filter(s=>s.n==="Морь").length;
-      const v = new Set(res.map(s=>s.n)).size===4 ? "Дөрвөн бэрх! Хүссэн хүндээ даалгавар өг 🎉"
-        : res.every(s=>s.n===res[0].n) ? `Дөрвөн ${res[0].n.toLowerCase()} буулаа! Ховор азтай шидэлт ✨`
-        : horses ? `${horses} морь буулаа, ${horses} оноо 🐎` : "Морь буусангүй. Дараагийн хүнд дамжуул.";
-      vd.textContent=v; beep(horses?880:440,.15,.18); buzz(horses?[80,50,80]:40);
-      hist.unshift(res.map(s=>s.ic).join("")); document.getElementById("hs").innerHTML=hist.slice(0,8).map(h=>`<span>${h}</span>`).join("");
-    },450);
-  };
+  const PTS={"Морь":4,"Тэмээ":3,"Хонь":2,"Ямаа":1};
+  const score=res=>{ if(new Set(res.map(s=>s.n)).size===4) return {p:20, v:"Дөрвөн бэрх! +20 оноо 🎉"}; const p=res.reduce((a,s)=>a+PTS[s.n],0);
+    if(res.every(s=>s.n===res[0].n)) return {p:p+4, v:`Дөрвөн ${res[0].n.toLowerCase()}! Ховор шидэлт +${p+4} ✨`}; const h=res.filter(s=>s.n==="Морь").length; return {p, v:`+${p} оноо${h?` · ${h} морь 🐎`:""}`}; };
+  setup();
+  function setup(){
+    const render=()=>{
+      app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+        <h2 style="font-size:22px">🦴 Шагай</h2>
+        <ol class="rules"><li>Хүн бүр ээлжээр утсаа авч «Сэгсрэх» дарж 4 шагай шиднэ.</li><li>Оноо: Дөрвөн бэрх 20, морь 4, тэмээ 3, хонь 2, ямаа 1.</li><li>Бүгд шидэж дуусмагц хамгийн их оноотой нь хожно.</li></ol>
+        <div class="panel"><b>Тоглогчид (2–8)</b>${namesEditor(2,8)}</div>
+        <div class="panel"><b>Хүн бүр хэдэн удаа шидэх вэ?</b><div class="wh-names" style="justify-content:flex-start">${[1,3].map(n=>`<button class="chip" data-r="${n}" aria-pressed="${n===rounds}">${n} удаа</button>`).join("")}</div></div>
+        <div class="row" style="margin-top:auto"><button class="btn" id="go">Эхлэх</button></div></section>`;
+      const get=bindNames(2,8,render);
+      app.querySelectorAll("[data-r]").forEach(b=>b.onclick=()=>{ rounds=+b.dataset.r; try{ localStorage.setItem("shagaiR",rounds); }catch(e){} app.querySelectorAll("[data-r]").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.r===rounds)); });
+      document.getElementById("go").onclick=()=>{ const n=get().slice(0,8); if(n.length<2){ alertMsg(); return; } play(n); };
+      function alertMsg(){ const g=document.getElementById("go"); g.textContent="Дор хаяж 2 нэр бич"; setTimeout(()=>{ const x=document.getElementById("go"); if(x) x.textContent="Эхлэх"; },1500); }
+    };
+    render();
+  }
+  function play(names){
+    const tot=Object.fromEntries(names.map(n=>[n,0])), last={}; let turn=0; const T=names.length*rounds;
+    show();
+    function board(){ const rows=names.map(n=>[n,tot[n]]).sort((a,b)=>b[1]-a[1]); const max=Math.max(1,...rows.map(r=>r[1]));
+      return `<div class="tally">${rows.map(([n,v],k)=>`<div class="tr2"><span>${k===0&&v>0?"👑 ":""}${esc(n)}</span><b>${v}</b><div class="bar"><i style="width:${Math.round(v/max*100)}%"></i></div></div>`).join("")}</div>`; }
+    function show(){
+      const who=names[turn%names.length], rnd=Math.floor(turn/names.length)+1;
+      app.innerHTML=`<section class="view">${topBar("mood:"+from,"Зогсоох")}
+        <div class="mprog"><i style="width:${turn/T*100}%"></i></div>
+        <p class="who-line">${rounds>1?`Тойрог ${rnd} / ${rounds} · `:""}<b style="color:var(--glow)">${esc(who)}</b>-ийн ээлж</p>
+        <div class="shagai-row cup" id="row">${SHAGAI.map(s=>`<div class="bone"><span>${s.ic}</span><small>${s.n}</small></div>`).join("")}</div>
+        <div class="verdict" id="vd" aria-live="polite">Шагайгаа сэгсэр!</div>
+        ${board()}
+        <div class="row" style="margin-top:auto" id="acts"><button class="btn" id="toss">Сэгсрэх</button></div></section>`;
+      const row=document.getElementById("row"), vd=document.getElementById("vd");
+      document.getElementById("toss").onclick=()=>{ audio(); document.getElementById("acts").innerHTML="";
+        row.classList.remove("shake"); void row.offsetWidth; row.classList.add("shake");
+        for(let k=0;k<6;k++) setTimeout(()=>{ beep(300+Math.random()*500,.03,.12); noise(.05,900+Math.random()*1500,.25); },k*60); buzz([30,30,30,30,30,30,60]);
+        setTimeout(()=>{
+          const res=[roll(),roll(),roll(),roll()], sc=score(res); tot[who]+=sc.p; last[who]=res.map(s=>s.ic).join("");
+          row.innerHTML=res.map(s=>`<div class="bone roll"><span>${s.ic}</span><small>${s.n}</small></div>`).join("");
+          vd.textContent=`${who}: ${sc.v}`; beep(sc.p>=10?990:sc.p>=7?880:520,.15,.18); buzz(sc.p>=10?[80,50,80]:40);
+          turn++;
+          const acts=document.getElementById("acts"), bd=app.querySelector(".tally"); if(bd) bd.outerHTML=board();
+          if(turn>=T){ acts.innerHTML=`<button class="btn" id="fin">🏆 Ялагчийг зарлах</button>`; document.getElementById("fin").onclick=over; }
+          else { acts.innerHTML=`<button class="btn" id="nx">Дараагийнх: ${esc(names[turn%names.length])}</button>`; document.getElementById("nx").onclick=show; }
+        },450);
+      };
+    }
+    function over(){
+      const rows=names.map(n=>[n,tot[n]]).sort((a,b)=>b[1]-a[1]), top=rows[0][1], wins=rows.filter(r=>r[1]===top).map(r=>r[0]);
+      const title = wins.length>1 ? `Тэнцлээ: ${wins.join(", ")}` : wins[0];
+      app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+        <div class="hero" style="text-align:center"><span class="eyebrow">🦴 Шагай · Ялагч</span><h1 style="margin-top:6px">🏆 ${esc(title)}</h1><p style="margin:0">${top} оноо</p></div>
+        ${board()}
+        <div class="row" style="flex-direction:column;margin-top:auto"><button class="btn story" id="st">📸 Story зураг хадгалах</button><button class="btn" id="again">Дахин тоглох</button><button class="btn ghost" id="re">Тоглогч солих</button></div></section>`;
+      beep(990,.3,.15); buzz([60,40,120]); track("shagai_done",{players:names.length, rounds});
+      document.getElementById("st").onclick=()=>shareStory({game:"Шагай", ic:"🦴", who:wins.length===1?{name:wins[0],pic:""}:undefined, big:wins.length===1?wins[0]:"Тэнцлээ", line:`${top} оноо`, sub:rows.slice(1,4).map(r=>`${r[0]} ${r[1]}`).join(" · ")||`${names.length} тоглогч`});
+      document.getElementById("again").onclick=()=>play(names);
+      document.getElementById("re").onclick=setup;
+    }
+  }
 }
 /* ---------- Wavelength-style ---------- */
 function wave(from){
@@ -1430,6 +1562,7 @@ const STORY_THEMES = {
 };
 const PRAISE_ANY = ["✨ Хөөрхөн {n}","🔥 Мундаг {n}","👑 Ангийн нууц од — {n}","😎 Ширээний жинхэнэ босс — {n}","🌟 Өнөө оройн од — {n}","🦁 Зоригт {n}","🍀 Азтай {n}","🧠 Тархи ухаантай {n}","💎 Үнэт эрдэнэ {n}","🎉 Үдэшлэгийн сүнс — {n}","🚀 Зогсоох аргагүй {n}","😇 Сахиусан тэнгэр {n}","🐺 Чоно шиг ухаалаг {n}","🥇 Аварга {n}","💅 Гоёмсог {n}","🫶 Бүгдийн хайртай {n}"];
 const PRAISE_GAME = {
+  "Шагай":["🦴 Шагайн аварга — {n}","🐎 Морьтон {n}","🍀 Азтай {n}"],
   "Шивнээ":["🤫 Хамгийн аюултай нууцлаг дүр — {n}","👀 Бүгдийн нүдэнд өртсөн {n}","🕵️ Нууцын эзэн {n}","🌶️ Хамгийн халуун сэдэв — {n}"],
   "Хэн нь вэ?":["🗳️ Ард түмний сонголт — {n}","👑 Олны танил {n}","📣 Санал хураалтын хаан — {n}","🏆 Нэр дэвшигч №1 — {n}"],
   "Утасны зураач":["🎨 Монголын шинэ Пикассо — {n}","🖌️ Алтан бийр {n}","🖼️ Галерейн од — {n}","✏️ Нэг зурлагаар гайхуулагч {n}"],
@@ -1787,7 +1920,8 @@ function whisper(from){
       <h2 style="font-size:22px">🤫 Шивнээ</h2>
       <ol class="rules"><li>Утас барьсан хүн нууц асуултыг ганцаараа уншина.</li><li>Хариулт болох хүний нэрийг <b>чангаар</b> хэлнэ. Асуултыг хэлэхгүй!</li><li>Нэрлэгдсэн хүн асуултыг мэдмээр бол зоос шиднэ, эсвэл шийтгэл хүлээгээд мэднэ. Дараагийн ээлжинд тэр хүн асуулт уншина.</li></ol>
       <div class="panel"><b>Хэн хэн байна?</b><div class="wh-names" style="justify-content:flex-start">${groupChips(whLevel)}</div>
-        ${whLevel==="couple"?`<span class="cnt" style="font-size:13px;color:var(--ink-soft)">Краш, үнсэлт, үерхлийн асуултууд гарахгүй.</span>`:""}</div>
+        ${whLevel==="couple"?`<span class="cnt" style="font-size:13px;color:var(--ink-soft)">Краш, үнсэлт, үерхлийн асуултууд гарахгүй.</span>`:""}
+        ${penToggle("whisper","🎭 «Шийтгэл хүлээгээд мэдэх» сонголт")}</div>
       <div class="panel"><b>Тоглогчид</b>${namesEditor(3,12)}</div>
       ${aiHelperBox("whisper",{title:"Бидний тухай AI асуулт нэмэх", placeholder:"Жишээ: 12Б анги, маргааш зугаалгатай, Болд үргэлж хоцордог", btn:"Үүсгэх"})}
       ${customBox("whisper")}
@@ -1837,7 +1971,7 @@ function whisper(from){
         <div id="res" style="width:100%"></div></div>
         <div class="row" id="acts" style="flex-direction:column;gap:10px">
           <button class="btn" id="coin">🪙 Зоос шидэх</button>
-          <button class="btn ghost" id="pen">😈 Шийтгэл хүлээгээд мэдэх</button>
+          ${penOn("whisper")?`<button class="btn ghost" id="pen">😈 Шийтгэл хүлээгээд мэдэх</button>`:""}
           <button class="btn skip" id="skip">🤐 Мэдэхгүй өнгөрөх</button></div></section>`;
       const res=document.getElementById("res"), acts=document.getElementById("acts");
       const reveal=extra=>`${extra||""}<div class="panel" style="margin-top:12px"><span class="eyebrow">Асуулт байсан нь</span><div class="wh-q">${esc(q)}</div></div>`;
@@ -1845,7 +1979,7 @@ function whisper(from){
       document.getElementById("coin").onclick=()=>{ acts.innerHTML=""; res.innerHTML=`<span class="coin spin">🪙</span>`; for(let k=0;k<6;k++) setTimeout(()=>{ beep(1800+k*90,.025,.07); noise(.03,4000,.12); },k*120); buzz([15,105,15,105,15,105,15]);
         setTimeout(()=>{ const lucky=Math.random()<.5; beep(lucky?990:300,.2,.15); buzz(lucky?[40,40,120]:250);
           done(lucky?reveal(`<h2 style="font-size:20px">Сүлд буулаа! Асуулт илчлэгдлээ</h2>`):`<h2 style="font-size:20px">Тоо буулаа. Асуулт нууц хэвээр 🤐</h2>`); },950); };
-      document.getElementById("pen").onclick=()=>done(penaltyHTML("Шийтгэл: "+who)+reveal());
+      const pb=document.getElementById("pen"); if(pb) pb.onclick=()=>done(penaltyHTML("Шийтгэл: "+who)+reveal());
       document.getElementById("skip").onclick=()=>{ reader=who; pass(); };
     };
     pass();
@@ -2682,13 +2816,14 @@ function onPhotoMsg(m){
 let curGame=null;
 const HOW = {
   spy:"Утсыг дамжуулж үгээ нууцаар хар. Бүгд ижил үгтэй, ганц тагнуул л өөр үгтэй. Ээлжээр нэг нэг сэжүүр хэлээд тагнуулыг санал хураан ол.",
-  bomb:"Гарсан сэдэвт тохирох үг хэлээд утсаа хажуугийн хүнд дамжуул. Хэний гарт дэлбэрнэ, тэр хүн шийтгэл авна.",
+  bomb:"Гарсан сэдэвт тохирох үг хэлээд утсаа хажуугийн хүнд дамжуул. Сэдэв 20 секунд тутам өөрөө солигдоно. Хэний гарт дэлбэрнэ, тэр хүн хожигдоно.",
+  familyDeck:"Уур амьсгалаа сонгоод картыг ээлжээр чанга уншиж, бүгдээрээ хариулна. 10 карт тутамд жижиг дулаан даалгавар гарна.",
   missions:"Хүн бүр утсаа ганцаараа хараад нууц даалгавраа авна. Оройн турш баригдалгүй биелүүл. Төгсгөлд хэн хэдийг биелүүлснийг тоолно.",
   match:"Эхлээд нэг нь бүх асуултад өөрийнхөө тухай нууцаар хариулна. Дараа нь нөгөө нь бүгдийг нь таана. Төгсгөлд хэдэн хувь таарсныг харна.",
   wish:"Хоёулаа ээлжээр санаа бүрийг нууцаар ❤️ / 🤔 / ✕ гэж тэмдэглэнэ. Төгсгөлд зөвхөн хоёулаа хүссэн зүйлс гарна.",
   nandin:"Карт бүр дээр нэг нь асууж, нөгөө нь хариулна. 10 карт тутамд дулаахан үйлдэл хийгээд хүсвэл үргэлжлүүлнэ.",
   spicy:"Ээлжээр халуухан асуултад үнэнээр хариул. Ичвэл шийтгэл биелүүл. 10 тойрог тутамд хамгийн зоригтойг тодруулна.",
-  shagai:"Ээлжээр утсаа аваад «Сэгсрэх» дар. Морь буувал оноо авна. Хамгийн түрүүнд 10 морь цуглуулсан хүн хожно.",
+  shagai:"Ээлжээр утсаа аваад «Сэгсрэх» дар. Дөрвөн бэрх 20, морь 4, тэмээ 3, хонь 2, ямаа 1 оноо. Бүгд шидэж дуусахад хамгийн их оноотой нь хожно.",
   wave:f=>`Нэг нь нууц цэгийг хараад тэр цэгт тохирох ганц үг хэлнэ. ${f==="couples"?"Нөгөө нь":"Бусад нь ярилцаж"} зүүг тэр цэг рүү тааруулна. Ойртох тусам оноо их.`,
   whisper:"Утас барьсан хүн нууц асуултыг ганцаараа уншаад, хариулт болох хүний нэрийг чанга хэлнэ. Нэрлэгдсэн хүн асуултыг мэдмээр бол зоос шиднэ.",
   room:"Нэг хүн өрөө нээнэ, бусад нь кодоор утаснаасаа нэгдэнэ. Асуулт гарахад тохирох хүнийхээ нэр дээр нууцаар санал өгнө.",
@@ -2708,7 +2843,7 @@ new MutationObserver(applyHow).observe(app,{childList:true});
 /* ---------- Routing ---------- */
 function startGame(id, from){
   curFrom=from; curGame=id;
-  if(DECKS[id]) deck(id,from); else if(id==="spy") spySetup(from); else if(id==="headsup") huPick(from,false); else if(id==="charades") huPick(from,true); else if(id==="bomb") bomb(from); else if(id==="missions") missions(from); else if(id==="match") match(from); else if(id==="wish") wish(from); else if(id==="picker") picker(from); else if(id==="shagai") shagai(from); else if(id==="wave") wave(from); else if(id==="nandin") nandin(from); else if(id==="spicy") spicy(from); else if(id==="wheel") wheel(from); else if(id==="whisper") whisper(from); else if(id==="ai") aiDeck(from); else if(id==="room") roomMenu(from); else if(id==="draw") drawMenu(from); else if(id==="photo") photoMenu(from); else return false;
+  if(id==="familyDeck") familyTalk(from); else if(DECKS[id]) deck(id,from); else if(id==="spy") spySetup(from); else if(id==="headsup") huPick(from,false); else if(id==="charades") huPick(from,true); else if(id==="bomb") bomb(from); else if(id==="missions") missions(from); else if(id==="match") match(from); else if(id==="wish") wish(from); else if(id==="picker") picker(from); else if(id==="shagai") shagai(from); else if(id==="wave") wave(from); else if(id==="nandin") nandin(from); else if(id==="spicy") spicy(from); else if(id==="wheel") wheel(from); else if(id==="whisper") whisper(from); else if(id==="ai") aiDeck(from); else if(id==="room") roomMenu(from); else if(id==="draw") drawMenu(from); else if(id==="photo") photoMenu(from); else return false;
   return true;
 }
 function nav(hash){ if(location.hash===hash) route(); else location.hash=hash; }
