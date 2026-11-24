@@ -395,6 +395,8 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 .pill-btn{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:999px;background:#1C1C23;color:#fff;font-weight:700;font-size:14px;border:0;cursor:pointer}
 .studio select{flex:1;min-width:0;padding:10px 12px;border-radius:999px;background:#1C1C23;color:#fff;border:0;font:inherit;font-weight:700;font-size:14px}
 .sg-link{align-self:center;margin-top:4px}
+.launch{align-self:flex-start;background:rgba(255,214,10,.12);color:#FFE45C;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px}
+.launch b{color:#FFD60A}
 </style>
 
 </head>
@@ -633,6 +635,7 @@ function home(){
   app.innerHTML = `<section class="view">
     <div class="top"><span class="brand">Хамт<b>даа</b></span><div class="tr"><span class="eyebrow">Нэг утас · олон хүн</span>${sndBtn()}${authBtn()}</div></div>
     <div class="hero"><h1>Өнөөдөр ямар орой вэ?</h1><p>Нөхцөл байдлаа сонго, бид тохирох тоглоомыг санал болгоно.</p></div>
+    <div class="launch">💎 Нээлтийн хугацаанд бүх тоглоом <b>үнэгүй</b></div>
     <button class="btn soft" data-go-hash="#/guide" style="flex:none"><span class="spark">✨</span> Юу тоглох вэ? <span class="sub">AI Хөтчөөс асуу</span></button>
     <div class="moods">${Object.entries(MOODS).map(([k,m])=>`
       <button class="mood" style="--c:${m.c};--bg:${m.bg}" data-mood="${k}"><h3>${m.name}</h3><small>${m.sub}</small><span class="ic" aria-hidden="true">${m.ic}</span></button>`).join("")}
@@ -651,7 +654,7 @@ function mood(k){
   curFrom=k;
   stopTimer(); const m = MOODS[k]; setGlow(m.c);
   app.innerHTML = `<section class="view">${topBar("home","Нүүр")}
-    <div class="hero"><span class="eyebrow">${m.ic} ${m.name}</span><h1 style="margin-top:6px">Тоглоомоо сонго</h1></div>
+    <div class="hero"><span class="eyebrow">${m.ic} ${m.name}</span><h1 style="margin-top:6px">Тоглоомоо сонго</h1></div>${k==="couples"?`<div class="launch">💎 Нээлтийн хугацаанд үнэгүй</div>`:""}
     ${(k==="couples"||k==="friends")?stakesPanel():""}
     ${(m.groups||[[null,m.games]]).map(([title,ids])=>`${title?`<h4 class="ghead">${title}</h4>`:""}<div class="games">${ids.map(g=>{const G=GAMES[g];return `
       <button class="game" data-game="${g}" data-from="${k}"><span class="ic">${G.ic}</span><div><h3>${G.name}${tagsHTML(G)}</h3><p>${(m.desc&&m.desc[g])||G.desc}</p></div><span class="chev" aria-hidden="true">›</span></button>`}).join("")}

@@ -1,5 +1,5 @@
 /* Хамтдаа service worker: the app shell works offline; the page itself is network-first so updates show up right away. */
-const VERSION = "hamtdaa-v20";
+const VERSION = "hamtdaa-v21";
 const SHELL = ["./", "./index.html", "./manifest.json", "./icon-192.png", "./icon-512.png", "./apple-touch-icon.png", "./qr.png", "./vendor/supabase.js", "./vendor/qrcode.js"];
 
 self.addEventListener("install", e => {
