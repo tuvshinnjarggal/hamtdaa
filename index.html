@@ -397,6 +397,8 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 .sg-link{align-self:center;margin-top:4px}
 .launch{align-self:flex-start;background:rgba(255,214,10,.12);color:#FFE45C;font-weight:700;font-size:14px;padding:8px 14px;border-radius:999px}
 .launch b{color:#FFD60A}
+.opts .opt.right{background:#22C55E;color:#052E16;border-color:#22C55E}
+.opts .opt.wrong{background:#3A1520;color:#fff;border-color:#FF3B5C}
 </style>
 
 </head>
@@ -959,7 +961,7 @@ function match(from){
             if(!document.getElementById("nx").hidden) return;
             const g=+x.dataset.g, ok=g===ans; if(ok) hits++;
             app.querySelector(`[data-g="${ans}"]`).classList.add("right"); if(!ok) x.classList.add("wrong");
-            document.getElementById("fb").innerHTML = ok?"Таарлаа! 🎉":`Таарсангүй. Яагаад тэгж хариулсныг нь асуугаад ярилц.<div style="margin-top:10px">${penaltyHTML("Таамаглагчид")}</div>`;
+            document.getElementById("fb").innerHTML = ok?"Таарлаа! 🎉":`Таарсангүй. Яагаад тэгж хариулсныг нь асуугаад ярилц.<div style="margin-top:10px">${penaltyHTML(from==="couples"?"Таамаглагч":"Таамаглагчид")}</div>`;
             const nx=document.getElementById("nx"); nx.hidden=false; nx.onclick=()=>{ i++; ask(); };
           });
         };
@@ -1110,7 +1112,7 @@ function wave(from){
       ${spec}${dial(target,g,true)}
       <div class="pct" style="font-size:56px">${100-d}%</div>
       <p class="verdict" style="margin:0">${pts===4?"Тархины долгион нэг дээр! +4":pts?`Ойрхон байлаа, +${pts}`:"Өөр өөр долгион дээр байна 😅"}</p>
-      <p class="note" style="margin:0">Нууц цэг ${target}%, таны таамаг ${g}%. Нийт оноо: ${score} (${round} тойрог)</p>${pts?"":penaltyHTML("Таамагласан хүмүүст")}
+      <p class="note" style="margin:0">Нууц цэг ${target}%, таны таамаг ${g}%. Нийт оноо: ${score} (${round} тойрог)</p>${pts?"":penaltyHTML(from==="couples"?"Таамагласан хүнд":"Таамагласан хүмүүст")}
       <div class="row" style="margin-top:auto;flex-direction:column"><button class="btn" id="nx">Дараагийн тойрог</button><button class="btn story" id="st">📸 Story зураг хадгалах</button></div></section>`;
     beep(pts?990:330,.2,.18); buzz(pts?[50,40,90]:200);
     document.getElementById("nx").onclick=start;
