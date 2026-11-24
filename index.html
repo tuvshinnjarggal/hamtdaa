@@ -399,6 +399,21 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 .launch b{color:#FFD60A}
 .opts .opt.right{background:#22C55E;color:#052E16;border-color:#22C55E}
 .opts .opt.wrong{background:#3A1520;color:#fff;border-color:#FF3B5C}
+
+/* couples v3 */
+.mprog{height:6px;border-radius:99px;background:rgba(255,255,255,.08);overflow:hidden}
+.mprog i{display:block;height:100%;background:var(--glow);border-radius:99px;transition:width .25s}
+.mlist{display:flex;flex-direction:column;gap:8px}
+.mrow{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:14px;background:#1C1C23;text-align:left}
+.mrow .mi{flex:none;width:24px;text-align:center;font-weight:800}
+.mrow.ok .mi{color:#4ADE80}.mrow.no .mi{color:#FF5C77}
+.mrow b{display:block;font-size:14px;line-height:1.35}
+.mrow small{display:block;color:var(--ink-soft);font-size:13px;margin-top:2px}
+.wishcard{background:#18181D;border-radius:22px;padding:34px 22px;min-height:180px;display:grid;place-items:center;text-align:center;font-family:var(--display);font-weight:800;font-size:24px;line-height:1.3}
+.wbtns{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.wbtns .btn{padding:14px 6px;font-size:15px}
+.sharechk{display:flex;gap:8px;align-items:center;font-size:14px;font-weight:700;cursor:pointer}
+.sharechk input{width:18px;height:18px;accent-color:var(--glow)}
 </style>
 
 </head>
@@ -417,7 +432,7 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 
 <script>
 const MOODS = {
-  couples:{name:"Хосуудын орой", ic:"💞", c:"var(--rose)", bg:"#2B141B", sub:"Дулаан, ойртуулах яриа", games:["nandin","spicy","wheel","match","wave","picker"], desc:{wave:"Нэг нь нууц цэгийг хараад ганц үгээр санаа өгнө, нөгөө нь зүүг тааруулна. Хэр нэг долгион дээр байгаагаа шалгаарай.", picker:"Хоёулаа дэлгэц дээр хуруугаа тавь. Утас хэн нь эхлэхийг сонгох эсвэл Үнэн үү, Зориг уу асууна."}},
+  couples:{name:"Хосуудын орой", ic:"💞", c:"var(--rose)", bg:"#2B141B", sub:"Дулаан, ойртуулах яриа", games:["nandin","spicy","wheel","match","wish","wave","picker"], desc:{wave:"Нэг нь нууц цэгийг хараад ганц үгээр санаа өгнө, нөгөө нь зүүг тааруулна. Хэр нэг долгион дээр байгаагаа шалгаарай.", picker:"Хоёулаа дэлгэц дээр хуруугаа тавь. Утас хэн нь эхлэхийг сонгох эсвэл Үнэн үү, Зориг уу асууна."}},
   friends:{name:"Найзуудын цугларалт", ic:"🎉", c:"var(--amber)", bg:"#261F10", sub:"Инээд, өрсөлдөөн, сэжиг", games:["room","photo","draw","whisper","bomb","spy","headsup","missions","wave","shagai","picker"], groups:[["Олон утсаар · Өрөөний код",["room","photo","draw"]],["Нэг утсаар дамжуулах",["whisper","bomb","spy","headsup","missions","wave","shagai","picker"]]]},
   family:{name:"Гэр бүл, хүүхдүүд", ic:"🏡", c:"var(--teal)", bg:"#11241A", sub:"Бүх насныханд хөгжилтэй", games:["draw","photo","shagai","bomb","charades","familyDeck","picker"], groups:[["Олон утсаар · Өрөөний код",["draw","photo"]],["Нэг утсаар дамжуулах",["shagai","bomb","charades","familyDeck","picker"]]], desc:{picker:"Бүгд дэлгэц дээр хуруугаа тавь. Утас хэн эхлэхийг сонгох эсвэл хоёр баг болгон хуваана."}},
   strangers:{name:"Шинэ танилууд", ic:"🤝", c:"var(--lilac)", bg:"#111F2E", sub:"Мөс хайлуулах асуултууд", games:["iceDeck","missions","picker"]},
@@ -428,15 +443,16 @@ const GAMES = {
   photo:{name:"Зураг таах рулет", ic:"📸", desc:"Олон утсаар: хүн бүр утаснаасаа хэдэн зураг сонгоно. Зураг бүх утсан дээр 8 секунд гарахад хэнийх болохыг хамгийн хурдан таасан нь ялна. Зураг серверт хадгалагдахгүй.", tag:"Шинэ", tag2:"Олон утас"},
   draw:{name:"Утасны зураач", ic:"🎨", desc:"Олон утсаар: нэг нь утсан дээрээ зурж, бусад нь өөрсдийн утсан дээр шууд харж таана. Эсвэл «Гинжин зураг»: бичсэн өгүүлбэр зураг болж, зураг таамаг болж хувирна.", tag:"Шинэ", tag2:"Олон утас"},
   whisper:{name:"Шивнээ", ic:"🤫", desc:"Нууц асуултыг ганцаараа уншаад хариулт болох хүний нэрийг чанга хэл. Тэр хүн асуултыг мэдэхийн тулд зоос шидэх үү, шийтгэл хүлээх үү?"},
-  nandin:{name:"Нандин", ic:"🌸", desc:"Гурван үе шаттай орой: бидний эхлэл, хэлж чадаагүй үг, нүд рүү харсан 30 секундын талархал."},
-  spicy:{name:"Үнэн үү, Халуухан шийтгэл үү?", ic:"🔥", desc:"Халуухан асуултад хариул. Ичвэл санамсаргүй шийтгэл биелүүлнэ.", tag:"18+"},
-  wheel:{name:"Хайрын хүрд", ic:"🎡", desc:"Хоёр хүрд биеийн хэсэг ба үйлдлийг сонгоно, 60 секунд биелүүлнэ.", tag:"18+"},
+  nandin:{name:"Нандин", ic:"🌸", desc:"Бие биеэ илүү гүн таних 120 гаруй асуулт. 10 карт тутамд дулаахан нэг үйлдэл гарна."},
+  spicy:{name:"Үнэн үү, Халуухан шийтгэл үү?", ic:"🔥", desc:"Халуухан асуултад хариул. Ичвэл сонгосон төрлөөс шийтгэл биелүүлнэ. 10 тойрог тутамд дүгнэлт.", tag:"18+"},
+  wheel:{name:"Хайрын хүрд", ic:"🎡", desc:"Хоёр хүрд биеийн хэсэг ба үйлдлийг сонгоно, 10–30 секунд биелүүлнэ.", tag:"18+"},
   picker:{name:"Хурууны рулет", ic:"🖐️", desc:"Бүгд дэлгэц дээр хуруугаа тавь. Утас нэгийг сонгох, Үнэн үү Зориг уу асуух, эсвэл баг хуваана."},
   shagai:{name:"Шагай", ic:"🦴", desc:"Утсаар шагай сэгсэрч буулга. Морь, тэмээ, хонь, ямаа аль нь буух бол?"},
   wave:{name:"Нэг долгион дээр", ic:"📡", desc:"Нэг нь нууц цэгийг харж ганц үгээр санаа өгнө, бусад нь зүүг тааруулна."},
   bomb:{name:"Бөмбөг", ic:"💣", desc:"Сэдэвт тохирох үг хэлээд утсаа дамжуул. Хэзээ дэлбэрэхийг хэн ч мэдэхгүй."},
   missions:{name:"Нууц даалгавар", ic:"🕶️", desc:"Хүн бүр нууц даалгавар авна. Бүх орой баригдалгүй биелүүлж, төгсгөлд нь илчил."},
-  match:{name:"Хэр сайн мэддэг вэ?", ic:"🎯", desc:"Нэг нь өөрийнхөө тухай нууцаар хариулна, нөгөө нь таана. Хэдэн хувь таарахыг үз."},
+  match:{name:"Хэр сайн мэддэг вэ?", ic:"🎯", desc:"Нэг нь 5 эсвэл 10 асуултад нууцаар хариулна, нөгөө нь бүгдийг таана. Хэдэн хувь таарахыг үз."},
+  wish:{name:"Нууц хүсэл", ic:"❤️", desc:"Хоёулаа нууцаар ❤️ / 🤔 / ✕ дарна. Зөвхөн хоёулаа хүссэн зүйл л илчлэгдэнэ.", tag:"Шинэ"},
   couplesDeck:{name:"Бид хоёр", ic:"🕯️", desc:"Гурван түвшний асуулт, даалгавар. Эхнээсээ ойртох тусам гүнзгийрнэ.", tag:"18+ хэсэгтэй"},
   spy:{name:"Хэн нь тагнуул вэ?", ic:"🕵️", desc:"Бүгдэд нэг үг, тагнуулд арай өөр үг ирнэ. Ярилцаад тагнуулыг ол."},
   headsup:{name:"Толгой дээрээ", ic:"🤳", desc:"Утсаа духан дээрээ барь, найзууд чинь тайлбарлана. 60 секундэд аль болох олныг таа."},
@@ -594,9 +610,9 @@ const SPICY_TRUTHS = ()=>DECKS.couplesDeck.levels[2].items.filter(q=>!q.startsWi
 const SPICY_PEN = ["Хамтрагчийнхаа хүзүүн дээр 30 секунд үнс.","Нэг хувцсаа тайл.","Хамтрагчдаа 1 минут мөрний иллэг хий.","Хамтрагчийнхаа чихэнд хамгийн халуун хүслээ шивнэ.",
   "Хамтрагчийнхаа нүдийг боогоод 3 газар үнс.","Хамтрагчийнхаа уруул дээр 10 секунд үнс.","Хамтрагчдаа зориулж 20 секунд бүжиглэ.","Хамтрагчийнхаа гарыг удаан илбэ.","Хамтрагчаа 30 секунд тэвэрч чихэнд нь амьсгал."];
 const WHEEL = {
-  "Дулаан":{parts:["Гар","Хацар","Дух","Мөр","Үс"], acts:["Илбэх","Үнсэх","Массаж хийх","Хуруугаар зүрх зурах"]},
-  "Сээтэгнэл":{parts:["Хүзүү","Чих","Уруул","Нуруу","Бугуй"], acts:["Үнсэх","Шивнэх","Массаж хийх","Амьсгалаар хүрэх"]},
-  "Халуухан":{parts:["Уруул","Хүзүү","Нуруу","Гуя","Чих"], acts:["Үнсэх","Массаж хийх","Нүдийг нь боогоод таалгах","Удаан илбэх"]},
+  "Дулаан":{parts:["Гар","Хацар","Дух","Мөр","Үс"], acts:[["Илбэх",20],["Үнсэх",10],["Массаж хийх",30],["Хуруугаар зүрх зурах",10],["Зөөлөн тэврэх",20]]},
+  "Сээтэгнэл":{parts:["Хүзүү","Чих","Уруул","Нуруу","Бугуй"], acts:[["Үнсэх",10],["Шивнэх",10],["Массаж хийх",30],["Амьсгалаар хүрэх",20],["Хуруугаар зурах",20]]},
+  "Халуухан":{parts:["Уруул","Хүзүү","Нуруу","Гуя","Чих"], acts:[["Үнсэх",10],["Массаж хийх",30],["Нүдийг нь боогоод таалгах",30],["Удаан илбэх",20],["Зөөлөн хазах",10]]},
 };
 
 const app = document.getElementById("app");
@@ -929,57 +945,74 @@ function missions(from){
 /* ---------- How well do you know ---------- */
 function match(from){
   stopTimer(); setGlow(MOODS[from].c);
-  let a="Бат", b="Сараа";
-  app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
-    <h2 style="font-size:22px">🎯 Хэр сайн мэддэг вэ?</h2>
-    <ol class="rules"><li>Ээлжээрээ нэг нь өөрийнхөө тухай асуултад нууцаар хариулна.</li><li>Утсаа дамжуулахад нөгөө нь түүний хариултыг таана.</li><li>10 асуултын дараа хэдэн хувь таарсныг харна.</li></ol>
-    <div class="panel names"><label for="ma">Нэгдүгээр хүн</label><input id="ma" value="${esc(a)}" maxlength="16"><label for="mb">Хоёрдугаар хүн</label><input id="mb" value="${esc(b)}" maxlength="16"></div>
-    <div class="row" style="margin-top:auto"><button class="btn" id="go">Эхлэх</button></div></section>`;
-  document.getElementById("go").onclick=()=>{
-    a=document.getElementById("ma").value.trim()||"Нэгдүгээр хүн"; b=document.getElementById("mb").value.trim()||"Хоёрдугаар хүн";
-    const qs=freshOrder("match",MATCH_Q).slice(0,10); qs.forEach(q=>markSeen("match",q)); let i=0, hits=0;
-    ask();
-    function ask(){
-      if(i>=qs.length) return result();
-      const [q,opts]=qs[i], self=i%2?b:a, guesser=i%2?a:b;
-      app.innerHTML = `<section class="view">${topBar("mood:"+from, "Зогсоох")}
-        <p class="who-line">${i+1} / ${qs.length} · Зөвхөн <b style="color:var(--glow)">${esc(self)}</b> хар</p>
+  let N=10; try{ N=+localStorage.getItem("matchN")||10; }catch(e){}
+  setup();
+  function setup(){
+    app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+      <h2 style="font-size:22px">🎯 Хэр сайн мэддэг вэ?</h2>
+      <ol class="rules"><li>Нэгдүгээр хүн бүх асуултад өөрийнхөө тухай нууцаар дараалан хариулна.</li><li>Дараа нь утсаа хоёрдугаар хүнд өгнө. Тэр нөгөөгийнхөө хариултыг бүгдийг нь таана.</li><li>Төгсгөлд хэдэн хувь таарсан, аль асуулт дээр зөрснөө харна.</li></ol>
+      ${namesPanel()}
+      <div class="panel"><b>Хэдэн асуулт?</b><div class="wh-names" style="justify-content:flex-start">${[5,10].map(n=>`<button class="chip" data-n="${n}" aria-pressed="${n===N}">${n} асуулт</button>`).join("")}</div></div>
+      <div class="row" style="margin-top:auto"><button class="btn" id="go">Эхлэх</button></div></section>`;
+    app.querySelectorAll("[data-n]").forEach(b=>b.onclick=()=>{ N=+b.dataset.n; try{ localStorage.setItem("matchN",N); }catch(e){} app.querySelectorAll("[data-n]").forEach(x=>x.setAttribute("aria-pressed",+x.dataset.n===N)); });
+    document.getElementById("go").onclick=()=>{ const [a,b]=namesRead(["Нэгдүгээр хүн","Хоёрдугаар хүн"]); run(a,b); };
+  }
+  function run(a,b){
+    const qs=freshOrder("match",MATCH_Q).slice(0,N); qs.forEach(q=>markSeen("match",q));
+    const ans=[], gs=[]; let i=0;
+    answer();
+    function answer(){
+      if(i>=N){ i=0; return handoff(); }
+      const [q,opts]=qs[i];
+      app.innerHTML=`<section class="view">${topBar("mood:"+from,"Зогсоох")}
+        <div class="mprog"><i style="width:${i/N*100}%"></i></div>
+        <p class="who-line">${i+1} / ${N} · Зөвхөн <b style="color:var(--glow)">${esc(a)}</b> хар</p>
         <div class="qline">${esc(q)}</div><p class="note" style="margin:0">Өөрийнхөө тухай үнэнээр хариул</p>
-        <div class="opts">${opts.map((o,n)=>`<button class="opt" data-o="${n}">${esc(o)}</button>`).join("")}</div></section>`;
-      app.querySelectorAll("[data-o]").forEach(x=>x.onclick=()=>pass(+x.dataset.o));
-      function pass(ans){
-        app.innerHTML = `<section class="view">${topBar("mood:"+from, "Зогсоох")}
-          <div class="reveal"><p>Утсыг дамжуул</p><div class="who">${esc(guesser)}</div><button class="btn" id="ready" style="flex:none;width:100%">Би бэлэн</button></div></section>`;
-        document.getElementById("ready").onclick=()=>{
-          app.innerHTML = `<section class="view">${topBar("mood:"+from, "Зогсоох")}
-            <p class="who-line">${esc(guesser)}, таамагла: <b style="color:var(--glow)">${esc(self)}</b> юу гэж хариулсан бэ?</p>
-            <div class="qline">${esc(q)}</div>
-            <div class="opts">${opts.map((o,n)=>`<button class="opt" data-g="${n}">${esc(o)}</button>`).join("")}</div>
-            <p class="note" id="fb" style="min-height:3em"></p>
-            <div class="row" style="margin-top:auto"><button class="btn" id="nx" hidden>Дараагийн асуулт</button></div></section>`;
-          app.querySelectorAll("[data-g]").forEach(x=>x.onclick=()=>{
-            if(!document.getElementById("nx").hidden) return;
-            const g=+x.dataset.g, ok=g===ans; if(ok) hits++;
-            app.querySelector(`[data-g="${ans}"]`).classList.add("right"); if(!ok) x.classList.add("wrong");
-            document.getElementById("fb").innerHTML = ok?"Таарлаа! 🎉":`Таарсангүй. Яагаад тэгж хариулсныг нь асуугаад ярилц.<div style="margin-top:10px">${penaltyHTML(from==="couples"?"Таамаглагч":"Таамаглагчид")}</div>`;
-            const nx=document.getElementById("nx"); nx.hidden=false; nx.onclick=()=>{ i++; ask(); };
-          });
-        };
-      }
+        <div class="opts">${opts.map((o,n)=>`<button class="opt" data-o="${n}">${esc(o)}</button>`).join("")}</div>
+        ${i>0?`<button class="linkbtn" id="back" style="align-self:center">‹ Өмнөх асуулт руу буцах</button>`:""}</section>`;
+      app.querySelectorAll("[data-o]").forEach(x=>x.onclick=()=>{ ans[i]=+x.dataset.o; i++; answer(); });
+      const bk=document.getElementById("back"); if(bk) bk.onclick=()=>{ i--; answer(); };
+    }
+    function handoff(){
+      app.innerHTML=`<section class="view">${topBar("mood:"+from,"Зогсоох")}
+        <div class="reveal"><p>${esc(a)} бүх ${N} асуултад хариуллаа ✓</p><div class="who">Утсаа ${esc(b)}-д өгнө үү</div>
+        <p>${esc(b)}, одоо ${esc(a)} юу гэж хариулсныг ээлж дараалан таана.</p>
+        <button class="btn" id="ready" style="flex:none;width:100%">Би бэлэн</button></div></section>`;
+      document.getElementById("ready").onclick=guess;
+    }
+    function guess(){
+      if(i>=N) return result();
+      const [q,opts]=qs[i];
+      app.innerHTML=`<section class="view">${topBar("mood:"+from,"Зогсоох")}
+        <div class="mprog"><i style="width:${i/N*100}%"></i></div>
+        <p class="who-line">${i+1} / ${N} · ${esc(b)}, <b style="color:var(--glow)">${esc(a)}</b> юу гэж хариулсан бэ?</p>
+        <div class="qline">${esc(q)}</div>
+        <div class="opts">${opts.map((o,n)=>`<button class="opt" data-g="${n}">${esc(o)}</button>`).join("")}</div>
+        <p class="note" id="fb" style="min-height:1.6em;margin:0"></p></section>`;
+      let locked=false;
+      app.querySelectorAll("[data-g]").forEach(x=>x.onclick=()=>{
+        if(locked) return; locked=true; const g=+x.dataset.g, ok=g===ans[i]; gs[i]=g;
+        app.querySelector(`[data-g="${ans[i]}"]`).classList.add("right"); if(!ok) x.classList.add("wrong");
+        document.getElementById("fb").textContent = ok?"Таарлаа! 🎉":"Зөрлөө 😅"; ok?beep(880,.1,.12):beep(330,.15,.1);
+        setTimeout(()=>{ i++; guess(); }, 1000);
+      });
     }
     function result(){
-      const pct=Math.round(hits/qs.length*100);
+      const hits=qs.filter((_,k)=>gs[k]===ans[k]).length, pct=Math.round(hits/N*100);
       const label = pct>=80?"Сэтгэл нэгт хос":pct>=60?"Бие биеэ сайн мэддэг":pct>=40?"Нээх зүйл их байна":"Танилцах шинэ аялал эхэллээ";
-      app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+      app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
         <div class="hero" style="text-align:center"><span class="eyebrow">${esc(a)} & ${esc(b)}</span></div>
         <div class="pct">${pct}%</div><h2 style="text-align:center;font-size:22px">${label}</h2>
-        <p class="note" style="margin:0">${hits} / ${qs.length} асуулт таарлаа.</p>
-        <div class="row" style="margin-top:auto;flex-direction:column"><button class="btn story" id="st">📸 Story зураг хадгалах</button><button class="btn" id="re">Дахин тоглох</button></div></section>`;
-      beep(pct>=60?990:660,.25,.15); buzz([60,40,120]);
+        <p class="note" style="margin:0">${hits} / ${N} асуулт таарлаа.</p>
+        <div class="mlist">${qs.map(([q,opts],k)=>{ const ok=gs[k]===ans[k]; return `<div class="mrow ${ok?"ok":"no"}"><span class="mi">${ok?"✓":"✗"}</span><div><b>${esc(q)}</b><small>${esc(a)}: ${esc(opts[ans[k]])}${ok?"":` · ${esc(b)} таасан: ${esc(opts[gs[k]])}`}</small></div></div>`; }).join("")}</div>
+        ${hits<N?penaltyHTML(`${b}-д зөрсний шийтгэл`):""}
+        <div class="row" style="flex-direction:column"><button class="btn story" id="st">📸 Story зураг хадгалах</button><button class="btn" id="sw">🔁 Солиод тоглох: ${esc(b)} хариулна</button><button class="btn ghost" id="re">Шинээр эхлэх</button></div></section>`;
+      beep(pct>=60?990:660,.25,.15); buzz([60,40,120]); track("match_done",{n:N,pct});
       document.getElementById("st").onclick=()=>shareStory({game:"Хэр сайн мэддэг вэ?", ic:"🎯", big:pct+"%", line:`Бид ${pct}% таарлаа`, sub:`${a} & ${b} · ${label}`});
-      document.getElementById("re").onclick=()=>match(from);
+      document.getElementById("sw").onclick=()=>run(b,a);
+      document.getElementById("re").onclick=setup;
     }
-  };
+  }
 }
 
 /* ---------- Finger picker ---------- */
@@ -1066,6 +1099,7 @@ function wave(from){
   app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
     <h2 style="font-size:22px">📡 Нэг долгион дээр</h2>
     <ol class="rules"><li>Санаа өгөгч утсаа авч нууц цэгийг харна.</li><li>Хоёр туйлын хооронд тэр цэгт тохирох ганц үг, нэр, зүйл хэлнэ. Жишээ нь "Хүйтэн ↔ Халуун" дээр 80% бол "халуун цай".</li><li>${from==="couples"?"Нөгөө нь":"Бусад нь ярилцаж"} зүүг тааруулна. Ойртох тусам оноо их.</li></ol>
+    <p class="note" style="margin:0;text-align:left">Жишээ: Хүйтэн — Халуун дээр нууц цэг 80%-д байвал “Халуун кофе” гэж хэлээд ${from==="couples"?"нөгөө нь":"бусад нь"} зүүгээ тааруулна.</p>
     <div class="row" style="margin-top:auto"><button class="btn" id="go">Эхлэх</button></div></section>`;
   document.getElementById("go").onclick=start;
   function dial(target, guess, showTarget){
@@ -1123,64 +1157,195 @@ function wave(from){
 /* ---------- Nandin ---------- */
 function nandin(from){
   stopTimer(); setGlow(MOODS[from].c);
-  const PER=5; let st=0, i=0, cards=[];
-  const dots=()=>`<div class="steps">${[0,1,2].map(n=>`<i class="${n<=st?"on":""}"></i>`).join("")}</div>`;
-  intro();
-  function intro(){
-    if(st>=2) return finale();
-    const S=NANDIN_STAGES[st]; cards=freshOrder("nandin:"+st,S.items()).slice(0,PER); cards.forEach(c=>markSeen("nandin:"+st,c)); i=0;
-    app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}${dots()}
-      <div class="reveal"><p>${st+1}-р үе шат</p><div class="who">${esc(S.name)}</div><p>${esc(S.note)} Ээлжээрээ ${PER} асуултад хариулна.</p>
-      <button class="btn" id="go" style="flex:none;width:100%">Эхлэх</button></div></section>`;
-    document.getElementById("go").onclick=show;
+  setup();
+  function setup(){
+    app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+      <h2 style="font-size:22px">🌸 Нандин</h2>
+      <ol class="rules"><li>Карт бүр дээр нэг нь асууж, нөгөө нь хариулна. Яаралгүй, нүд рүү нь харж ярилц.</li><li>10 карт дуусах бүрд дулаахан нэг үйлдэл гарна.</li><li>Хүсвэл дахиад 10 картаар үргэлжлүүлнэ.</li></ol>
+      ${namesPanel(true)}
+      <p class="note" style="margin:0;text-align:left">Нэр оруулбал карт бүр дээр хэн асууж, хэн хариулахыг ээлжлэн заана. Хоосон орхивол чөлөөтэй тоглоно.</p>
+      ${ownBox("nandin",[["q","асуулт","Жишээ: Надад хайртай гэдгээ анх хэзээ мэдэрсэн бэ?"]])}
+      <div class="row" style="margin-top:auto"><button class="btn" id="go">Эхлэх</button></div></section>`;
+    document.getElementById("go").onclick=()=>{ const [a,b]=namesRead(); const own=ownRead("nandin","q"); if(own.length&&ownShare("nandin")) sharePrompts(own.map(t=>({c:"Хосууд",t}))); play(a,b,own); };
   }
-  function show(){
-    const S=NANDIN_STAGES[st];
-    app.innerHTML=`<section class="view">${topBar("mood:"+from, "Зогсоох")}${dots()}
-      <p class="who-line">${esc(S.name)} · ${i+1} / ${PER} · ${i%2?"Хоёрдугаар":"Нэгдүгээр"} хүн хариулна</p>
-      <div class="stage"><div class="card flipped"><div class="face front"></div><div class="face back-face"><span class="kind">${esc(S.name)}</span><div class="q">${esc(cards[i])}</div><div class="foot"><span>${i+1} / ${PER}</span><span>Нандин</span></div></div></div></div>
-      <div class="row"><button class="btn" id="nx">${i+1<PER?"Дараагийн асуулт":"Дараагийн үе шат"}</button></div></section>`;
-    document.getElementById("nx").onclick=()=>{ i++; if(i<PER) show(); else { st++; intro(); } };
-  }
-  function finale(){
-    app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}${dots()}
-      <div class="reveal"><p>3-р үе шат</p><div class="who">Нүд рүү харах талархал</div><p>Утсаа хооронд тавиад бие биеийнхээ нүд рүү 30 секунд дуугүй хар. Инээж болно, харин ярьж болохгүй.</p>
-      <button class="btn" id="go" style="flex:none;width:100%">30 секундыг эхлүүлэх</button></div></section>`;
-    document.getElementById("go").onclick=()=>{ audio(); let left=30;
-      app.innerHTML=`<section class="view">${topBar("mood:"+from, "Зогсоох")}${dots()}<p class="who-line">Зөвхөн нүд рүү нь хар</p><div class="gaze" id="gz">30</div><p class="note" style="margin:0">Амьсгалаа тайвшруул...</p></section>`;
-      const gz=document.getElementById("gz");
-      timerId=setInterval(()=>{ left--; gz.textContent=left; if(left<=0){ stopTimer(); beep(660,.4,.12); thanks(); } },1000);
-    };
-  }
-  function thanks(){
-    app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}${dots()}
-      <div class="reveal"><div class="who">Одоо талархлаа хэл</div><p>Ээлжээрээ <b style="color:var(--glow)">"Би чамд баярлалаа, учир нь..."</b> гэж эхэлсэн 3 өгүүлбэр хэлээрэй.</p>
-      <p>Өнөөдрийн нандин орой дууслаа 💞</p><button class="btn ghost" id="re" style="flex:none;width:100%">Дахин эхлэх</button></div></section>`;
-    document.getElementById("re").onclick=()=>nandin(from);
+  function play(a,b,own){
+    const deck=insertEarly(freshOrder("nandin2", nandinPool()), own); let i=0;
+    card();
+    function card(){
+      const q=deck[i%deck.length], kind=own.includes(q)?"Өөрсдийн асуулт":(NANDIN_KIND[q]||"Нандин"), k=i%10; markSeen("nandin2",q);
+      const turn = a&&b ? (i%2?`<b style="color:var(--glow)">${esc(b)}</b> асууна → ${esc(a)} хариулна`:`<b style="color:var(--glow)">${esc(a)}</b> асууна → ${esc(b)} хариулна`) : "Ээлжээрээ асууж, хариулаарай";
+      app.innerHTML=`<section class="view">${topBar("mood:"+from, "Зогсоох")}
+        <div class="mprog"><i style="width:${k/10*100}%"></i></div>
+        <p class="who-line">${turn}</p>
+        <div class="stage"><div class="card flipped"><div class="face front"></div><div class="face back-face"><span class="kind">${esc(kind)}</span><div class="q">${esc(q)}</div><div class="foot"><span>${k+1} / 10</span><span>Нандин</span></div></div></div></div>
+        <div class="row"><button class="btn" id="nx">${k<9?"Дараагийн карт":"Дуусгах ✨"}</button></div></section>`;
+      document.getElementById("nx").onclick=()=>{ i++; if(i%10===0) ending(); else card(); };
+    }
+    function ending(){
+      const e=pickFresh("nandinEnd",NANDIN_ENDS), sec=+((e.match(/(\d+) секунд/)||[])[1]||0);
+      app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+        <div class="reveal"><p>${i} карт дууслаа · Дулаахан төгсгөл</p><div class="who" style="font-size:24px;line-height:1.35">${esc(e)}</div>
+        ${sec?`<div class="gaze" id="gz" hidden>${sec}</div><button class="btn ghost" id="tm" style="flex:none;width:100%">⏱ ${sec} секундыг эхлүүлэх</button>`:""}</div>
+        <div class="row" style="flex-direction:column"><button class="btn" id="more">Дахиад 10 карт үргэлжлүүлэх</button><button class="btn ghost" id="fin">Өнөө оройг дуусгах</button></div></section>`;
+      beep(660,.3,.12);
+      const tm=document.getElementById("tm"); if(tm) tm.onclick=()=>{ audio(); const gz=document.getElementById("gz"); let left=sec; gz.hidden=false; tm.hidden=true;
+        stopTimer(); timerId=setInterval(()=>{ left--; gz.textContent=left; if(left<=0){ stopTimer(); beep(660,.4,.12); gz.textContent="💞"; } },1000); };
+      document.getElementById("more").onclick=()=>{ stopTimer(); card(); };
+      document.getElementById("fin").onclick=()=>{ stopTimer(); thanks(); };
+    }
+    function thanks(){
+      app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+        <div class="reveal"><div class="who">Өнөөдрийн нандин орой дууслаа 💞</div><p>Та хоёр ${i} асуултаар ярилцлаа. Хамгийн их сэтгэлд хүрсэн хариултаа бие биедээ дахин хэлээрэй.</p>
+        <button class="btn ghost" id="re" style="flex:none;width:100%">Дахин эхлэх</button></div></section>`;
+      document.getElementById("re").onclick=setup;
+    }
   }
 }
 /* ---------- Spicy truth or penalty ---------- */
 function spicy(from){
   if(!adultOk){ openGate(()=>spicy(from)); return; }
   stopTimer(); setGlow(MOODS[from].c);
-  const qs=freshOrder("spicy",SPICY_TRUTHS()); let i=0;
-  show();
-  function show(pen){
+  let kinds=new Set(["romantic","hot"]); try{ const s=JSON.parse(localStorage.getItem("spicyKinds")||"null"); if(s&&s.length) kinds=new Set(s.filter(k=>SPICY_PENS[k])); }catch(e){}
+  setup();
+  function setup(){
     app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
       <h2 style="font-size:22px">🔥 Үнэн үү, Халуухан шийтгэл үү?</h2>
-      <p class="who-line">${i%2?"Хоёрдугаар":"Нэгдүгээр"} хүний ээлж</p>
-      <div class="stage"><div class="card flipped"><div class="face front"></div><div class="face back-face"><span class="kind">Халуухан үнэн</span><div class="q">${esc(qs[i%qs.length])}</div>${(markSeen("spicy",qs[i%qs.length]),"")}<div class="foot"><span>${i+1}</span><span>18+</span></div></div></div></div>
-      <div id="pen">${pen||""}</div>
-      <div class="row"><button class="btn ghost" id="shy">😳 Ичиж байна → Шийтгэл</button><button class="btn" id="ok">Хариуллаа ✓</button></div></section>`;
-    document.getElementById("ok").onclick=()=>{ i++; show(); };
-    document.getElementById("shy").onclick=()=>{
-      const pool = SPICY_PEN.concat(stakes.has("drink")?["1 балга уу.","Хамтрагчтайгаа хамт 2 балга уу."]:[]);
-      const t=pickFresh("spicyPen",pool); beep(520,.15,.15);
-      document.getElementById("pen").innerHTML=`<div class="penalty"><span class="eyebrow">Халуухан шийтгэл</span><b>${esc(t)}</b></div>`;
-      document.getElementById("shy").hidden=true; document.getElementById("ok").textContent="Биелүүллээ ✓";
-    };
+      <ol class="rules"><li>Ээлжээрээ халуухан асуултад үнэнээр хариулна.</li><li>Ичвэл «Шийтгэл» дарж, сонгосон төрлөөс санамсаргүй шийтгэл биелүүлнэ.</li><li>10 тойрог тутамд хэн хамгийн зоригтой байсныг харуулна.</li></ol>
+      ${namesPanel()}
+      <div class="panel"><b>Шийтгэлийн төрөл</b><div class="wh-names" style="justify-content:flex-start">${Object.entries(SPICY_PENS).map(([k,v])=>`<button class="chip" data-k="${k}" aria-pressed="${kinds.has(k)}">${v.label}</button>`).join("")}</div></div>
+      ${ownBox("spicy",[["q","асуулт","Жишээ: Намайг анх харахдаа юу бодсон бэ?"],["p","шийтгэл","Жишээ: Хамтрагчдаа 20 секунд иллэг хий."]])}
+      <div class="row" style="margin-top:auto"><button class="btn" id="go">Эхлэх</button></div></section>`;
+    app.querySelectorAll("[data-k]").forEach(b=>b.onclick=()=>{ const k=b.dataset.k; if(kinds.has(k)&&kinds.size>1) kinds.delete(k); else kinds.add(k); b.setAttribute("aria-pressed",kinds.has(k)); try{ localStorage.setItem("spicyKinds",JSON.stringify([...kinds])); }catch(e){} });
+    document.getElementById("go").onclick=()=>{ const [a,b]=namesRead(["Нэгдүгээр хүн","Хоёрдугаар хүн"]); const oq=ownRead("spicy","q"), op=ownRead("spicy","p");
+      if(ownShare("spicy")) sharePrompts(oq.map(t=>({c:"Хосууд",t})).concat(op.map(t=>({c:"Шийтгэл",t})))); start(a,b,oq,op); };
+  }
+  function start(a,b,oq,op){
+    const qs=insertEarly(freshOrder("spicy",SPICY_TRUTHS()), oq), ownP=[...op]; let qi=0, r=0; const stat=[{ans:0,pen:0},{ans:0,pen:0}];
+    turn();
+    function turn(){
+      const p=r%2, who=p?b:a, q=qs[qi%qs.length]; markSeen("spicy",q);
+      app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+        <div class="mprog"><i style="width:${(r%10)/10*100}%"></i></div>
+        <p class="who-line">Тойрог ${r%10+1} / 10 · <b style="color:var(--glow)">${esc(who)}</b>-ийн ээлж</p>
+        <div class="stage"><div class="card flipped"><div class="face front"></div><div class="face back-face"><span class="kind">${oq.includes(q)?"Өөрсдийн асуулт":"Халуухан үнэн"}</span><div class="q">${esc(q)}</div><div class="foot"><span>${r+1}</span><span>18+</span></div></div></div></div>
+        <div id="pen"></div>
+        <div class="row"><button class="btn ghost" id="shy">😳 Ичиж байна → Шийтгэл</button><button class="btn" id="ok">Хариуллаа ✓</button></div></section>`;
+      const ok=document.getElementById("ok"), shy=document.getElementById("shy");
+      ok.onclick=()=>{ stat[p].ans++; next(); };
+      shy.onclick=()=>{
+        let t; if(ownP.length && Math.random()<.5) t=ownP.splice(Math.floor(Math.random()*ownP.length),1)[0];
+        else { const ks=[...kinds].sort(); t=pickFresh("spicyPen:"+ks.join("+"), ks.flatMap(k=>SPICY_PENS[k].list)); }
+        stat[p].pen++; beep(520,.15,.15);
+        document.getElementById("pen").innerHTML=`<div class="penalty"><span class="eyebrow">Халуухан шийтгэл · ${esc(who)}</span><b>${esc(t)}</b></div>`;
+        shy.hidden=true; ok.textContent="Биелүүллээ ✓"; ok.onclick=next;
+      };
+    }
+    function next(){ qi++; r++; if(r%10===0) summary(); else turn(); }
+    function summary(){
+      const [A,B]=stat, brave = A.ans===B.ans ? "" : (A.ans>B.ans?a:b);
+      app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+        <div class="hero" style="text-align:center"><span class="eyebrow">${r} тойрог дууслаа</span><h1 style="margin-top:6px">${brave?`🔥 ${esc(brave)}`:"🔥 Тэнцлээ"}</h1><p style="margin:0">${brave?"Өнөө оройн хамгийн зоригтой":"Хоёулаа адилхан зоригтой байлаа"}</p></div>
+        <div class="panel"><div class="mlist">${[[a,A],[b,B]].map(([n,s])=>`<div class="mrow"><span class="mi">${n===brave?"👑":"🔥"}</span><div><b>${esc(n)}</b><small>✓ ${s.ans} үнэн хариулт · 😳 ${s.pen} шийтгэл</small></div></div>`).join("")}</div></div>
+        <div class="row" style="flex-direction:column;margin-top:auto"><button class="btn story" id="st">📸 Story зураг хадгалах</button><button class="btn" id="more">Дахиад 10 тойрог үргэлжлүүлэх</button><button class="btn ghost" id="re">Шинээр эхлэх</button></div></section>`;
+      beep(990,.25,.15); track("spicy_round10",{r});
+      document.getElementById("st").onclick=()=>shareStory({game:"Үнэн үү, Халуухан шийтгэл үү?", ic:"🔥", who:brave?{name:brave,pic:""}:undefined, big:brave||"Тэнцлээ", line:brave?"Өнөө оройн хамгийн зоригтой":"Хоёулаа адилхан зоригтой", sub:`${a}: ${A.ans} үнэн · ${b}: ${B.ans} үнэн`});
+      document.getElementById("more").onclick=turn;
+      document.getElementById("re").onclick=setup;
+    }
   }
 }
+/* ---------- ❤️ Нууц хүсэл: both answer privately, only mutual wishes are revealed ---------- */
+function wish(from){
+  stopTimer(); setGlow(MOODS[from].c);
+  let lv="rom"; const N=12;
+  setup();
+  function setup(){
+    app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+      <h2 style="font-size:22px">❤️ Нууц хүсэл</h2>
+      <ol class="rules"><li>Нэгдүгээр хүн ${N} санааг нууцаар ❤️ Тийм, 🤔 Магадгүй, ✕ Үгүй гэж тэмдэглэнэ.</li><li>Утсаа өгөхөд хоёрдугаар хүн мөн адил тэмдэглэнэ. Нөгөөгийнхөө хариултыг харахгүй.</li><li>Төгсгөлд зөвхөн хоёулаа хүссэн зүйлс л гарна. Нэг нь л хүссэн зүйл хэзээ ч илчлэгдэхгүй.</li></ol>
+      ${namesPanel()}
+      <div class="panel"><b>Төрөл</b><div class="wh-names" style="justify-content:flex-start"><button class="chip" data-wl="rom" aria-pressed="${lv==="rom"}">💕 Романтик</button><button class="chip" data-wl="hot" aria-pressed="${lv==="hot"}">🔥 Халуухан 18+</button></div></div>
+      <div class="row" style="margin-top:auto"><button class="btn" id="go">Эхлэх</button></div></section>`;
+    app.querySelectorAll("[data-wl]").forEach(b=>b.onclick=()=>{ const v=b.dataset.wl; const set=()=>{ lv=v; app.querySelectorAll("[data-wl]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.wl===lv)); };
+      if(v==="hot"&&!adultOk) openGate(set); else set(); });
+    document.getElementById("go").onclick=()=>{ const [a,b]=namesRead(["Нэгдүгээр хүн","Хоёрдугаар хүн"]); run(a,b); };
+  }
+  function run(a,b){
+    const key="wish:"+lv, items=freshOrder(key, lv==="hot"?WISH_HOT:WISH_ROMANTIC).slice(0,N); items.forEach(x=>markSeen(key,x));
+    const R=[[],[]];
+    play(0,0);
+    function play(p,i){
+      if(i>=N) return p===0?handoff():result();
+      const who=p?b:a;
+      app.innerHTML=`<section class="view">${topBar("mood:"+from,"Зогсоох")}
+        <div class="mprog"><i style="width:${i/N*100}%"></i></div>
+        <p class="who-line">${i+1} / ${N} · Зөвхөн <b style="color:var(--glow)">${esc(who)}</b> хар</p>
+        <div class="wishcard">${esc(items[i])}</div>
+        <div class="wbtns"><button class="btn ghost" data-v="0">✕ Үгүй</button><button class="btn ghost" data-v="1">🤔 Магадгүй</button><button class="btn" data-v="2">❤️ Тийм</button></div>
+        ${i>0?`<button class="linkbtn" id="back" style="align-self:center">‹ Өмнөх рүү буцах</button>`:""}</section>`;
+      app.querySelectorAll("[data-v]").forEach(x=>x.onclick=()=>{ R[p][i]=+x.dataset.v; play(p,i+1); });
+      const bk=document.getElementById("back"); if(bk) bk.onclick=()=>play(p,i-1);
+    }
+    function handoff(){
+      app.innerHTML=`<section class="view">${topBar("mood:"+from,"Зогсоох")}
+        <div class="reveal"><p>${esc(a)}-ийн хариулт нууц хэвээр ✓</p><div class="who">Утсаа ${esc(b)}-д өгнө үү</div>
+        <p>Зөвхөн хоёулаа хүссэн зүйл л илчлэгдэнэ.</p><button class="btn" id="ready" style="flex:none;width:100%">Би бэлэн</button></div></section>`;
+      document.getElementById("ready").onclick=()=>play(1,0);
+    }
+    function result(){
+      const both=items.map((t,k)=>[t,R[0][k],R[1][k]]).filter(x=>x[1]>=1&&x[2]>=1), yes=both.filter(x=>x[1]===2&&x[2]===2), maybe=both.filter(x=>!(x[1]===2&&x[2]===2));
+      app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+        <div class="hero" style="text-align:center"><span class="eyebrow">${esc(a)} & ${esc(b)}</span></div>
+        <div class="pct">${both.length}</div><h2 style="text-align:center;font-size:22px">${both.length?"нууц хүсэл таарлаа 💘":"Энэ удаа таарсан хүсэл алга 🙈"}</h2>
+        ${yes.length?`<div class="panel"><b>❤️ Хоёулаа хүсэж байна</b><div class="mlist">${yes.map(x=>`<div class="mrow ok"><span class="mi">❤️</span><div><b>${esc(x[0])}</b></div></div>`).join("")}</div></div>`:""}
+        ${maybe.length?`<div class="panel"><b>🤔 Ярилцаад үзэх</b><div class="mlist">${maybe.map(x=>`<div class="mrow"><span class="mi">🤔</span><div><b>${esc(x[0])}</b></div></div>`).join("")}</div></div>`:""}
+        <p class="note" style="margin:0">Нэг нь л хүссэн зүйлс нууц хэвээр үлдлээ.</p>
+        <div class="row" style="flex-direction:column"><button class="btn story" id="st">📸 Story зураг хадгалах</button><button class="btn" id="again">Дахиад ${N} хүсэл</button><button class="btn ghost" id="re">Шинээр эхлэх</button></div></section>`;
+      beep(both.length?990:520,.25,.15); track("wish_done",{level:lv, n:both.length});
+      document.getElementById("st").onclick=()=>shareStory({game:"Нууц хүсэл", ic:"❤️", big:String(both.length), line:"нууц хүсэл маань таарлаа", sub:`${a} & ${b}`});
+      document.getElementById("again").onclick=()=>run(a,b);
+      document.getElementById("re").onclick=setup;
+    }
+  }
+}
+/* ---------- Couples content v3 ---------- */
+const NANDIN_NEW = {
+  "Дурсамж":["Намайг анх харахдаа юу гэж бодсон бэ? Үнэнээ хэлээрэй.","Бидний харилцаанд эргэлтийн цэг болсон өдөр аль нь вэ?","Утсанд чинь байгаа надтай холбоотой хамгийн анхны зураг юу вэ, тэр өдөр юу болж байсан бэ?","Миний аль мессеж чамайг хамгийн их инээлгэж байсан бэ?","Хамтдаа хамгийн их айж, сандарч байсан мөч хэзээ байсан бэ?","Би чамд анх “хайртай” гэж хэлэхэд чи юу мэдэрсэн бэ?","Бидний хамгийн анхны маргаан юунаас болж байсан бэ? Одоо бодоход инээдтэй юу?","Намайг гэр бүлдээ анх танилцуулахдаа чи сандарч байсан уу?","Хамтдаа өнгөрүүлсэн хамгийн хүйтэн эсвэл хамгийн халуун өдөр юу болж байсан бэ?","Хэзээ анх “энэ хүн надад жинхэнэ чухал болж байна” гэж ойлгосон бэ?","Миний хувцасласан аль өдөр чамд хамгийн тод санагддаг вэ?","Бидний хамгийн удаан утсаар ярьсан шөнө юу ярьсныг санаж байна уу?","Хамтдаа гаргасан хамгийн солиорсон, гэнэтийн шийдвэр юу байсан бэ?","Намайг хамгийн их санаж байсан үе хэзээ байсан бэ?","Бидний анхны аялал эсвэл анх хамт гадуур гарсан өдрөөс юу нь тод санагддаг вэ?","Миний чамд хийж өгсөн хоол, бэлэг эсвэл тусламжаас аль нь сэтгэлд чинь үлдсэн бэ?","Хамтдаа хамгийн их инээдэм болж байсан эвгүй явдал юу вэ?","Би чамайг гайхшруулж байсан хамгийн гоё мөч юу байсан бэ?","Анх надад сэтгэлээ хэлэхээсээ өмнө хэр удаан бодсон бэ?","Бидний түүхийг нэг өгүүлбэрээр нэрлэвэл юу гэх вэ?","Миний гэр бүл, найзуудтай холбоотой хамгийн гоё дурсамж чинь юу вэ?","Бидний хамгийн анхны хамтын зургийг санаж байна уу? Тэр өдөр юу болсон бэ?"],
+  "Зүрх сэтгэл":["Өөрийнхөө аль талыг надаас нууж байна гэж боддог вэ?","Надтай хамт байхдаа өөрийгөө хамгийн аюулгүй гэж мэдэрдэг мөч чинь юу вэ?","Чамайг хамгийн их гомдоодог үг юу вэ? Би түүнийг хэлэхээс зайлсхийе.","Ядарсан өдөр би чамд яг юу хэлж, юу хийвэл хамгийн их тус болдог вэ?","Сүүлийн үед хэнд ч хэлээгүй санаа зовж байгаа зүйл байна уу?","Чамайг хайрлагдаж байна гэж хамгийн их мэдрүүлдэг 3 жижиг зүйл юу вэ?","Би чамд хангалттай анхаарал хандуулаагүй гэж хэзээ мэдэрсэн бэ?","Өөрийнхөө ямар зан чанарыг хамгийн их өөрчлөхийг хүсдэг вэ?","Бид хоёрын хооронд ярихад хамгийн хэцүү сэдэв юу вэ? Яагаад?","Хэн нэгэн чамд анх удаа жинхэнэ итгэл төрүүлж байсан мөч хэзээ байсан бэ?","Надаас уучлалт гуйлгамаар байгаа ч хэлээгүй зүйл байна уу?","Чиний бодлоор би өөрийнхөө үнэ цэнийг мэддэг үү?","Чамайг уйлуулсан хамгийн сүүлийн кино, дуу эсвэл явдал юу байсан бэ?","Хүмүүст харуулдаггүй ч зөвхөн надад л харуулдаг чиний тал юу вэ?","Чи надаас юуг хамгийн их сурсан бэ?","Хэрэв надад ганцхан зөвлөгөө өгөх бол юу гэх вэ?","Чамайг уурласан үед би юу хийх ёстой, юу хийх ёсгүй вэ?","Биднийг маргалдах үед чи надаас хамгийн их юу сонсохыг хүсдэг вэ?","Өөрөөрөө хамгийн их бахархаж байсан мөч хэзээ байсан бэ?","Чамд одоо амьдралд чинь хамгийн их юу дутагдаж байна гэж боддог вэ?","Надтай танилцсанаар чиний амьдралд өөрчлөгдсөн хамгийн том зүйл юу вэ?","Хэлэхэд ичмээр ч чин сэтгэлээсээ надад хэлмээр байгаа зүйл юу вэ?"],
+  "Ирээдүй":["10 жилийн дараах бидний нэг энгийн өглөөг дүрслээч.","Хамтдаа заавал биелүүлэх 3 мөрөөдлөө нэрлэе.","Хаана амьдрахыг хамгийн их хүсдэг вэ: хот, хөдөө, эсвэл гадаад?","Ирэх жил бид хоёр хамтдаа юу шинээр сурах вэ?","Бидний гэрт заавал байх ёстой нэг уламжлал юу байх вэ?","Хүүхэдтэй болбол ямар эцэг эх байхыг хүсдэг вэ?","Мөнгөтэй холбоотой бид хоёрын нийтлэг зорилго юу байвал зүгээр вэ?","Хөгшрөхөөрөө бид хоёр ямар хос болохыг хүсэж байна?","Ирэх 12 сард хамтдаа очих нэг газраа одоо сонгоё.","Чиний карьерын мөрөөдлийг биелүүлэхэд би яаж туслах вэ?","Бидний харилцаанд дахиж хэзээ ч давтагдаасай гэж хүсэхгүй зүйл юу вэ?","Долоо хоног бүр хамтдаа хийдэг нэг жижиг заншилтай болбол юу байх вэ?","Бидний хурим эсвэл ойн баяр ямар байгаасай гэж мөрөөддөг вэ?","5 жилийн дараа бие биедээ захидал бичвэл юу гэж бичих вэ?","Хамтдаа нэг сайн үйлс хийвэл юу хийх вэ?","Хамтдаа тэжээх тэжээвэр амьтан ямар байх вэ, нэрийг нь юу гэх вэ?","Хэцүү үе тохиолдвол бие биеэ хэрхэн түших вэ? Нэг дүрэм тохирье.","Ирэх сард бие биедээ гэнэтийн бэлэг барих бол юу бэлдэх вэ? Нууцаа задлахгүйгээр сэжүүр өг.","Бидний гэрийн хамгийн дуртай өрөө ямар байх вэ?","Хамтдаа гэнэт 1 сая төгрөг олбол юунд зарцуулах вэ?","Хөгшин насандаа бие биедээ юу гэж талархал хэлэхийг хүсэж байна?","Маргаашнаас эхлээд бие биедээ илүү сайн хандахын тулд нэг амлалт өгье."]
+};
+const NANDIN_ENDS = ["🤗 20 секунд дуугүй тэврэлдээрэй.","💋 Хацар дээр нь үнсээд өнөөдрийн хамгийн гоё 1 зүйлийг нь хэл.","👀 30 секунд бие биеийнхээ нүд рүү дуугүй хар.","🙏 Ээлжээрээ “Би чамд баярлалаа, учир нь…” гэж эхэлсэн 3 өгүүлбэр хэл.","🤝 Гар гараасаа бариад сүүлийн 7 хоногийн хамгийн гоё мөчөө хуваалц.","💌 Хамтрагчдаа одоо утсаараа богинохон хайрын мессеж бичиж илгээ.","🎵 Бид хоёрын дууг тавиад 20 секунд удаан бүжиглэ.","✨ Хамтрагчийнхаа 3 сайн чанарыг нүд рүү нь харж хэл."];
+let NANDIN_KIND=null;
+function nandinPool(){
+  const lv=DECKS.couplesDeck.levels, out=[];
+  [[lv[0].items,"Бидний эхлэл"],[lv[1].items,"Хэлж чадаагүй үг"]].forEach(([arr,k])=>arr.filter(q=>!q.startsWith("Даалгавар:")).forEach(q=>out.push([q,k])));
+  Object.entries(NANDIN_NEW).forEach(([k,arr])=>arr.forEach(q=>out.push([q,k])));
+  NANDIN_KIND=Object.fromEntries(out); return out.map(x=>x[0]);
+}
+const SPICY_PENS = {
+  romantic:{label:"💋 Романтик", list:["Хамтрагчийнхаа хацар дээр 3 удаа зөөлөн үнс.","Хамтрагчаа 20 секунд чанга тэвэр.","Хамтрагчдаа 30 секунд мөрний иллэг хий.","Хамтрагчийнхаа гарыг 20 секунд удаан илбэ.","Хамтрагчдаа зориулж 20 секунд бүжиглэ.","Хамтрагчийнхаа чихэнд 3 магтаал шивнэ.","Хамтрагчийнхаа духан дээр үнсээд “Чи миний хамгийн…” гэсэн өгүүлбэрийг гүйцээ.","Хамтрагчийнхаа нуруун дээр хуруугаараа нэг үг бичиж таалга.","Хамтрагчаа өвөр дээрээ суулгаад 20 секунд тэвэр.","Хамтрагчдаа хайрын дууны 2 мөрийг дуулж өг.","Хамтрагчийнхаа алган дээр 5 удаа үнс.","Хамтрагчийнхаа үсийг 30 секунд илж тайвшруул.","Хамтрагчдаа 3 өгүүлбэртэй хайрын захидлыг чанга хэл.","Хамтрагчийнхаа нүд рүү 20 секунд харж инээмсэглэ. Түрүүлж инээсэн нь дахин шийтгэл авна.","Хамтрагчаа хамгийн дуртай хочоор нь дуудаж 10 секунд эрхлүүл.","Хамтрагчийнхаа хөлийг 30 секунд иллэг хий."]},
+  hot:{label:"🔥 Халуухан", list:["Хамтрагчийнхаа хүзүүн дээр 20 секунд үнс.","Нэг хувцсаа тайл.","Хамтрагчийнхаа чихэнд хамгийн халуун хүслээ шивнэ.","Хамтрагчийнхаа нүдийг боогоод 3 газар үнс.","Хамтрагчийнхаа уруул дээр 10 секунд үнс.","Хамтрагчаа 30 секунд тэвэрч чихэнд нь амьсгал.","Хамтрагчдаа 20 секунд сээтэгнүүр бүжиг бүжиглэ.","Хамтрагчийнхаа хүссэн 1 газарт нь үнс.","Нүдээ аниад хамтрагчийнхаа уруулыг хуруугаараа 10 секунд тойруул.","Хамтрагчийнхаа нэг хувцсыг зөвхөн шүдээрээ тайл.","Хамтрагчийнхаа нуруун дээр үнсэлтээр зам гарга.","Хамтрагчдаа хамгийн халуухан харцаа 10 секунд илгээ.","Хамтрагчийнхаа бугуйнаас мөр хүртэл удаан үнс.","Хамтрагчийнхаа өвөр дээр суугаад 20 секунд нүд рүү нь хар.","Хамтрагчдаа өнөө оройн нэг нууц хүслээ хэлж амла.","Хамтрагчийнхаа чихний сэнжийг зөөлөн хаз."]},
+  drink:{label:"🍷 Уух", list:["1 балга уу.","Хамтрагчтайгаа гар гараа сүлжээд 1 балга уу.","Хамтрагчаараа 1 балга уулга.","2 балга уу.","Хамтрагчийнхаа сонгосон ундаанаас 1 балга уу."]}
+};
+const WISH_ROMANTIC = ["Хамтдаа нар мандахыг үзэх","Гэртээ лаатай оройн хоол хийх","Нэг өдөр утасгүй хамт өнгөрөөх","Хамтдаа шинэ хоол хийж сурах","Хотоос гараад майханд хонох","Ижил өнгийн хувцас өмсөж гадуур гарах","Бие биедээ гараар захидал бичих","Хамтдаа бүжгийн хичээлд явах","Шөнө од харж хэвтэх","Хамтдаа фото зураг авахуулах","Гэнэтийн болзоо зохион байгуулах","Хамтдаа шинэ хот руу аялах","Бие биеийнхээ найзуудтай илүү ойр танилцах","Хамтдаа дасгал хийдэг болох","Бүтэн өдөр кино марафон хийх","Хамтдаа сайн дурын ажил хийх","Анх уулзсан газраа дахин очих","Бие биедээ өглөөний цайг орондоо авчрах","Хамтдаа тэжээвэр амьтан тэжээх","Хамтдаа караоке явах","Ирэх жилийн зорилгоо хамтдаа бичих","Хамтдаа тэшүүр эсвэл цанаар гулгах","Сар бүр нэг шинэ ресторан турших","Бие биедээ шүлэг эсвэл дуу зохиох","Хамтдаа бороонд алхах","Ижил бөгж эсвэл хосын бугуйвч хийлгэх","Бие биеийнхээ гэр бүлтэй хамт аялах","Нэг шөнө зочид буудалд амрах"];
+const WISH_HOT = ["Нүдээ боогоод бие биеэ таах","Хамтдаа ваннд орох","Тосоор бие биедээ иллэг хийх","Бие биедээ шинэ дотуур хувцас сонгох","Бүтэн өдөр орноосоо гарахгүй байх","Өдөржин бие биедээ халуухан мессеж бичих","Лаа асаагаад удаан бүжиглэх","Шинэ газар романтик шөнө өнгөрөөх","Бие биеийнхээ хүслийн жагсаалтыг бичих","Дүрд тоглох тоглоом тоглох","Хамтдаа шүршүүрт орох","Зөвхөн үнсэлтээр 10 минут өнгөрөөх","Хувцас тайлах тоглоом тоглох","Мөс эсвэл шоколадтай тоглоом","Нэг шөнө бүх хяналтыг хамтрагчдаа өгөх","Шинэ байрлал туршиж үзэх","Гэрлээ унтраагаад зөвхөн хүрэлтээр мэдрэх","Өглөөний халуухан гэнэтийн бэлэг","Бие биедээ халуухан захидал бичих","Гэртээ харих нууц дохио үг тохирох","Толины өмнө хамт байх","Хайр дурлалын кино үзээд нэг үзэгдлийг нь дуурайх"];
+/* couple names remembered for all couples games */
+function cplNames(){ try{ return JSON.parse(localStorage.getItem("cpl")||"[]"); }catch(e){ return []; } }
+function namesPanel(optional){ const [a,b]=cplNames(); const ph=optional?"Заавал биш":"Нэр";
+  return `<div class="panel names"><label for="na">Нэгдүгээр хүн</label><input id="na" value="${esc(a||"")}" maxlength="16" placeholder="${ph}"><label for="nb">Хоёрдугаар хүн</label><input id="nb" value="${esc(b||"")}" maxlength="16" placeholder="${ph}"></div>`; }
+function namesRead(defs){ const a=document.getElementById("na").value.trim(), b=document.getElementById("nb").value.trim(); if(a||b){ try{ localStorage.setItem("cpl",JSON.stringify([a,b])); }catch(e){} } return [a||(defs?defs[0]:""), b||(defs?defs[1]:"")]; }
+/* own questions / penalties box with optional "share with other couples" */
+function ownBox(id, fields){
+  return `<details class="panel custom" id="ob-${id}"><summary>+ Өөрийн ${fields.map(f=>f[1]).join(" / ")} нэмэх</summary>
+    ${fields.map(([k,l,ph])=>`<label class="cnt" for="ob-${id}-${k}" style="margin:0">${l[0].toUpperCase()+l.slice(1)} (мөр бүрт нэг)</label><textarea id="ob-${id}-${k}" maxlength="2000" placeholder="${esc(ph)}"></textarea>`).join("")}
+    <label class="sharechk"><input type="checkbox" id="ob-${id}-share"> <span>Бусад хосуудад санал болгож хуваалцах</span></label>
+    <p class="cnt" style="margin:0">Бичсэн зүйл тань энэ тоглолтын үндсэн картуудын дунд холилдоно. Чагталбал бид шалгаад бусдад нэмж болно.</p></details>`;
+}
+function ownRead(id,k){ const t=document.getElementById(`ob-${id}-${k}`); return t ? t.value.split("\n").map(s=>s.trim()).filter(s=>s.length>=3).slice(0,15).map(s=>s.slice(0,220)) : []; }
+function ownShare(id){ const c=document.getElementById(`ob-${id}-share`); return !!(c&&c.checked); }
+async function sharePrompts(rows){ rows=rows.filter(r=>r.t.length>=5).slice(0,10); if(!rows.length) return;
+  try{ const c=await waitSb(); if(!c) return; const {error}=await c.from("community_prompts").insert(rows.map(r=>({category:r.c, text:r.t, game:curGame||null, mood:curFrom||null}))); if(!error) track("prompt_suggested",{category:rows[0].c, n:rows.length}); }catch(e){} }
+function insertEarly(arr, extra){ extra.forEach(x=>arr.splice(Math.floor(Math.random()*Math.min(arr.length+1,10)),0,x)); return arr; }
 /* ---------- Love wheel ---------- */
 function wheel(from){
   if(!adultOk){ openGate(()=>wheel(from)); return; }
@@ -1190,7 +1355,7 @@ function wheel(from){
   function pickLevel(){
     app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
       <h2 style="font-size:22px">🎡 Хайрын хүрд</h2>
-      <p style="margin:0;color:var(--ink-soft)">Хүрдийг эргүүлэхэд биеийн хэсэг ба үйлдэл гарна. Хамтрагчдаа 60 секунд биелүүл, дараа нь ээлжээ соль.</p>
+      <p style="margin:0;color:var(--ink-soft)">Хүрдийг эргүүлэхэд биеийн хэсэг ба үйлдэл гарна. Хамтрагчдаа 10–30 секунд биелүүлээд ээлжээ соль.</p>
       <div class="tabs" role="tablist">${Object.keys(WHEEL).map(k=>`<button role="tab" aria-selected="${k===lvl}" data-lv="${k}">${k}</button>`).join("")}</div>
       <div class="reels"><div class="reel"><small>Хаана</small><b>?</b></div><div class="reel"><small>Юу хийх</small><b>?</b></div></div>
       <div class="row" style="margin-top:auto"><button class="btn" id="spin">Хүрдийг эргүүлэх</button></div></section>`;
@@ -1202,16 +1367,16 @@ function wheel(from){
     app.innerHTML=`<section class="view">${topBar("mood:"+from, "Зогсоох")}
       <p class="who-line">${lvl} · ${turn%2?"Хоёрдугаар":"Нэгдүгээр"} хүн хамтрагчдаа хийнэ</p>
       <div class="reels"><div class="reel spin" id="r1"><small>Хаана</small><b>…</b></div><div class="reel spin" id="r2"><small>Юу хийх</small><b>…</b></div></div>
-      <div class="timer" id="t" hidden>60</div>
-      <div class="row" style="margin-top:auto"><button class="btn" id="go" hidden>60 секундыг эхлүүлэх</button></div></section>`;
+      <div class="timer" id="t" hidden></div>
+      <div class="row" style="margin-top:auto"><button class="btn" id="go" hidden></button></div></section>`;
     const r1=document.getElementById("r1"), r2=document.getElementById("r2"); let n=0;
     const fin1=W.parts[Math.floor(Math.random()*W.parts.length)], fin2=W.acts[Math.floor(Math.random()*W.acts.length)];
     timerId=setInterval(()=>{ n++;
       if(n<14) r1.querySelector("b").textContent=W.parts[n%W.parts.length]; else if(n===14){ r1.querySelector("b").textContent=fin1; r1.classList.remove("spin"); beep(700,.08,.15); }
-      if(n<22) r2.querySelector("b").textContent=W.acts[n%W.acts.length]; else { r2.querySelector("b").textContent=fin2; r2.classList.remove("spin"); beep(900,.1,.15); stopTimer(); document.getElementById("go").hidden=false; }
+      if(n<22) r2.querySelector("b").textContent=W.acts[n%W.acts.length][0]; else { r2.querySelector("b").textContent=fin2[0]; r2.classList.remove("spin"); beep(900,.1,.15); stopTimer(); const g=document.getElementById("go"); g.textContent=`${fin2[1]} секундыг эхлүүлэх`; g.hidden=false; }
       if(n<22 && n%2) beep(400+n*20,.02,.06);
     },90);
-    document.getElementById("go").onclick=()=>{ const t=document.getElementById("t"), go=document.getElementById("go"); let left=60; t.hidden=false; go.hidden=true;
+    document.getElementById("go").onclick=()=>{ const t=document.getElementById("t"), go=document.getElementById("go"); let left=fin2[1]; t.textContent=left; t.hidden=false; go.hidden=true;
       timerId=setInterval(()=>{ left--; t.textContent=left; t.classList.toggle("low",left<=10); if(left<=0){ stopTimer(); beep(660,.3,.15); turn++; go.hidden=false; go.textContent="Ээлж солих, дахин эргүүлэх"; go.onclick=spin; } },1000); };
   }
 }
@@ -1270,6 +1435,8 @@ const PRAISE_GAME = {
   "Утасны зураач":["🎨 Монголын шинэ Пикассо — {n}","🖌️ Алтан бийр {n}","🖼️ Галерейн од — {n}","✏️ Нэг зурлагаар гайхуулагч {n}"],
   "Зураг таах рулет":["📸 Нууцлаг галерейн эзэн — {n}","🔎 Шерлок {n}","⚡ Хурдан нүдтэй {n}","🧩 Бүгдийг мэддэг {n}"],
   "Хэр сайн мэддэг вэ?":["💞 Сэтгэл нэгт хос","🧠 Тархи нэгтэй хос","🔐 Нууцгүй хос","💘 Бие биеэ мэддэг хос"],
+  "Нууц хүсэл":["💘 Нууц хүсэл нэгт хос","🗝️ Нууцгүй хос","🔥 Халуухан хос","💞 Зүрх нэгт хос"],
+  "Үнэн үү, Халуухан шийтгэл үү?":["🔥 Хамгийн зоригтой — {n}","😈 Ичихээ мартсан {n}","🌶️ Халуун чинжүү {n}"],
   "Нэг долгион дээр":["📡 Нэг долгионы хос","🧠 Тархи нэгтэй баг","🎯 Онож буудагчид","🌊 Давалгааны эзэд"]
 };
 let storyPic = "";            // own photo picked in the Story window; RAM only, never uploaded
@@ -2517,7 +2684,10 @@ const HOW = {
   spy:"Утсыг дамжуулж үгээ нууцаар хар. Бүгд ижил үгтэй, ганц тагнуул л өөр үгтэй. Ээлжээр нэг нэг сэжүүр хэлээд тагнуулыг санал хураан ол.",
   bomb:"Гарсан сэдэвт тохирох үг хэлээд утсаа хажуугийн хүнд дамжуул. Хэний гарт дэлбэрнэ, тэр хүн шийтгэл авна.",
   missions:"Хүн бүр утсаа ганцаараа хараад нууц даалгавраа авна. Оройн турш баригдалгүй биелүүл. Төгсгөлд хэн хэдийг биелүүлснийг тоолно.",
-  match:"Нэг нь өөрийнхөө тухай асуултад нууцаар хариулна, нөгөө нь түүнийг таана. Хэдэн хувь таарсныг утас тоолно.",
+  match:"Эхлээд нэг нь бүх асуултад өөрийнхөө тухай нууцаар хариулна. Дараа нь нөгөө нь бүгдийг нь таана. Төгсгөлд хэдэн хувь таарсныг харна.",
+  wish:"Хоёулаа ээлжээр санаа бүрийг нууцаар ❤️ / 🤔 / ✕ гэж тэмдэглэнэ. Төгсгөлд зөвхөн хоёулаа хүссэн зүйлс гарна.",
+  nandin:"Карт бүр дээр нэг нь асууж, нөгөө нь хариулна. 10 карт тутамд дулаахан үйлдэл хийгээд хүсвэл үргэлжлүүлнэ.",
+  spicy:"Ээлжээр халуухан асуултад үнэнээр хариул. Ичвэл шийтгэл биелүүл. 10 тойрог тутамд хамгийн зоригтойг тодруулна.",
   shagai:"Ээлжээр утсаа аваад «Сэгсрэх» дар. Морь буувал оноо авна. Хамгийн түрүүнд 10 морь цуглуулсан хүн хожно.",
   wave:f=>`Нэг нь нууц цэгийг хараад тэр цэгт тохирох ганц үг хэлнэ. ${f==="couples"?"Нөгөө нь":"Бусад нь ярилцаж"} зүүг тэр цэг рүү тааруулна. Ойртох тусам оноо их.`,
   whisper:"Утас барьсан хүн нууц асуултыг ганцаараа уншаад, хариулт болох хүний нэрийг чанга хэлнэ. Нэрлэгдсэн хүн асуултыг мэдмээр бол зоос шиднэ.",
@@ -2538,7 +2708,7 @@ new MutationObserver(applyHow).observe(app,{childList:true});
 /* ---------- Routing ---------- */
 function startGame(id, from){
   curFrom=from; curGame=id;
-  if(DECKS[id]) deck(id,from); else if(id==="spy") spySetup(from); else if(id==="headsup") huPick(from,false); else if(id==="charades") huPick(from,true); else if(id==="bomb") bomb(from); else if(id==="missions") missions(from); else if(id==="match") match(from); else if(id==="picker") picker(from); else if(id==="shagai") shagai(from); else if(id==="wave") wave(from); else if(id==="nandin") nandin(from); else if(id==="spicy") spicy(from); else if(id==="wheel") wheel(from); else if(id==="whisper") whisper(from); else if(id==="ai") aiDeck(from); else if(id==="room") roomMenu(from); else if(id==="draw") drawMenu(from); else if(id==="photo") photoMenu(from); else return false;
+  if(DECKS[id]) deck(id,from); else if(id==="spy") spySetup(from); else if(id==="headsup") huPick(from,false); else if(id==="charades") huPick(from,true); else if(id==="bomb") bomb(from); else if(id==="missions") missions(from); else if(id==="match") match(from); else if(id==="wish") wish(from); else if(id==="picker") picker(from); else if(id==="shagai") shagai(from); else if(id==="wave") wave(from); else if(id==="nandin") nandin(from); else if(id==="spicy") spicy(from); else if(id==="wheel") wheel(from); else if(id==="whisper") whisper(from); else if(id==="ai") aiDeck(from); else if(id==="room") roomMenu(from); else if(id==="draw") drawMenu(from); else if(id==="photo") photoMenu(from); else return false;
   return true;
 }
 function nav(hash){ if(location.hash===hash) route(); else location.hash=hash; }
