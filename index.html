@@ -425,6 +425,69 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 .prompt.flash{animation:pflash .7s ease}
 @keyframes pflash{0%{transform:scale(.9);opacity:.2}50%{transform:scale(1.06);color:var(--glow)}100%{transform:none;opacity:1}}
 .swapbar{height:4px;margin:6px 0 0;opacity:.6}
+/* ===== Design C: clean minimal dark, vector icons only (Linear / Apple TV+ feel) ===== */
+:root{--night:#09090B;--night-2:#141417;--hover:#1C1C21;--pill:#18181D;--edge:rgba(255,255,255,.06);--line:#26262B;--amber:#F59E0B}
+body{background:#09090B}
+.i{width:1.15em;height:1.15em;flex:none;display:inline-block;vertical-align:-.2em}
+.ei{display:inline-flex;align-items:center;justify-content:center;vertical-align:-.16em;line-height:1}
+.ei.sp{margin-right:.38em}
+.ei .i{width:1.1em;height:1.1em;vertical-align:0}
+/* home: 4 equal cards, colour only in the small icon tile */
+.moods{grid-auto-rows:1fr;gap:10px}
+.mood{display:flex;flex-direction:column;align-items:flex-start;gap:4px;min-height:136px;padding:16px;border-radius:18px;background:var(--night-2)!important;border:1px solid var(--edge)!important;overflow:hidden;transition:background .12s,transform .08s}
+.mood:hover{background:var(--hover)!important;filter:none!important;transform:none}
+.mood .mic{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:color-mix(in srgb,var(--c) 12%,transparent);color:var(--c);margin-bottom:auto}
+.mood .mic .i{width:20px;height:20px}
+.mood .arr{position:absolute;top:14px;right:14px;color:var(--ink-soft);opacity:.45;line-height:0}
+.mood .arr .i{width:16px;height:16px}
+.mood h3{margin-top:16px!important;max-width:none!important;font-size:15.5px!important;line-height:1.25}
+.mood small{max-width:none!important;color:var(--ink-soft);font-size:13px;line-height:1.35;min-height:2.7em}
+.mood-eb{display:inline-flex;align-items:center;gap:8px}
+.mood-eb .i{width:16px;height:16px;color:var(--c)}
+/* buttons */
+.btn .i{width:18px;height:18px;margin-right:8px;vertical-align:-.22em}
+.btn.join{background:#fff!important;color:#09090B!important;border:0}
+.btn.join:hover{filter:none;background:#E4E4E7!important}
+.btn.soft,.btn.ghost,.btn.story{background:var(--pill)}
+.btn.soft .spark{color:#FFD60A;display:inline-flex}
+.btn.soft .spark .i{margin-right:8px}
+.btn.story{border:1px solid var(--edge)!important}
+.login{display:inline-flex;align-items:center;gap:6px}
+.login .i{width:16px;height:16px}
+.snd .ei{margin:0}.snd .ei .i{width:18px;height:18px}
+/* game list */
+.game{border:1px solid var(--edge)!important;background:var(--night-2)}
+.game:hover{background:var(--hover)}
+.game .ic{width:40px!important;height:40px!important;padding:0!important;border-radius:12px;background:rgba(255,255,255,.05)!important;color:var(--glow);font-size:20px;line-height:1}
+.game .ic .ei,.game .ic .i{margin:0;width:20px;height:20px}
+.game .chev{line-height:0;opacity:.6}
+.game .chev .i{width:18px;height:18px}
+.ghead{color:#71717A}
+/* badges: no fill, a small coloured dot */
+.tag{display:inline-flex!important;align-items:center;gap:5px;background:rgba(255,255,255,.06)!important;color:#D4D4D8!important;font-size:11px;font-weight:700;letter-spacing:.02em;padding:2px 8px 2px 7px;border-radius:999px;vertical-align:1px}
+.tag .tdot{width:6px;height:6px;border-radius:50%;background:#71717A;flex:none}
+.tag.new .tdot{background:#22C55E}.tag.adult .tdot{background:#FF3B5C}
+.launch{background:rgba(255,255,255,.05);color:#E4E4E7;border:1px solid var(--edge)}
+.launch b{color:#fff}
+.launch .ei{color:#FFD60A}
+/* panels, chips, how-to */
+.panel,.howto,.cat,.opt,.mitem{background:var(--night-2);border:1px solid var(--edge)}
+.chip .ei .i{width:1em;height:1em}
+.cat span{color:var(--glow);line-height:0}
+.cat span .i{width:24px;height:24px}
+.howto > b .ei{color:var(--glow)}
+.mi .ei{margin:0}
+.bomb .i,.reveal .i,.who .i{stroke-width:1.3}
+.bomb .ei .i{width:.9em;height:.9em}
+.bone span{font-family:var(--display);font-weight:800;font-size:26px}
+/* home footer: compact, no empty gap */
+.homefoot{display:flex;flex-direction:column;align-items:center;gap:10px;margin-top:4px}
+.homefoot .note{margin:0}
+.sgbtn{display:inline-flex;align-items:center;gap:8px;padding:9px 14px;border-radius:999px;background:transparent;border:1px solid var(--edge);color:var(--ink-soft);font:inherit;font-size:14px;font-weight:700;cursor:pointer}
+.sgbtn:hover{background:var(--pill);color:var(--ink)}
+.sgbtn .i{width:16px;height:16px}
+.foot-links{align-items:center;color:#52525B}
+.foot-links .linkbtn,.foot-links a{font-size:13px;color:#71717A;text-decoration:none}
 </style>
 
 </head>
@@ -442,6 +505,108 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 </div>
 
 <script>
+/* ---------- Design C: one vector icon set (Lucide-style, 24px grid, 1.8 stroke) instead of system emoji ---------- */
+const ICONS = {
+  heart:'<path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"/>',
+  users:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>',
+  user:'<path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>',
+  house:'<path d="M3 10.5 12 3l9 7.5"/><path d="M5 9.5V21h14V9.5"/><path d="M10 21v-6h4v6"/>',
+  compass:'<circle cx="12" cy="12" r="10"/><path d="m16.24 7.76-2.12 6.36-6.36 2.12 2.12-6.36 6.36-2.12z"/>',
+  sparkles:'<path d="M11 3.5 12.8 8.2 17.5 10l-4.7 1.8L11 16.5l-1.8-4.7L4.5 10l4.7-1.8z"/><path d="M19 3v4M17 5h4M18 16v4M16 18h4"/>',
+  key:'<circle cx="7.5" cy="15.5" r="5.5"/><path d="m21 2-9.6 9.6"/><path d="m15.5 7.5 3 3L22 7l-3-3"/>',
+  qr:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><path d="M14 14h3v3h-3zM21 14v.01M14 21h.01M17 21h4v-4"/>',
+  bulb:'<path d="M9 18h6"/><path d="M10 22h4"/><path d="M15.09 14c.18-.98.65-1.74 1.41-2.5A4.65 4.65 0 0 0 18 8 6 6 0 0 0 6 8c0 1 .23 2.23 1.5 3.5A4.61 4.61 0 0 1 8.91 14"/>',
+  camera:'<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3l-2.5-3z"/><circle cx="12" cy="13" r="3"/>',
+  image:'<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.09-3.09a2 2 0 0 0-2.82 0L6 21"/>',
+  palette:'<path d="M12 2C6.5 2 2 6.5 2 12s4.5 10 10 10c.93 0 1.65-.75 1.65-1.69 0-.44-.18-.84-.44-1.13-.29-.29-.44-.65-.44-1.13a1.64 1.64 0 0 1 1.67-1.67h2c3.05 0 5.55-2.5 5.55-5.55C21.97 6.01 17.46 2 12 2z"/><circle cx="13.5" cy="6.5" r="1"/><circle cx="17.5" cy="10.5" r="1"/><circle cx="8.5" cy="7.5" r="1"/><circle cx="6.5" cy="12.5" r="1"/>',
+  pen:'<path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4Z"/>',
+  bomb:'<circle cx="11" cy="13" r="8"/><path d="m16.7 7.3 2-2"/><path d="M19.5 2v1.5M22 4.5h-1.5M21.3 2.7l-1 1"/>',
+  flame:'<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.07-2.14-.22-4.05 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.15.43-2.29 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
+  party:'<path d="M5.8 11.3 2 22l10.7-3.79"/><path d="M4 3h.01M22 8h.01M15 2h.01M22 20h.01"/><path d="m22 2-2.24.75a2.9 2.9 0 0 0-1.96 3.12c.1.86-.57 1.63-1.45 1.63h-.38c-.86 0-1.6.6-1.76 1.44L14 10"/><path d="M11 13c1.93 1.93 2.83 4.17 2 5-.83.83-3.07-.07-5-2-1.93-1.93-2.83-4.17-2-5 .83-.83 3.07.07 5 2Z"/>',
+  help:'<circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/>',
+  x:'<path d="M18 6 6 18M6 6l12 12"/>',
+  check:'<path d="M20 6 9 17l-5-5"/>',
+  chat:'<path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z"/><path d="M8 12h.01M12 12h.01M16 12h.01"/>',
+  crown:'<path d="m2 6 3.5 11h13L22 6l-6 5-4-7-4 7z"/><path d="M5 21h14"/>',
+  link:'<path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/>',
+  vote:'<path d="m9 12 2 2 4-4"/><path d="M5 7a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v12H5Z"/><path d="M22 19H2"/>',
+  bone:'<path d="M17 10c.7-.7 1.69 0 2.5 0a2.5 2.5 0 1 0 0-5 .5.5 0 0 1-.5-.5 2.5 2.5 0 1 0-5 0c0 .81.7 1.8 0 2.5l-7 7c-.7.7-1.69 0-2.5 0a2.5 2.5 0 0 0 0 5c.28 0 .5.22.5.5a2.5 2.5 0 1 0 5 0c0-.81-.7-1.8 0-2.5Z"/>',
+  radio:'<path d="M4.9 19.1C1 15.2 1 8.8 4.9 4.9"/><path d="M7.8 16.2c-2.3-2.3-2.3-6.1 0-8.5"/><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8c2.3 2.3 2.3 6.1 0 8.5"/><path d="M19.1 4.9C23 8.8 23 15.1 19.1 19"/>',
+  target:'<circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/>',
+  smile:'<circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><path d="M9 9h.01M15 9h.01"/>',
+  frown:'<circle cx="12" cy="12" r="10"/><path d="M16 16s-1.5-2-4-2-4 2-4 2"/><path d="M9 9h.01M15 9h.01"/>',
+  eyeoff:'<path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"/><path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"/><path d="M6.61 6.61A13.53 13.53 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"/><path d="m2 2 20 20"/>',
+  eye:'<path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/>',
+  zap:'<path d="M13 2 3 14h9l-1 8 10-12h-9l1-8z"/>',
+  glasses:'<circle cx="6" cy="15" r="4"/><circle cx="18" cy="15" r="4"/><path d="M14 15a2 2 0 0 0-4 0"/><path d="M2.5 13 5 7c.7-1.3 1.4-2 3-2"/><path d="M21.5 13 19 7c-.7-1.3-1.5-2-3-2"/>',
+  utensils:'<path d="M3 2v7a2 2 0 0 0 2 2h4a2 2 0 0 0 2-2V2"/><path d="M7 2v20"/><path d="M21 15V2a5 5 0 0 0-5 5v6a2 2 0 0 0 2 2h3Zm0 0v7"/>',
+  gem:'<path d="M6 3h12l4 6-10 13L2 9Z"/><path d="M11 3 8 9l4 13 4-13-3-6"/><path d="M2 9h20"/>',
+  trophy:'<path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0Z"/>',
+  plug:'<path d="M12 22v-5"/><path d="M9 8V2M15 8V2"/><path d="M18 8v5a4 4 0 0 1-4 4h-4a4 4 0 0 1-4-4V8Z"/>',
+  star:'<path d="m12 2 3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01z"/>',
+  lock:'<rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>',
+  rotate:'<path d="M21 12a9 9 0 1 1-9-9c2.52 0 4.93 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/>',
+  dice:'<rect x="3" y="3" width="18" height="18" rx="3"/><path d="M8 8h.01M16 8h.01M12 12h.01M8 16h.01M16 16h.01"/>',
+  volx:'<path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="m22 9-6 6M16 9l6 6"/>',
+  vol:'<path d="M11 5 6 9H2v6h4l5 4V5z"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>',
+  mail:'<rect x="2" y="4" width="20" height="16" rx="2"/><path d="m22 7-10 5L2 7"/>',
+  flag:'<path d="M4 15s1-1 4-1 5 2 8 2 4-1 4-1V3s-1 1-4 1-5-2-8-2-4 1-4 1z"/><path d="M4 22v-7"/>',
+  coin:'<circle cx="12" cy="12" r="9"/><path d="M14.5 9h-3.25a1.75 1.75 0 0 0 0 3.5h1.5a1.75 1.75 0 0 1 0 3.5H9.5M12 7v2M12 16v1.5"/>',
+  hand:'<path d="M18 11V6a2 2 0 0 0-4 0v5"/><path d="M14 10V4a2 2 0 0 0-4 0v6"/><path d="M10 10.5V6a2 2 0 0 0-4 0v8"/><path d="M18 8a2 2 0 1 1 4 0v6a8 8 0 0 1-8 8h-2c-2.8 0-4.5-.86-5.99-2.34l-3.6-3.6a2 2 0 0 1 2.83-2.82L7 15"/>',
+  snow:'<path d="M12 2v20M2 12h20M4.93 4.93l14.14 14.14M19.07 4.93 4.93 19.07"/>',
+  music:'<path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/>',
+  glass:'<path d="M8 22h8M12 15v7"/><path d="M12 15a5 5 0 0 0 5-5c0-2-.5-4-2-8H9c-1.5 4-2 6-2 8a5 5 0 0 0 5 5Z"/>',
+  cup:'<path d="M17 8h1a4 4 0 1 1 0 8h-1"/><path d="M3 8h14v9a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4Z"/><path d="M6 2v2M10 2v2M14 2v2"/>',
+  share:'<path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><path d="m16 6-4-4-4 4"/><path d="M12 2v13"/>',
+  rocket:'<path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.7-2.13-.09-2.91a2.18 2.18 0 0 0-2.91-.09z"/><path d="m12 15-3-3a22 22 0 0 1 2-3.95A12.88 12.88 0 0 1 22 2c0 2.72-.78 7.5-6 11a22.35 22.35 0 0 1-4 2z"/><path d="M9 12H4s.55-3.03 2-4c1.62-1.08 5 0 5 0M12 15v5s3.03-.55 4-2c1.08-1.62 0-5 0-5"/>',
+  megaphone:'<path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/>',
+  search:'<circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/>',
+  puzzle:'<path d="M19.44 7.85c-.49.49-1.27.5-1.77 0L16.14 6.3a2.5 2.5 0 1 0-3.54-3.54L11.06 1.2a1.25 1.25 0 0 0-1.77 0L7.67 2.83c-.49.49-.5 1.28 0 1.77a2.5 2.5 0 1 1-3.54 3.53c-.49-.49-1.28-.49-1.77 0L.73 9.76" transform="translate(2 4) scale(.9)"/><rect x="4" y="4" width="16" height="16" rx="3"/>',
+  wave:'<path d="M2 6c.6.5 1.2 1 2.5 1C7 7 7 5 9.5 5c2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 12c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/><path d="M2 18c.6.5 1.2 1 2.5 1 2.5 0 2.5-2 5-2 2.6 0 2.4 2 5 2 2.5 0 2.5-2 5-2 1.3 0 1.9.5 2.5 1"/>',
+  trash:'<path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
+  send:'<path d="m22 2-7 20-4-9-9-4Z"/><path d="M22 2 11 13"/>',
+  phoneoff:'<rect x="6" y="2" width="12" height="20" rx="2"/><path d="m3 3 18 18"/>',
+  eraser:'<path d="m7 21-4.3-4.3a1 1 0 0 1 0-1.4l10-10a1 1 0 0 1 1.4 0l5.6 5.6a1 1 0 0 1 0 1.4L13 19"/><path d="M22 21H7M5 11l9 9"/>',
+  info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
+  arrowUR:'<path d="M7 17 17 7M7 7h10v10"/>',
+  chev:'<path d="m9 18 6-6-6-6"/>',
+  play:'<path d="m6 3 14 9-14 9V3z"/>'
+};
+const EMO = {"✨":"sparkles","✓":"check","✅":"check","📸":"camera","📷":"camera","🤳":"camera","🔥":"flame","🌶️":"flame","😈":"flame","🕯️":"flame","🎨":"palette","🖌️":"pen","✏️":"pen","✍️":"pen",
+  "🎉":"party","🥳":"party","❤️":"heart","💞":"heart","💘":"heart","💋":"heart","🌸":"heart","💑":"heart","💛":"heart","💕":"heart","🖤":"heart","🤍":"heart","🫶":"heart",
+  "🤔":"help","✕":"x","✗":"x","🤫":"chat","👑":"crown","🔗":"link","🗳️":"vote","🦴":"bone","💡":"bulb","🧠":"bulb","📡":"radio","💣":"bomb","💥":"zap","🎯":"target",
+  "🎭":"smile","😅":"smile","😂":"smile","😄":"smile","🤗":"smile","😳":"smile","😎":"smile","🧸":"smile","😇":"smile","🙂":"smile","😕":"frown","🙈":"eyeoff","👀":"eye","🔎":"search",
+  "⚡":"zap","🦸":"zap","🕵️":"glasses","🕶️":"glasses","🍲":"utensils","🍜":"utensils","💎":"gem","🏆":"trophy","🥇":"trophy","🖼️":"image","🔌":"plug","⭐":"star","🌟":"star","🍀":"star",
+  "🔒":"lock","🔐":"lock","🤐":"lock","🤝":"compass","🎡":"rotate","🔁":"rotate","🦁":"crown","🐺":"glasses","🎲":"dice","🧩":"puzzle","🔇":"volx","🔊":"vol","💌":"mail","🏁":"flag","🪙":"coin",
+  "🏡":"house","🖐️":"hand","👏":"hand","🙌":"hand","🙏":"hand","🧊":"snow","👩‍🚒":"user","💃":"music","🎶":"music","🎵":"music","💅":"sparkles","🍺":"glass","🍷":"glass","🍵":"cup",
+  "🔑":"key","🗝️":"key","👴":"users","👵":"users","🚀":"rocket","📣":"megaphone","🌊":"wave","📲":"share","🗑️":"trash","➤":"send","📵":"phoneoff","🧽":"eraser","⏳":"rotate","ℹ️":"info"};
+function I(name, cls){ const p=ICONS[name]||ICONS.sparkles; return `<svg class="i${cls?" "+cls:""}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">${p}</svg>`; }
+const EMO_RE = /(?:[\u{1F000}-\u{1FAFF}☀-➿⬀-⯿]|ℹ)️?(?:‍[\u{1F000}-\u{1FAFF}☀-➿]️?)*/gu;
+const emoName = e => EMO[e] || EMO[e.replace(/️/g,"")] || EMO[e+"️"] || null;
+const noEmo = t => { t=String(t); EMO_RE.lastIndex=0; if(!EMO_RE.test(t)) return t; EMO_RE.lastIndex=0; return t.replace(EMO_RE,"").replace(/ {2,}/g," ").trim(); };
+function iconURL(name, color){ return "data:image/svg+xml;charset=utf-8,"+encodeURIComponent(I(name).replace('<svg ','<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" ').replace('stroke="currentColor"',`stroke="${color}"`)); }
+/* Any emoji that still reaches the page (game data, praise titles, status text) is swapped for its icon at render time. */
+function deEmoji(root){
+  if(!root) return;
+  const SKIP={SCRIPT:1,STYLE:1,TEXTAREA:1,SVG:1,svg:1};
+  const w=document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {acceptNode:n=>{ EMO_RE.lastIndex=0; return EMO_RE.test(n.nodeValue)?NodeFilter.FILTER_ACCEPT:NodeFilter.FILTER_REJECT; }});
+  const nodes=[]; while(w.nextNode()) nodes.push(w.currentNode);
+  for(const n of nodes){
+    const par=n.parentNode; if(!par || SKIP[par.nodeName] || par.closest&&par.closest("svg")) continue;
+    if(par.nodeName==="OPTION" || par.nodeName==="TITLE"){ n.nodeValue=noEmo(n.nodeValue); continue; }
+    const frag=document.createDocumentFragment(); let last=0, t=n.nodeValue; EMO_RE.lastIndex=0; let m;
+    while((m=EMO_RE.exec(t))){ if(m.index>last) frag.appendChild(document.createTextNode(t.slice(last,m.index)));
+      const nm=emoName(m[0]); last=m.index+m[0].length; const sp=t[last]===" "&&last+1<t.length; if(t[last]===" ") last++;
+      if(nm){ const s=document.createElement("span"); s.className=sp?"ei sp":"ei"; s.innerHTML=I(nm); frag.appendChild(s); } }
+    if(last<t.length) frag.appendChild(document.createTextNode(t.slice(last)));
+    par.replaceChild(frag,n);
+  }
+  root.querySelectorAll&&root.querySelectorAll("[placeholder],[aria-label],[title]").forEach(el=>["placeholder","aria-label","title"].forEach(a=>{ const v=el.getAttribute(a); if(v){ EMO_RE.lastIndex=0; if(EMO_RE.test(v)) el.setAttribute(a,noEmo(v)); } }));
+}
+new MutationObserver(ms=>{ for(const m of ms){ if(m.type==="characterData"){ const p=m.target.parentNode; if(p) deEmoji(p); } else m.addedNodes.forEach(n=>{ if(n.nodeType===3){ n.parentNode&&deEmoji(n.parentNode); } else if(n.nodeType===1) deEmoji(n); }); } })
+  .observe(document.documentElement,{childList:true,subtree:true,characterData:true});
+/* Story canvas: text never carries emoji either. */
+(()=>{ const P=CanvasRenderingContext2D.prototype, f=P.fillText, mt=P.measureText; P.fillText=function(t,...a){ return f.call(this, noEmo(t), ...a); }; P.measureText=function(t){ return mt.call(this, noEmo(t)); }; })();
 const MOODS = {
   couples:{name:"Хосуудын орой", ic:"💞", c:"var(--rose)", bg:"#2B141B", sub:"Дулаан, ойртуулах яриа", games:["nandin","spicy","wheel","match","wish","wave","picker"], desc:{wave:"Нэг нь нууц цэгийг хараад ганц үгээр санаа өгнө, нөгөө нь зүүг тааруулна. Хэр нэг долгион дээр байгаагаа шалгаарай.", picker:"Хоёулаа дэлгэц дээр хуруугаа тавь. Утас хэн нь эхлэхийг сонгох эсвэл Үнэн үү, Зориг уу асууна."}},
   friends:{name:"Найзуудын цугларалт", ic:"🎉", c:"var(--amber)", bg:"#261F10", sub:"Инээд, өрсөлдөөн, сэжиг", games:["room","photo","draw","whisper","bomb","spy","headsup","missions","wave","picker","shagai"], groups:[["Олон утсаар · Өрөөний код",["room","photo","draw"]],["Нэг утсаар дамжуулах",["whisper","bomb","spy","headsup","missions","wave","picker"]],["Уламжлалт тоглоом",["shagai"]]]},
@@ -568,7 +733,8 @@ const SPECTRA = [["Хүйтэн","Халуун"],["Хямд болзоо","Та�
   ["Хүүхдэд зориулсан","Насанд хүрэгчдэд"],["Амархан ажил","Хэцүү ажил"],["Муу супер хүч","Гайхалтай супер хүч"],["Хуучирсан","Моодонд орсон"],
   ["Муухай үнэр","Сайхан үнэр"],["Жижиг асуудал","Том асуудал"],["Хөдөөний","Хотын"],["Романтик биш","Маш романтик"],
   ["Ганцаараа хийх зүйл","Олуулаа хийх зүйл"],["Аймшигтай кино","Инээдтэй кино"],["Хэрэггүй бэлэг","Гайхалтай бэлэг"],["Эвгүй асуулт","Энгийн асуулт"]];
-const SHAGAI = [{n:"Морь",ic:"🐎",p:.11},{n:"Тэмээ",ic:"🐫",p:.11},{n:"Хонь",ic:"🐑",p:.39},{n:"Ямаа",ic:"🐐",p:.39}];
+const SHAGAI = [{n:"Морь",ic:"М",p:.11},{n:"Тэмээ",ic:"Т",p:.11},{n:"Хонь",ic:"Х",p:.39},{n:"Ямаа",ic:"Я",p:.39}];
+const MOOD_IC = {couples:"heart", friends:"users", family:"house", strangers:"compass"};
 const PICK_TASKS = ["Энэ хүн эхэлнэ!","Энэ хүн бүгдэд ундаа хийж өгнө.","Энэ хүн нэг дуу дуулна.","Энэ хүн хамгийн эвгүй мөчөө ярина.","Энэ хүн дараагийн тоглоомыг сонгоно.","Энэ хүн 10 удаа суугаад босно."];
 
 const TRUTHS = ["Хамгийн сүүлд хэнд худлаа хэлсэн бэ?","Энд байгаа хүмүүсээс хэнтэй нь арал дээр үлдмээр байна?","Хамгийн эвгүй байдалд орсон мөчөө ярь.",
@@ -665,28 +831,28 @@ function home(){
     <div class="top"><span class="brand">Хамт<b>даа</b></span><div class="tr"><span class="eyebrow">Нэг утас · олон хүн</span>${sndBtn()}${authBtn()}</div></div>
     <div class="hero"><h1>Өнөөдөр ямар орой вэ?</h1><p>Нөхцөл байдлаа сонго, бид тохирох тоглоомыг санал болгоно.</p></div>
     <div class="launch">💎 Нээлтийн хугацаанд бүх тоглоом <b>үнэгүй</b></div>
-    <button class="btn soft" data-go-hash="#/guide" style="flex:none"><span class="spark">✨</span> Юу тоглох вэ? <span class="sub">AI Хөтчөөс асуу</span></button>
+    <button class="btn soft guide" data-go-hash="#/guide" style="flex:none"><span class="spark">${I("sparkles")}</span>Юу тоглох вэ? <span class="sub">AI Хөтчөөс асуу</span></button>
     <div class="moods">${Object.entries(MOODS).map(([k,m])=>`
-      <button class="mood" style="--c:${m.c};--bg:${m.bg}" data-mood="${k}"><h3>${m.name}</h3><small>${m.sub}</small><span class="ic" aria-hidden="true">${m.ic}</span></button>`).join("")}
+      <button class="mood" style="--c:${m.c}" data-mood="${k}"><span class="mic">${I(MOOD_IC[k])}</span><span class="arr">${I("arrowUR")}</span><h3>${m.name}</h3><small>${m.sub}</small></button>`).join("")}
     </div>
-    <button class="btn join" data-go-hash="#/room" style="flex:none">🔑 Өрөөнд нэгдэх</button>
-    <p class="note">Бүртгэл хэрэггүй. Утсаа ширээн дээр тавиад дамжуулан тогло.</p>
-    <div class="foot-links"><a href="#/privacy">Нууцлалын бодлого</a><button class="linkbtn" id="clrSeen">↺ Асуултын түүх цэвэрлэх</button></div>
-    <button class="linkbtn" id="sgHome" style="align-self:center">💡 Асуулт / шийтгэл санал болгох</button>
+    <button class="btn join" data-go-hash="#/room" style="flex:none">${I("qr")}Өрөөнд нэгдэх</button>
+    <div class="homefoot"><p class="note">Бүртгэл хэрэггүй. Утсаа ширээн дээр тавиад дамжуулан тогло.</p>
+    <button class="sgbtn" id="sgHome">${I("bulb")}Асуулт, шийтгэл санал болгох</button>
+    <div class="foot-links"><a href="#/privacy">Нууцлалын бодлого</a><span aria-hidden="true">·</span><button class="linkbtn" id="clrSeen">Асуултын түүх цэвэрлэх</button></div></div>
   </section>`;
-  document.getElementById("clrSeen").onclick=e=>{ clearSeen(); e.target.textContent="✓ Түүх цэвэрлэгдлээ. Асуултууд дахин эхнээс гарна."; };
+  document.getElementById("clrSeen").onclick=e=>{ clearSeen(); e.target.textContent="Түүх цэвэрлэгдлээ"; };
   document.getElementById("sgHome").onclick=openSuggest;
 }
 /* ---------- Mood ---------- */
-function tagsHTML(G){ return [G.tag,G.tag2].filter(Boolean).map(t=>`<span class="tag ${t==="Шинэ"?"new":/18\+/.test(t)?"adult":"soft"}">${t}</span>`).join(""); }
+function tagsHTML(G){ return [G.tag,G.tag2].filter(Boolean).map(t=>`<span class="tag ${t==="Шинэ"?"new":/18\+/.test(t)?"adult":"soft"}"><i class="tdot"></i>${noEmo(t)}</span>`).join(""); }
 function mood(k){
   curFrom=k;
   stopTimer(); const m = MOODS[k]; setGlow(m.c);
   app.innerHTML = `<section class="view">${topBar("home","Нүүр")}
-    <div class="hero"><span class="eyebrow">${m.ic} ${m.name}</span><h1 style="margin-top:6px">Тоглоомоо сонго</h1></div>${k==="couples"?`<div class="launch">💎 Нээлтийн хугацаанд үнэгүй</div>`:""}
+    <div class="hero"><span class="eyebrow mood-eb" style="--c:${m.c}">${I(MOOD_IC[k])}${m.name}</span><h1 style="margin-top:6px">Тоглоомоо сонго</h1></div>${k==="couples"?`<div class="launch">💎 Нээлтийн хугацаанд үнэгүй</div>`:""}
     ${(k==="couples"||k==="friends")?stakesPanel():""}
     ${(m.groups||[[null,m.games]]).map(([title,ids])=>`${title?`<h4 class="ghead">${title}</h4>`:""}<div class="games">${ids.map(g=>{const G=GAMES[g];return `
-      <button class="game" data-game="${g}" data-from="${k}"><span class="ic">${G.ic}</span><div><h3>${G.name}${tagsHTML(G)}</h3><p>${(m.desc&&m.desc[g])||G.desc}</p></div><span class="chev" aria-hidden="true">›</span></button>`}).join("")}
+      <button class="game" data-game="${g}" data-from="${k}"><span class="ic">${G.ic}</span><div><h3>${G.name}${tagsHTML(G)}</h3><p>${(m.desc&&m.desc[g])||G.desc}</p></div><span class="chev" aria-hidden="true">${I("chev")}</span></button>`}).join("")}
     </div>`).join("")}</section>`;
   app.querySelectorAll("[data-stake]").forEach(b=>b.onclick=()=>{ const v=b.dataset.stake; stakes.has(v)?stakes.delete(v):stakes.add(v); b.setAttribute("aria-pressed",stakes.has(v)); try{sessionStorage.setItem("stakes",JSON.stringify([...stakes]))}catch(e){} });
 }
@@ -1556,10 +1722,10 @@ async function drawAvatar(x, cx, cy, r, name, pic, ring){
 }
 /* ---------- Story 2.0: themes, praise titles, own photo (RAM only) ---------- */
 const STORY_THEMES = {
-  night:{label:"🖤 Шөнийн улаан", bg:["#0D0D10"], card:"#18181D", ink:"#FFFFFF", soft:"#A1A1AA", acc:"#FF3B5C", hi:"#FFD60A", ringA:"#FF3B5C", ringB:"#FFD60A", bar:"#FF3B5C"},
-  pink:{label:"🌸 Ягаан", bg:["#FFC2DC","#C9A7FF"], card:"rgba(255,255,255,.42)", ink:"#2A1035", soft:"#6B4A7E", acc:"#E11D74", hi:"#7C3AED", ringA:"#FFFFFF", ringB:"#E11D74", bar:"#E11D74"},
-  gold:{label:"✨ Алтлаг VIP", bg:["#050505","#1C1608"], card:"#13110B", ink:"#FFF7E0", soft:"#BFA76A", acc:"#D4AF37", hi:"#F5D76E", ringA:"#F5D76E", ringB:"#8C6A1C", bar:"#D4AF37"},
-  white:{label:"🤍 Цэвэрхэн цагаан", bg:["#FFFFFF"], card:"#F4F4F5", ink:"#0D0D10", soft:"#71717A", acc:"#FF3B5C", hi:"#FF3B5C", ringA:"#FF3B5C", ringB:"#0D0D10", bar:"#FF3B5C"}
+  night:{label:"Шөнийн улаан", bg:["#0D0D10"], card:"#18181D", ink:"#FFFFFF", soft:"#A1A1AA", acc:"#FF3B5C", hi:"#FFD60A", ringA:"#FF3B5C", ringB:"#FFD60A", bar:"#FF3B5C"},
+  pink:{label:"Ягаан", bg:["#FFC2DC","#C9A7FF"], card:"rgba(255,255,255,.42)", ink:"#2A1035", soft:"#6B4A7E", acc:"#E11D74", hi:"#7C3AED", ringA:"#FFFFFF", ringB:"#E11D74", bar:"#E11D74"},
+  gold:{label:"Алтлаг VIP", bg:["#050505","#1C1608"], card:"#13110B", ink:"#FFF7E0", soft:"#BFA76A", acc:"#D4AF37", hi:"#F5D76E", ringA:"#F5D76E", ringB:"#8C6A1C", bar:"#D4AF37"},
+  white:{label:"Цэвэрхэн цагаан", bg:["#FFFFFF"], card:"#F4F4F5", ink:"#0D0D10", soft:"#71717A", acc:"#FF3B5C", hi:"#FF3B5C", ringA:"#FF3B5C", ringB:"#0D0D10", bar:"#FF3B5C"}
 };
 const PRAISE_ANY = ["✨ Хөөрхөн {n}","🔥 Мундаг {n}","👑 Ангийн нууц од — {n}","😎 Ширээний жинхэнэ босс — {n}","🌟 Өнөө оройн од — {n}","🦁 Зоригт {n}","🍀 Азтай {n}","🧠 Тархи ухаантай {n}","💎 Үнэт эрдэнэ {n}","🎉 Үдэшлэгийн сүнс — {n}","🚀 Зогсоох аргагүй {n}","😇 Сахиусан тэнгэр {n}","🐺 Чоно шиг ухаалаг {n}","🥇 Аварга {n}","💅 Гоёмсог {n}","🫶 Бүгдийн хайртай {n}"];
 const PRAISE_GAME = {
@@ -1592,7 +1758,7 @@ async function storyAvatar(x, cx, cy, r, name, pic, T, ic){
   x.save(); x.beginPath(); x.arc(cx,cy,r,0,Math.PI*2); x.clip();
   if(im){ const w=im.naturalWidth||im.width, h=im.naturalHeight||im.height, s=Math.min(w,h)||1; x.drawImage(im,(w-s)/2,(h-s)/2,s,s,cx-r,cy-r,r*2,r*2); }
   else if(name){ x.fillStyle=avColor(name); x.fillRect(cx-r,cy-r,r*2,r*2); x.fillStyle="#0A0A0C"; x.textAlign="center"; x.textBaseline="middle"; x.font=`800 ${Math.round(r*.95)}px "Manrope","Arial Black",sans-serif`; x.fillText(String(name).slice(0,1).toUpperCase(), cx, cy+r*.05); }
-  else { x.fillStyle=T.card; x.fillRect(cx-r,cy-r,r*2,r*2); x.textAlign="center"; x.textBaseline="middle"; x.font=`${Math.round(r*1.05)}px "Manrope",sans-serif`; x.fillStyle=T.ink; x.fillText(ic||"🎉", cx, cy+r*.06); }
+  else { x.fillStyle=T.card; x.fillRect(cx-r,cy-r,r*2,r*2); const ii=await cachedImg(iconURL(emoName(ic||"🎉")||"party", T.ink)); if(ii) x.drawImage(ii, cx-r*.55, cy-r*.55, r*1.1, r*1.1); }
   x.textBaseline="alphabetic"; x.restore();
   try{ x.getImageData(cx,cy,1,1); }catch(e){ x.save(); x.beginPath(); x.arc(cx,cy,r,0,Math.PI*2); x.clip(); x.fillStyle=avColor(name||"?"); x.fillRect(cx-r,cy-r,r*2,r*2); x.restore(); }
 }
@@ -1610,7 +1776,7 @@ async function renderStory(o, st){
   const pic=await cachedImg(o.img);
   const R=pic?118:150, cy=R+26;
   await storyAvatar(x, W/2, cy, R, st.name, st.pic, T, o.ic);
-  if(st.name || st.pic){ x.font=`${pic?64:84}px ${B}`; x.textAlign="center"; x.fillText(o.ic, W/2+R*.78, cy+R*.95); }
+  if(st.name || st.pic){ const br=pic?40:50, bx=W/2+R*.74, by=cy+R*.74; x.fillStyle=T.ringA; x.beginPath(); x.arc(bx,by,br,0,Math.PI*2); x.fill(); const ii=await cachedImg(iconURL(emoName(o.ic||"🎉")||"party", T.ink)); if(ii) x.drawImage(ii, bx-br*.6, by-br*.6, br*1.2, br*1.2); }
   let y=cy+R+110;
   x.textAlign="center"; x.fillStyle=T.acc; x.font=`800 40px ${B}`; x.fillText(o.game.toUpperCase(), W/2, y);
   y+=104; x.fillStyle=T.hi; const ts=fitFont(x, st.title, 800, D, 88, W-150, 50); x.font=`800 ${ts}px ${D}`;
@@ -2001,7 +2167,7 @@ function profileCache(){ try{ const p=JSON.parse(localStorage.getItem("profile")
 const userName = () => user ? (user.user_metadata?.custom_name || profileCache()?.name || user.user_metadata?.full_name || user.user_metadata?.name || (user.email||"").split("@")[0] || "Та") : "";
 const profilePic = () => user ? (user.user_metadata?.custom_avatar || profileCache()?.avatar || user.user_metadata?.avatar_url || user.user_metadata?.picture || "") : "";
 function authBtn(){
-  if(!user) return `<button class="login" data-auth>Нэвтрэх</button>`;
+  if(!user) return `<button class="login" data-auth>${I("user")}<span>Нэвтрэх</span></button>`;
   const pic=profilePic();
   return `<button class="av" data-auth aria-label="${esc(userName())}">${pic?`<img src="${esc(pic)}" alt="" referrerpolicy="no-referrer">`:esc(userName().slice(0,1).toUpperCase())}</button>`;
 }
