@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="description" content="Бүртгэлгүй, нэг утсаар эсвэл 4 оронтой кодоор шууд тогло. 18+ тоглоом, зураг таах, зураач болон AI хөтөчтэй.">
 <title>Хамтдаа — Найзууд, хосууд, гэр бүлийн монгол тоглоомууд</title>
-<meta name="theme-color" content="#0D0D10">
+<meta name="theme-color" content="#100D18">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Хамтдаа">
 <meta property="og:locale" content="mn_MN">
@@ -426,8 +426,10 @@ h1,h2,h3{font-family:var(--display);font-weight:800;letter-spacing:-.01em;text-w
 @keyframes pflash{0%{transform:scale(.9);opacity:.2}50%{transform:scale(1.06);color:var(--glow)}100%{transform:none;opacity:1}}
 .swapbar{height:4px;margin:6px 0 0;opacity:.6}
 /* ===== Design C: clean minimal dark, vector icons only (Linear / Apple TV+ feel) ===== */
-:root{--night:#09090B;--night-2:#141417;--hover:#1C1C21;--pill:#18181D;--edge:rgba(255,255,255,.06);--line:#26262B;--amber:#F59E0B}
-body{background:#09090B}
+:root{--night:#100D18;--night-2:#1A1626;--hover:#221D31;--pill:#221D31;--edge:rgba(255,255,255,.07);--line:#2A2538;--amber:#F2B45A}
+body{background:#100D18}
+/* Design A (v30): mood-tinted glow at the top + soft orb in each mood card corner */
+body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(70% 45% at 50% -5%,color-mix(in srgb,var(--glow) 30%,transparent),transparent 70%)}
 .i{width:1.15em;height:1.15em;flex:none;display:inline-block;vertical-align:-.2em}
 .ei{display:inline-flex;align-items:center;justify-content:center;vertical-align:-.16em;line-height:1}
 .ei.sp{margin-right:.38em}
@@ -506,6 +508,11 @@ body{background:#09090B}
 .huflash .i{width:72px;height:72px;stroke-width:2.2}
 @keyframes huf{0%{opacity:0}15%{opacity:.95}70%{opacity:.95}100%{opacity:0}}
 .confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:60}
+.mood{background:var(--night-2)!important}
+.mood::before{content:"";position:absolute;width:130px;height:130px;right:-45px;top:-45px;border-radius:50%;background:var(--c);opacity:.28;filter:blur(14px);pointer-events:none}
+.mood>*:not(.arr){position:relative}
+.game{background:var(--night-2)!important}
+.pktabs{background:var(--night-2)!important}
 </style>
 
 </head>
