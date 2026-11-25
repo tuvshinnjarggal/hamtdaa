@@ -488,6 +488,23 @@ body{background:#09090B}
 .sgbtn .i{width:16px;height:16px}
 .foot-links{align-items:center;color:#52525B}
 .foot-links .linkbtn,.foot-links a{font-size:13px;color:#71717A;text-decoration:none}
+.pktabs{position:absolute;top:calc(env(safe-area-inset-top,0px) + 66px);left:50%;transform:translateX(-50%);display:flex;gap:4px;padding:4px;border-radius:999px;background:#141417;border:1px solid var(--edge);z-index:4;white-space:nowrap}
+.pktabs button{padding:8px 12px;border-radius:999px;border:0;background:none;font:inherit;font-weight:700;font-size:13px;color:var(--ink-soft)}
+.pktabs button[aria-pressed="true"]{background:#fff;color:#09090B}
+.touchpad .hint{top:calc(env(safe-area-inset-top,0px) + 124px);font-family:var(--body);letter-spacing:0;font-size:16px}
+.pkname{position:absolute;left:16px;right:16px;top:calc(env(safe-area-inset-top,0px) + 120px);bottom:calc(env(safe-area-inset-bottom,0px) + 76px);overflow-y:auto;display:flex;flex-direction:column;gap:12px;touch-action:pan-y;user-select:text;-webkit-user-select:text;z-index:3;max-width:480px;margin:0 auto}
+.pkroll{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.pkroll span{padding:10px 14px;border-radius:999px;background:var(--pill);font-weight:700;transition:background .08s,color .08s}
+.pkroll span.on{background:var(--glow);color:var(--glow-ink)}
+.pkwin{margin-top:12px;text-align:center}
+.pkteams{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pkteams .panel{gap:6px}
+.huflash{position:fixed;inset:0;z-index:40;display:grid;place-items:center;pointer-events:none;animation:huf .65s ease-out forwards}
+.huflash.ok{background:#16A34A}.huflash.no{background:#F59E0B}
+.huflash div{display:flex;flex-direction:column;align-items:center;gap:10px;color:#fff;font-family:var(--display);font-size:40px}
+.huflash .i{width:72px;height:72px;stroke-width:2.2}
+@keyframes huf{0%{opacity:0}15%{opacity:.95}70%{opacity:.95}100%{opacity:0}}
+.confetti{position:fixed;inset:0;width:100vw;height:100vh;pointer-events:none;z-index:60}
 </style>
 
 </head>
@@ -618,11 +635,11 @@ const GAMES = {
   ai:{name:"AI Хувийн багц", ic:"✨", desc:"Нэрс, бүлгийнхээ онцлогийг бич. AI зөвхөн танай бүлэгт зориулсан 15 карт зохионо.", tag:"AI"},
   photo:{name:"Зураг таах рулет", ic:"📸", desc:"Олон утсаар: хүн бүр утаснаасаа хэдэн зураг сонгоно. Зураг бүх утсан дээр 8 секунд гарахад хэнийх болохыг хамгийн хурдан таасан нь ялна. Зураг серверт хадгалагдахгүй.", tag:"Шинэ", tag2:"Олон утас"},
   draw:{name:"Утасны зураач", ic:"🎨", desc:"Олон утсаар: нэг нь утсан дээрээ зурж, бусад нь өөрсдийн утсан дээр шууд харж таана. Эсвэл «Гинжин зураг»: бичсэн өгүүлбэр зураг болж, зураг таамаг болж хувирна.", tag:"Шинэ", tag2:"Олон утас"},
-  whisper:{name:"Шивнээ", ic:"🤫", desc:"Нууц асуултыг ганцаараа уншаад хариулт болох хүний нэрийг чанга хэл. Тэр хүн асуултыг мэдэхийн тулд зоос шидэх үү, шийтгэл хүлээх үү?"},
+  whisper:{name:"Шивнээ", ic:"🤫", desc:"Нууц асуултыг ганцаараа уншаад хариулт болох хүний нэрийг чанга хэл. Тэр хүн шийтгэл хүлээгээд асуултыг харах уу, нууцаар нь өнгөрөх үү?"},
   nandin:{name:"Нандин", ic:"🌸", desc:"Бие биеэ илүү гүн таних 120 гаруй асуулт. 10 карт тутамд дулаахан нэг үйлдэл гарна."},
   spicy:{name:"Үнэн үү, Халуухан шийтгэл үү?", ic:"🔥", desc:"Халуухан асуултад хариул. Ичвэл сонгосон төрлөөс шийтгэл биелүүлнэ. 10 тойрог тутамд дүгнэлт.", tag:"18+"},
   wheel:{name:"Хайрын хүрд", ic:"🎡", desc:"Хоёр хүрд биеийн хэсэг ба үйлдлийг сонгоно, 10–30 секунд биелүүлнэ.", tag:"18+"},
-  picker:{name:"Хурууны рулет", ic:"🖐️", desc:"Бүгд дэлгэц дээр хуруугаа тавь. Утас нэгийг сонгох, Үнэн үү Зориг уу асуух, эсвэл баг хуваана."},
+  picker:{name:"Хурууны рулет", ic:"🖐️", desc:"2–5 хүн хуруугаа тавь, эсвэл 15 хүртэл нэрээр эргүүл. Нэгийг сонгох, Үнэн үү Зориг уу, баг хуваах."},
   shagai:{name:"Шагай", ic:"🦴", desc:"Ээлжээр шагай шидэж оноо цуглуул. 1 эсвэл 3 тойргийн дараа ялагч тодорно."},
   wave:{name:"Нэг долгион дээр", ic:"📡", desc:"Нэг нь нууц цэгийг харж ганц үгээр санаа өгнө, бусад нь зүүг тааруулна."},
   bomb:{name:"Бөмбөг", ic:"💣", desc:"Сэдэвт тохирох үг хэлээд утсаа дамжуул. Хэзээ дэлбэрэхийг хэн ч мэдэхгүй."},
@@ -631,7 +648,7 @@ const GAMES = {
   wish:{name:"Нууц хүсэл", ic:"❤️", desc:"Хоёулаа нууцаар ❤️ / 🤔 / ✕ дарна. Зөвхөн хоёулаа хүссэн зүйл л илчлэгдэнэ.", tag:"Шинэ"},
   couplesDeck:{name:"Бид хоёр", ic:"🕯️", desc:"Гурван түвшний асуулт, даалгавар. Эхнээсээ ойртох тусам гүнзгийрнэ.", tag:"18+ хэсэгтэй"},
   spy:{name:"Хэн нь тагнуул вэ?", ic:"🕵️", desc:"Бүгдэд нэг үг, тагнуулд арай өөр үг ирнэ. Ярилцаад тагнуулыг ол."},
-  headsup:{name:"Толгой дээрээ", ic:"🤳", desc:"Утсаа духан дээрээ барь, найзууд чинь тайлбарлана. 60 секундэд аль болох олныг таа."},
+  headsup:{name:"Толгой дээрээ", ic:"🤳", desc:"Утсаа духан дээрээ барь, найзууд чинь тайлбарлана. Таасан бол утсаа доош, алгасах бол дээш дохи."},
   charades:{name:"Дүрээр үзүүл", ic:"🎭", desc:"Үгийг дуугүй дүрсэлж үзүүл, бусад нь таана. Хүүхдүүдэд зориулсан үгс."},
   familyDeck:{name:"Ширээний яриа", ic:"🍲", desc:"Гэр бүлийн гол тоглоом: дурсамж, хөгжилтэй, дотно гэсэн 3 уур амьсгал, AI-аар танай гэрт зориулсан асуулт."},
   iceDeck:{name:"Танилцъя", ic:"🧊", desc:"Шинэ хүмүүстэй эвгүй чимээгүй байдлыг эвдэх асуултууд."},
@@ -770,11 +787,11 @@ setArr(DARES, ["Хөгжимгүйгээр 20 секунд бүжиглэ.", "Б
 let stakes = new Set();
 try{ JSON.parse(sessionStorage.getItem("stakes")||"[]").forEach(x=>stakes.add(x)); }catch(e){}
 const STAKES = {
-  drink:{label:"🍺 Уух / Балгах", list:["1 балга уу.","2 балга уу.","Баруун талын хүнтэйгээ хамт балга.","Хундагаа өргөөд хүн бүрт нэг ерөөл хэлээд балга.","Гараа ашиглахгүйгээр нэг балга.","Хүссэн хүнээ сонгоод хамт 1 балга."]},
-  romance:{label:"💋 Романтик / Үнсэлт", list:["Хамтрагчийнхаа хацар дээр үнс.","Хамтрагчаа 10 секунд чанга тэврэ.","Хамтрагчийнхаа гарыг үнс.","Хамтрагчийнхаа чихэнд сайхан үг шивнэ.","Хамтрагчийнхаа духан дээр үнс.","Хамтрагчдаа 3 магтаал хэл."]},
-  fun:{label:"😂 Хөгжилтэй даалгавар", list:["Нэг дуу чангаар дуул.","10 удаа суугаад бос.","Тахианы бүжиг бүжиглэ.","Нэг амьтан дуурай.","Дараагийн тойрог хүртэл зөвхөн шивнэж ярь.","Хамгийн инээдтэй царайгаа гарга, бусад нь зураг авна."]},
+  drink:{label:"🍺 Уух / Балгах", list:["1 балга уу.","2 балга уу.","Баруун талын хүнтэйгээ хамт балга.","Хундагаа өргөөд хүн бүрт нэг ерөөл хэлээд балга.","Гараа ашиглахгүйгээр нэг балга.","Хүссэн хүнээ сонгоод хамт 1 балга.","Хамгийн сүүлд инээсэн хүнтэйгээ хамт 1 балга уу.","Зүүн талын хүндээ ерөөл хэлээд хамт балга.","Нүдээ аниад 1 балга уу.","Дараагийн тойрог хүртэл зөвхөн зүүн гараараа уу.","Хундагаа өргөөд «Хамтдаа!» гэж хашгираад балга.","Хамгийн өндөр хүнтэй хамт балга.","Хамгийн залуу хүнтэй хундага тулгаад уу.","3 секундэд багтааж 1 балга уу.","Өрөөнд байгаа хүн бүртэй хундага тулгаад 1 балга.","Бусдын сонгосон хүнтэй гараа хөндлөн тавиад балга.","Хагас хундага уу.","Хүссэн хүндээ 1 балга уулга.","Хамгийн сүүлд утсаа шалгасан хүнтэй хамт балга.","Нэг хөл дээрээ зогсоод 1 балга уу.","Өөрийнхөө тухай нэг нууц хэлэх үү, 2 балга уух уу, сонго.","Бусад нь 5 хүртэл тоолж байхад уу.","Ундааныхаа нэрийг 3 удаа хурдан хэлээд балга.","Ширээний голд хундагаа тавиад, бүгдээрээ «Эрүүл мэндийн төлөө!» гэхэд балга.","Дараагийн хүн хожигдох хүртэл хундагаа барьсаар бай.","Хамгийн инээдтэй ерөөл зохиоод бүгдээрээ балга.","Хүн бүр чамд нэг үг хэлнэ, хамгийн гоё үг хэлсэн хүнтэй балга.","Сүүлийн тойрогт хожсон хүнтэй хамт 2 балга уу."]},
+  romance:{label:"💋 Романтик / Үнсэлт", list:["Хамтрагчийнхаа хацар дээр үнс.","Хамтрагчаа 10 секунд чанга тэврэ.","Хамтрагчийнхаа гарыг үнс.","Хамтрагчийнхаа чихэнд сайхан үг шивнэ.","Хамтрагчийнхаа духан дээр үнс.","Хамтрагчдаа 3 магтаал хэл.","Хамтрагчийнхаа нүд рүү 10 секунд инээлгүй хар.","Хамтрагчдаа анх харсан мөчийнхөө тухай хэл.","Хамтрагчийнхаа гарыг дараагийн тойрог хүртэл атгаж суу.","Хамтрагчдаа хайрын дууны нэг мөр дуулж өг.","Хамтрагчийнхаа мөрөн дээр 20 секунд толгойгоо тавь.","Хамтрагчдаа «Чиний ... надад таалагддаг» гэж 3 янзаар хэл.","Хамтрагчийнхаа үсийг зөөлөн илж 10 секунд суу.","Хамтрагчийнхаа нэрийг хамгийн хайртай дууныхаа аяар дууд.","Хамтрагчдаа хийх дараагийн болзооны санаа хэл.","Хамтрагчийнхаа хуруун дээр үнс.","Хамтрагчаа араас нь очоод тэврэ.","Хамтрагчдаа зориулж 2 мөр шүлэг зохио.","Хамтрагчийнхаа хамгийн хөөрхөн зуршлыг чангаар хэл.","Хамтрагчтайгаа 15 секунд удаан бүжиг бүжиглэ.","Хамтрагчийнхаа хацрыг хоёр гараараа зөөлөн бариад инээмсэглэ.","Хамтрагчдаа өхөөрдсөн шинэ хоч өг.","Хамтрагчийнхаа чихэнд «Би чамд хайртай» гэж шивнэ.","Хамтрагчийнхаа алган дээр хуруугаараа зүрх зур.","Хамтрагчтайгаа хамт selfie авч, ханын зураг болго.","Хамтрагчдаа өнөөдөр яагаад гоё харагдаж байгааг хэл.","Хамтрагчийнхаа мөрийг 20 секунд иллэг хий.","Хамтрагчтайгаа духаа тулгаад 5 хүртэл тоол."]},
+  fun:{label:"😂 Хөгжилтэй даалгавар", list:["Нэг дуу чангаар дуул.","10 удаа суугаад бос.","Тахианы бүжиг бүжиглэ.","Нэг амьтан дуурай.","Дараагийн тойрог хүртэл зөвхөн шивнэж ярь.","Хамгийн инээдтэй царайгаа гарга, бусад нь зураг авна.","Дараагийн 2 тойрог робот шиг ярь.","Хамгийн дуртай киноны дүрээ 15 секунд дуурай.","Хажуугийн хүнээ 3 өгүүлбэрээр магт.","20 секунд хөшөө болж хөдөлгөөнгүй зогс.","Нэг хөл дээрээ зогсоод цагаан толгойн эхний 10 үсгийг хэл.","Хамгийн муу хошигнолоо яриад инээлгэ.","Бусдын сонгосон дуунд 10 секунд бүжиглэ.","Утасныхаа галерейн 5 дахь зургийг бүгдэд үзүүл.","Мэдээний хөтлөгч шиг өнөөдрийн оройг 20 секунд мэдээл.","Дараагийн тойрог хүртэл хүн бүрийг «эрхэм» гэж дууд.","Нүдээ аниад хажуугийн хүнээ зур.","Хамгийн чанга инээдээ 5 секунд инээ.","Аав, ээжийнхээ байнга хэлдэг үгийг дуурай.","Нэг амьтны алхааг дуурайж өрөөг тойр.","Бусдын хэлсэн 3 үгээр 20 секундэд түүх зохио.","Хамгийн ойрхон байгаа эд зүйлээ 30 секунд худалдаалж үзүүл.","«Сайн байна уу» гэдгийг 3 өөр хоолойгоор хэл.","Дараагийн тойрог хүртэл өгүүлбэр бүрийнхээ төгсгөлд «шүү дээ» нэм.","10 удаа үсрээд «Би аварга!» гэж хашгир.","Бусдын сонгосон хүний дүрд орж 15 секунд ярь.","Хамгийн хачин чадвараа үзүүл.","Өөрийгөө 3 үгээр тодорхойл, бусад нь зөв эсэхийг шийднэ.","Нэг хоол сонгоод түүнийг идэж буй мэт 10 секунд жүжиглэ.","Хамгийн гайхсан царайгаа 5 секунд гарга.","Өнөө оройн шилдэг тоглогчид шагнал гардуулах үг хэл.","Нүдээ аниад 10-аас 1 хүртэл хойноос нь тоол.","Хамгийн аймар зүүдээ 2 өгүүлбэрээр ярь.","Хажуугийн хүнтэйгээ байраа сольж суу."]},
 };
-function penalty(){ const keys=stakes.size?[...stakes]:["fun"]; const k=keys[Math.floor(Math.random()*keys.length)], L=forFrom(STAKES[k].list); return {kind:STAKES[k].label, text:pickFresh("pen:"+k+(curFrom==="couples"?":2":""), L)}; }
+function penalty(){ if(OWN_PEN.size && Math.random()<.5) return {kind:"Өөрсдийн шийтгэл", text:pickFresh("pen:own",[...OWN_PEN])}; const keys=stakes.size?[...stakes]:["fun"]; const k=keys[Math.floor(Math.random()*keys.length)], L=forFrom(STAKES[k].list); return {kind:STAKES[k].label, text:pickFresh("pen:"+k+(curFrom==="couples"?":2":""), L)}; }
 function penaltyHTML(title){ const p=penalty(); return `<div class="penalty"><span class="eyebrow">${esc(title||"Шийтгэл")} · ${p.kind}</span><b>${esc(p.text)}</b></div>`; }
 function stakesPanel(){ return `<div class="stakes"><b>Өнөөдөр ямар дүрмээр тоглох вэ?</b><div class="chips">${Object.entries(STAKES).map(([k,v])=>`<button class="chip" data-stake="${k}" aria-pressed="${stakes.has(k)}">${v.label}</button>`).join("")}</div><small style="color:var(--ink-soft)">Хожигдсон, алдсан хүн эдгээрээс санамсаргүй шийтгэл авна. Хэдийг ч сонгож болно.</small></div>`; }
 const NANDIN_STAGES = [
@@ -817,7 +834,7 @@ let curFrom="friends";
 const forFrom = arr => curFrom==="couples" ? (arr.filter(t=>!GROUP_ONLY_RE.test(t)).length ? arr.filter(t=>!GROUP_ONLY_RE.test(t)) : arr) : arr;
 const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
 function setGlow(c){ document.documentElement.style.setProperty("--glow", c || "var(--amber)"); }
-function stopTimer(){ if(timerId){clearInterval(timerId); timerId=null;} }
+function stopTimer(){ if(timerId){clearInterval(timerId); timerId=null;} if(window.__off){ try{ window.__off(); }catch(e){} window.__off=null; } }
 function topBar(backTo, label){
   return `<div class="top">${backTo?`<button class="back" data-go="${backTo}">‹ ${esc(label||"Буцах")}</button>`:`<span></span>`}<div class="tr">${sndBtn()}${user?authBtn():""}<span class="brand">Хамт<b>даа</b></span></div></div>`;
 }
@@ -975,26 +992,38 @@ function huPick(from, kids){
     <p style="margin:0;color:var(--ink-soft)">${kids?"Дэлгэц дээрх үгийг дуугүй, зөвхөн хөдөлгөөнөөр үзүүл. Бусад нь таана.":"Утсаа духан дээрээ, дэлгэцийг найзууд руугаа харуулж барь. Тэд үгийг тайлбарлана, чи таана. Таасан бол Зөв, гацвал Алгас."}</p>
     <div class="cats">${Object.entries(cats).map(([k,c])=>`<button class="cat" data-cat="${k}"><span>${c.ic}</span>${esc(c.name)}<small>${c.words.length} үг · 60 сек</small></button>`).join("")}</div>
     ${kids?"":aiHelperBox("hu",{title:"Өөрийн сэдвээр үг үүсгэх", placeholder:"Жишээ: 12Б анги, Dota 2, K-Pop, Монгол кино", btn:"Үүсгэх"})}</section>`;
-  app.querySelectorAll("[data-cat]").forEach(b=>b.onclick=()=>huPlay(from, cats[b.dataset.cat], kids));
+  app.querySelectorAll("[data-cat]").forEach(b=>b.onclick=async()=>{ const tilt = kids ? false : await tiltPermission(); huPlay(from, cats[b.dataset.cat], kids, tilt); });
   if(!kids) bindAiHelper("hu", topic=>({mode:"headsup_words", topic}), (items, topic)=>{ const k="ai"+Date.now(); HU_CATS[k]={name:topic, ic:"✨", words:items}; setTimeout(()=>{ huPick(from,false); const m=document.getElementById("ahMsg-hu"); if(m) m.textContent=`✓ «${topic}» ангилал нэмэгдлээ (${items.length} үг). Дээрээс сонго.`; },0); return ""; });
 }
-function huPlay(from, cat, kids){
+function huPlay(from, cat, kids, tilt){
+  stopTimer();
   const huKey="hu:"+cat.name, words = freshOrder(huKey, cat.words); let i=0, left=60; const got=[], skipped=[];
   app.innerHTML = `<section class="view">${topBar("mood:"+from, "Зогсоох")}
     <div class="timer" id="t">60</div>
     <div class="hu-word" id="w">${esc(words[0])}</div>
+    ${tilt?`<p class="note" id="tiltHint" style="margin:0">Утсаа духан дээрээ босоо барь. <b>Доош</b> тонгойлговол Зөв, <b>дээш</b> өргөвөл Алгас.</p>`:""}
     <div class="row"><button class="btn skip" id="skip">Алгас</button><button class="btn good" id="ok">Зөв</button></div></section>`;
   const w=document.getElementById("w"), t=document.getElementById("t");
-  const step = ok => { (ok?got:skipped).push(words[i]); markSeen(huKey, words[i]); i++; if(i>=words.length) return end(); w.textContent=words[i]; };
+  const flash = ok => { const f=document.createElement("div"); f.className="huflash "+(ok?"ok":"no"); f.innerHTML=`<div>${ok?I("check"):I("rotate")}<b>${ok?"Зөв таалаа!":"Алгаслаа"}</b></div>`; document.body.appendChild(f); setTimeout(()=>f.remove(),650);
+    if(ok){ beep(880,.1,.18); setTimeout(()=>beep(1175,.1,.18),90); setTimeout(()=>beep(1568,.18,.18),180); buzz([40,30,80]); } else { beep(330,.2,.15); buzz(120); } };
+  const step = ok => { flash(ok); (ok?got:skipped).push(words[i]); markSeen(huKey, words[i]); i++; if(i>=words.length) return end(); w.textContent=words[i]; };
+  if(tilt){ let armed=false, lock=false, seen=false;
+    const onOri=e=>{ if(e.beta==null||e.gamma==null) return; seen=true; const r=Math.PI/180, v=Math.cos(e.beta*r)*Math.cos(e.gamma*r);
+      if(!armed){ if(Math.abs(v)<.35){ armed=true; const h=document.getElementById("tiltHint"); if(h) h.textContent="Мэдрэгч бэлэн. Доош = Зөв, дээш = Алгас."; } return; }
+      if(lock){ if(Math.abs(v)<.35) lock=false; return; }
+      if(v<-.6){ lock=true; step(true); } else if(v>.6){ lock=true; step(false); } };
+    window.addEventListener("deviceorientation",onOri);
+    window.__off=()=>window.removeEventListener("deviceorientation",onOri);
+    setTimeout(()=>{ if(!seen){ const h=document.getElementById("tiltHint"); if(h) h.textContent="Утасны мэдрэгч олдсонгүй. Доорх товчоор тогло."; } },1800); }
   document.getElementById("ok").onclick=()=>step(true);
   document.getElementById("skip").onclick=()=>step(false);
   timerId=setInterval(()=>{left--; t.textContent=left; t.classList.toggle("low",left<=10); if(left<=0) end();},1000);
-  function end(){ stopTimer();
+  function end(){ stopTimer(); if(window.__off){ window.__off(); window.__off=null; }
     app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
       <div class="hero" style="text-align:center"><span class="eyebrow">${esc(cat.name)}</span><h1 style="margin-top:6px">${got.length} оноо</h1></div>
       <div class="panel"><div class="results">${got.map(x=>`<span>${esc(x)}</span>`).join("")}${skipped.map(x=>`<span class="x">${esc(x)}</span>`).join("")}</div></div>
       <div class="row" style="margin-top:auto"><button class="btn ghost" id="cats">Ангилал солих</button><button class="btn" id="re">Дахин тоглох</button></div></section>`;
-    document.getElementById("re").onclick=()=>huPlay(from,cat,kids);
+    document.getElementById("re").onclick=()=>huPlay(from,cat,kids,tilt);
     document.getElementById("cats").onclick=()=>huPick(from,kids);
   }
 }
@@ -1026,8 +1055,9 @@ function bomb(from){
     <ol class="rules"><li>Дугуйлан суу. Бөмбөг асахад сэдэв гарна.</li><li>Утсаа барьсан хүн сэдэвт тохирох үг хэлээд дараагийн хүнд дамжуулна. Хэлсэн үгийг давтаж болохгүй.</li><li>Дэлбэрэх үед утас хэний гарт байна, тэр хожигдоно.</li></ol>
     <div class="bomb" aria-hidden="true">💣</div>
     <div class="panel">${penToggle("bomb","🎭 Дэлбэрсэн хүнд шийтгэл гаргах")}</div>
+    ${penOwnBox("bomb")}
     <div class="row" style="margin-top:auto"><button class="btn" id="light">Бөмбөгийг асаах</button></div></section>`;
-  document.getElementById("light").onclick = () => { audio(); noise(.5,600,.2,"lowpass"); buzz(40); run(); };
+  document.getElementById("light").onclick = () => { penOwnRead("bomb"); audio(); noise(.5,600,.2,"lowpass"); buzz(40); run(); };
   function run(){
     const total = 20000 + Math.random()*30000, start = Date.now(); let nextTick = 0, lastSwap = start;
     app.innerHTML = `<section class="view">${topBar("mood:"+from, "Зогсоох")}
@@ -1204,17 +1234,48 @@ function picker(from){
   const MODES= from==="family" ? {one:"Сонгох", team:"Баг хуваах"} : from==="couples" ? {one:"Хэн эхлэх вэ?", td:"Үнэн / Зориг"} : {one:"Сонгох", td:"Үнэн / Зориг", team:"Баг хуваах"};
   if(!MODES[pickMode]) pickMode="one";
   const pad=document.createElement("div"); pad.className="touchpad";
-  pad.innerHTML=`<button class="back close" id="pkClose">‹ Буцах</button><div class="hint" id="pkHint"></div><div id="pkCard"></div>
+  let input="finger"; try{ input=localStorage.getItem("pkInput")==="name"?"name":"finger"; }catch(e){}
+  pad.innerHTML=`<button class="back close" id="pkClose">‹ Буцах</button>
+    <div class="pktabs" id="pkTabs"><button data-in="finger">Хуруугаар (2–5 хүн)</button><button data-in="name">Нэрээр эргүүлэх (2–15 хүн)</button></div>
+    <div class="hint" id="pkHint"></div><div id="pkCard"></div><div class="pkname" id="pkName" hidden></div>
     <div class="pkmodes" id="pkModes">${Object.entries(MODES).map(([k,v])=>`<button data-pm="${k}" aria-pressed="${k===pickMode}">${v}</button>`).join("")}</div>`;
   document.body.appendChild(pad);
   const pts=new Map(); let wait=null, done=false, ci=0;
-  const hint=pad.querySelector("#pkHint"), cardBox=pad.querySelector("#pkCard"), modes=pad.querySelector("#pkModes");
+  const hint=pad.querySelector("#pkHint"), cardBox=pad.querySelector("#pkCard"), modes=pad.querySelector("#pkModes"), nameBox=pad.querySelector("#pkName"), tabs=pad.querySelector("#pkTabs");
   const idle=()=>{ hint.innerHTML = pickMode==="team"
     ? `<b>Хуруугаа тавь</b>4–8 хүн хуруугаа тавиад барь. Утас хоёр багт хуваана.`
-    : from==="couples" ? `<b>Хуруугаа тавь</b>Хоёулаа дэлгэц дээр нэг нэг хуруугаа тавиад хөдөлгөлгүй барь.` : `<b>Хуруугаа тавь</b>2–8 хүн дэлгэц дээр нэг нэг хуруугаа тавиад хөдөлгөлгүй барь.`; };
-  idle();
-  pad.querySelector("#pkClose").onclick=()=>{ clearTimeout(wait); pad.remove(); nav("#/mood/"+from); };
-  modes.querySelectorAll("[data-pm]").forEach(b=>b.onclick=()=>{ pickMode=b.dataset.pm; modes.querySelectorAll("[data-pm]").forEach(x=>x.setAttribute("aria-pressed",x===b)); reset(); });
+    : from==="couples" ? `<b>Хуруугаа тавь</b>Хоёулаа дэлгэц дээр нэг нэг хуруугаа тавиад хөдөлгөлгүй барь.` : `<b>Хуруугаа тавь</b>2–5 хүн дэлгэц дээр нэг нэг хуруугаа тавиад хөдөлгөлгүй барь. 6+ хүн бол «Нэрээр эргүүлэх».`; };
+  pad.querySelector("#pkClose").onclick=()=>{ clearTimeout(wait); clearTimeout(spinT); pad.remove(); nav("#/mood/"+from); };
+  modes.querySelectorAll("[data-pm]").forEach(b=>b.onclick=()=>{ pickMode=b.dataset.pm; modes.querySelectorAll("[data-pm]").forEach(x=>x.setAttribute("aria-pressed",x===b)); input==="name"?nameUI():reset(); });
+  let spinT=null;
+  const setInput=v=>{ input=v; try{ localStorage.setItem("pkInput",v); }catch(e){} tabs.querySelectorAll("[data-in]").forEach(x=>x.setAttribute("aria-pressed",x.dataset.in===v));
+    clearTimeout(spinT); if(v==="name"){ reset(); hint.hidden=true; nameBox.hidden=false; nameUI(); } else { nameBox.hidden=true; hint.hidden=false; reset(); } };
+  tabs.querySelectorAll("[data-in]").forEach(b=>b.onclick=()=>setInput(b.dataset.in));
+  /* Name mode: for 6+ people (iPhone tracks only 5 fingers) */
+  function nameUI(){
+    clearTimeout(spinT);
+    nameBox.innerHTML=`<div class="panel"><b>Тоглогчид (2–15)</b>${namesEditor(2,15)}</div><button class="btn" id="pkSpin" style="flex:none">${pickMode==="team"?"Баг хуваах":"Эргүүлэх"}</button><div id="pkRes"></div>`;
+    const get=bindNames(2,15,nameUI);
+    nameBox.querySelector("#pkSpin").onclick=()=>{ audio(); const names=get().slice(0,15); const res=nameBox.querySelector("#pkRes");
+      if(names.length<(pickMode==="team"?4:2)){ res.innerHTML=`<p class="note">Дор хаяж ${pickMode==="team"?4:2} нэр бич</p>`; return; }
+      if(pickMode==="team"){ const sh=shuffle(names.slice()), A=sh.filter((_,n)=>n%2===0), B=sh.filter((_,n)=>n%2===1); beep(660,.12,.2); setTimeout(()=>beep(990,.25,.2),130); buzz([60,40,200]);
+        res.innerHTML=`<div class="pkteams"><div class="panel"><b style="color:var(--teal)">А баг</b>${A.map(n=>`<span>${esc(n)}</span>`).join("")}</div><div class="panel"><b style="color:var(--rose)">Б баг</b>${B.map(n=>`<span>${esc(n)}</span>`).join("")}</div></div>`; return; }
+      res.innerHTML=`<div class="pkroll">${names.map((n,k)=>`<span data-k="${k}">${esc(n)}</span>`).join("")}</div>`; res.scrollIntoView({behavior:"smooth",block:"end"});
+      const els=[...res.querySelectorAll("[data-k]")], win=Math.floor(Math.random()*names.length); let k=Math.floor(Math.random()*names.length), d=55, steps=0;
+      const minSteps=names.length*2+((win-k+names.length)%names.length);
+      const tick=()=>{ els.forEach(e=>e.classList.remove("on")); els[k].classList.add("on"); beep(500+((k*70)%500),.03,.1);
+        if(steps>=minSteps && k===win && d>260){ pickedName(names[win], res); return; }
+        steps++; if(steps>names.length) d*=1.13; k=(k+1)%names.length; spinT=setTimeout(tick, Math.min(d,420)); };
+      tick(); };
+  }
+  function pickedName(name, res){ beep(660,.12,.2); setTimeout(()=>beep(990,.25,.2),130); buzz([60,40,200]);
+    const box=document.createElement("div"); box.className="panel pkwin"; res.appendChild(box); setTimeout(()=>box.scrollIntoView({behavior:"smooth",block:"end"}),30);
+    if(pickMode==="td"){ box.innerHTML=`<h2 style="text-align:center">${esc(name)}: Үнэн үү, Зориг уу?</h2><div class="row"><button class="btn ghost" id="tdT">Үнэн</button><button class="btn" id="tdD">Зориг</button></div>`;
+      const show=(kind,list)=>{ box.innerHTML=`<span class="eyebrow">${esc(name)} · ${kind}</span><div class="mission">${esc(pickFresh("td:"+kind+(from==="couples"?":2":""), forFrom(list)))}</div>`; };
+      box.querySelector("#tdT").onclick=()=>show("Үнэн",TRUTHS); box.querySelector("#tdD").onclick=()=>show("Зориг",DARES); return; }
+    const pk = stakes.size && Math.random()<.6 ? penalty().text : pickFresh("pick"+(from==="couples"?":2":""), forFrom(PICK_TASKS));
+    box.innerHTML=`<span class="eyebrow">Сонгогдлоо</span><h2 style="font-size:26px;margin:2px 0 6px">${esc(name)}</h2><b>${esc(pk)}</b>`;
+  }
   function reset(){ clearTimeout(wait); done=false; cardBox.innerHTML=""; pad.querySelectorAll(".dot").forEach(d=>d.remove()); pts.clear(); modes.hidden=false; idle(); }
   const need=()=>pickMode==="team"?4:2;
   function arm(){ clearTimeout(wait); if(done) return;
@@ -1236,7 +1297,8 @@ function picker(from){
     cardBox.querySelector("#tdT").onclick=()=>show("Үнэн",TRUTHS);
     cardBox.querySelector("#tdD").onclick=()=>show("Зориг",DARES);
   }
-  pad.addEventListener("pointerdown",e=>{ if(e.target.closest("button")) return; audio(); e.preventDefault();
+  setInput(input);
+  pad.addEventListener("pointerdown",e=>{ if(input==="name" || e.target.closest("button")) return; audio(); e.preventDefault();
     if(done && pts.size===0 && pickMode!=="td"){ reset(); }
     if(done||pts.size>=8) return;
     const d=document.createElement("div"); d.className="dot"; d.style.setProperty("--c",colors[ci++%colors.length]);
@@ -1251,6 +1313,36 @@ function penOn(k,def=true){ try{ const v=localStorage.getItem("penOn:"+k); retur
 function penSet(k,v){ try{ localStorage.setItem("penOn:"+k,v?"1":"0"); }catch(e){} }
 function penToggle(k,label,def=true){ return `<label class="toggle"><input type="checkbox" data-pentg="${k}" ${penOn(k,def)?"checked":""}><span class="sw" aria-hidden="true"></span><span>${label}</span></label>`; }
 document.addEventListener("change",e=>{ const k=e.target&&e.target.dataset&&e.target.dataset.pentg; if(k) penSet(k,e.target.checked); });
+/* ---------- Own penalties (mixed into penalty() for this session) ---------- */
+const OWN_PEN = new Set();
+function penOwnBox(id){ return ownBox("pen-"+id, [["p","шийтгэл","Жишээ: Бүгдэд нэг магтаал хэл"]]); }
+function penOwnRead(id){ const L=ownRead("pen-"+id,"p"); L.forEach(t=>OWN_PEN.add(t)); if(L.length && ownShare("pen-"+id)) sharePrompts(L.map(t=>({c:"Шийтгэл",t}))); return L.length; }
+/* Keep <details>/<textarea>/<checkbox> state across re-renders (room lobby re-renders on every presence change). */
+function keepDraft(store, ids){ ids.forEach(id=>{ const el=document.getElementById(id); if(!el) return; const k="d:"+id;
+  if(el.tagName==="DETAILS"){ if(store[k]) el.open=true; el.addEventListener("toggle",()=>{ store[k]=el.open; }); }
+  else if(el.type==="checkbox"){ if(store[k]!=null) el.checked=store[k]; el.addEventListener("change",()=>{ store[k]=el.checked; }); }
+  else { if(store[k]!=null) el.value=store[k]; el.addEventListener("input",()=>{ store[k]=el.value; }); } }); }
+/* ---------- Confetti: light canvas burst on winner / match screens ---------- */
+function confetti(){
+  try{ if(matchMedia("(prefers-reduced-motion: reduce)").matches) return; }catch(e){}
+  const cv=document.createElement("canvas"); cv.className="confetti"; const dpr=Math.min(2,window.devicePixelRatio||1);
+  const W=innerWidth, H=innerHeight; cv.width=W*dpr; cv.height=H*dpr; document.body.appendChild(cv);
+  const x=cv.getContext("2d"); x.scale(dpr,dpr);
+  const cols=["#FF3B5C","#FFD60A","#22C55E","#38BDF8","#F59E0B","#FFFFFF"];
+  const P=Array.from({length:130},(_,i)=>{ const left=i%2===0; return {x:left?-10:W+10, y:H*(.55+Math.random()*.3), vx:(left?1:-1)*(4+Math.random()*7), vy:-(9+Math.random()*9),
+    w:5+Math.random()*6, h:8+Math.random()*8, r:Math.random()*6.3, vr:(Math.random()-.5)*.35, c:cols[i%cols.length]}; });
+  const t0=performance.now();
+  (function f(t){ const el=t-t0; x.clearRect(0,0,W,H);
+    P.forEach(p=>{ p.vy+=.32; p.vx*=.99; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr; x.save(); x.translate(p.x,p.y); x.rotate(p.r); x.globalAlpha=Math.max(0,1-el/2800); x.fillStyle=p.c; x.fillRect(-p.w/2,-p.h/2,p.w,p.h*Math.abs(Math.cos(p.r))); x.restore(); });
+    if(el<2800) requestAnimationFrame(f); else cv.remove(); })(t0);
+}
+new MutationObserver(()=>{ const s=app.querySelector("#st.btn.story"); const v=app.querySelector(".view"); if(s && v && !v.dataset.conf && !v.querySelector("[data-noconf]")){ v.dataset.conf="1"; confetti(); } }).observe(app,{childList:true});
+/* ---------- Tilt sensor (Heads Up): iOS needs requestPermission() inside the tap ---------- */
+async function tiltPermission(){
+  try{ if(typeof DeviceOrientationEvent==="undefined") return false;
+    if(typeof DeviceOrientationEvent.requestPermission==="function") return (await DeviceOrientationEvent.requestPermission())==="granted";
+    return true; }catch(e){ return false; }
+}
 /* ---------- 🍲 Ширээний яриа (family main game) ---------- */
 const FAMILY_MOODS = {
   past:{label:"👴👵 Дурсамж ба өнгөрсөн", pen:false, items:["Аав ээж минь, та хоёр анх хаана, яаж танилцсан бэ?","Эмээ, өвөө минь, та нар залуудаа ямар хувцас өмсөх дуртай байсан бэ?","Хүүхэд байхдаа хамгийн их дуртай байсан тоглоом чинь юу байсан бэ?","Таны анхны ажил юу байсан бэ? Анхны цалингаараа юу авсан бэ?","Сургуульд байхдаа хамгийн их загнуулж байсан явдал чинь юу вэ?","Таны багын хамгийн дотны найз хэн байсан, одоо хаана байгаа вэ?","Хүүхэд байхдаа том болоод хэн болно гэж мөрөөддөг байсан бэ?","Таны залуу насны хамгийн дуртай дуу, дуучин хэн байсан бэ?","Анх удаа хот эсвэл хөдөө рүү явж байсан тухайгаа яриач.","Таны хүүхэд насны Цагаан сар ямар байсан бэ?","Таны амьдралын хамгийн инээдтэй явдал юу вэ?","Залуудаа хийж байсан хамгийн зоригтой зүйл чинь юу вэ?","Аав ээжээсээ сонссон хамгийн гоё зөвлөгөө юу байсан бэ?","Таныг бага байхад гэрт тань ямар мал, тэжээвэр амьтан байсан бэ?","Хүүхэд байхдаа хамгийн их айдаг зүйл чинь юу байсан бэ?","Таны залуу үед болзоо ямар байдаг байсан бэ?","Манай гэр бүлийн хамгийн анхны зураг хаана, хэзээ авахуулсан бэ?","Бага байхдаа хамгийн дуртай хоол чинь юу байсан, хэн хийж өгдөг байсан бэ?","Таны амьдралд хамгийн их нөлөөлсөн багш хэн байсан бэ?","Таныг хүүхэд байхад утас, интернэт байгаагүй бол оройдоо юу хийдэг байсан бэ?","Таны хамгийн анхны дугуй, морь эсвэл машин ямар байсан бэ?","Хүүхдүүд чинь бага байхад хийсэн хамгийн хөөрхөн зүйл юу байсан бэ?","Таны амьдралын хамгийн аз жаргалтай өдөр аль нь байсан бэ?","Залуудаа хаашаа аялж байсан бэ? Хамгийн тод дурсамж чинь юу вэ?","Манай гэр бүлд үеэс үед дамжиж ирсэн түүх, домог байна уу?","Залуу насныхаа нэг өдөр рүү буцаж очиж болдог бол аль өдөр рүүгээ очих вэ?"]},
@@ -1595,7 +1687,7 @@ function wish(from){
       const both=items.map((t,k)=>[t,R[0][k],R[1][k]]).filter(x=>x[1]>=1&&x[2]>=1), yes=both.filter(x=>x[1]===2&&x[2]===2), maybe=both.filter(x=>!(x[1]===2&&x[2]===2));
       app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
         <div class="hero" style="text-align:center"><span class="eyebrow">${esc(a)} & ${esc(b)}</span></div>
-        <div class="pct">${both.length}</div><h2 style="text-align:center;font-size:22px">${both.length?"нууц хүсэл таарлаа 💘":"Энэ удаа таарсан хүсэл алга 🙈"}</h2>
+        <div class="pct">${both.length}</div><h2 style="text-align:center;font-size:22px">${both.length?"нууц хүсэл таарлаа 💘":"Энэ удаа таарсан хүсэл алга 🙈"}</h2>${both.length?"":'<i data-noconf hidden></i>'}
         ${yes.length?`<div class="panel"><b>❤️ Хоёулаа хүсэж байна</b><div class="mlist">${yes.map(x=>`<div class="mrow ok"><span class="mi">❤️</span><div><b>${esc(x[0])}</b></div></div>`).join("")}</div></div>`:""}
         ${maybe.length?`<div class="panel"><b>🤔 Ярилцаад үзэх</b><div class="mlist">${maybe.map(x=>`<div class="mrow"><span class="mi">🤔</span><div><b>${esc(x[0])}</b></div></div>`).join("")}</div></div>`:""}
         <p class="note" style="margin:0">Нэг нь л хүссэн зүйлс нууц хэвээр үлдлээ.</p>
@@ -1637,7 +1729,7 @@ function namesRead(defs){ const a=document.getElementById("na").value.trim(), b=
 function ownBox(id, fields){
   return `<details class="panel custom" id="ob-${id}"><summary>+ Өөрийн ${fields.map(f=>f[1]).join(" / ")} нэмэх</summary>
     ${fields.map(([k,l,ph])=>`<label class="cnt" for="ob-${id}-${k}" style="margin:0">${l[0].toUpperCase()+l.slice(1)} (мөр бүрт нэг)</label><textarea id="ob-${id}-${k}" maxlength="2000" placeholder="${esc(ph)}"></textarea>`).join("")}
-    <label class="sharechk"><input type="checkbox" id="ob-${id}-share"> <span>Бусад хосуудад санал болгож хуваалцах</span></label>
+    <label class="sharechk"><input type="checkbox" id="ob-${id}-share"> <span>${curFrom==="couples"?"Бусад хосуудад":"Бусад тоглогчдод"} санал болгож хуваалцах</span></label>
     <p class="cnt" style="margin:0">Бичсэн зүйл тань энэ тоглолтын үндсэн картуудын дунд холилдоно. Чагталбал бид шалгаад бусдад нэмж болно.</p></details>`;
 }
 function ownRead(id,k){ const t=document.getElementById(`ob-${id}-${k}`); return t ? t.value.split("\n").map(s=>s.trim()).filter(s=>s.length>=3).slice(0,15).map(s=>s.slice(0,220)) : []; }
@@ -1896,8 +1988,8 @@ function aiLeft(){ return Math.max(0, aiDaily()-aiQuota().used); }
 function aiUse(){ const q=aiQuota(); q.used++; try{ localStorage.setItem("aiQuota",JSON.stringify(q)); }catch(e){} }
 const AI_ERR = {
   rate_limited:"Хэт олон удаа дарлаа. Нэг минут хүлээгээд дахин оролдоорой.",
-  ai_busy:"AI одоо их ачаалалтай байна. Хэсэг хүлээгээд дахин оролдоорой.",
-  ai_timeout:"AI хэт удаж байна. Дахин оролдоорой.",
+  ai_busy:"AI түр ачаалалтай байна, 10 секундийн дараа дахин дарна уу.",
+  ai_timeout:"AI түр ачаалалтай байна, 10 секундийн дараа дахин дарна уу.",
   ai_empty:"AI карт зохиож чадсангүй. Тайлбараа өөрчлөөд дахин оролдоорой.",
   offline:"Интернэт холболт алга. AI багцад интернэт хэрэгтэй.",
   network:"AI сервер рүү хүрч чадсангүй. Интернэтээ шалгаад дахин оролдоорой.",
@@ -1905,7 +1997,7 @@ const AI_ERR = {
   unauthorized:"Сайтын түлхүүр AI сервертэй таарсангүй.",
   server_not_configured:"AI серверийн тохиргоо дутуу байна.",
 };
-const errCode = c => c ? ` (код: ${c})` : "";
+const errCode = c => c && !/^(ai_busy|ai_timeout|offline|rate_limited)$/.test(c) ? ` (код: ${c})` : "";
 function aiDeck(from){
   stopTimer(); setGlow(MOODS[from].c);
   if(from==="family" && aiLevel==="hot") aiLevel="fun";
@@ -1948,7 +2040,7 @@ function aiDeck(from){
     let err=null, cards=null;
     try{
       if(!navigator.onLine) throw {code:"offline"};
-      const ctl=new AbortController(), to=setTimeout(()=>ctl.abort(),35000);
+      const ctl=new AbortController(), to=setTimeout(()=>ctl.abort(),40000);
       const r=await fetch(SUPA_URL+"/functions/v1/generate-deck",{method:"POST",signal:ctl.signal,
         headers:{"Content-Type":"application/json","apikey":SUPA_KEY},
         body:JSON.stringify({names, context, level:aiLevel, mood:from})});
@@ -2012,7 +2104,7 @@ function quotaUse(bucket){ try{ const k="aiQ_"+bucket, q=JSON.parse(localStorage
 const HELP_LIMIT = () => user ? 20 : 10;
 async function aiCall(body){
   if(!navigator.onLine) throw {code:"offline"};
-  const ctl=new AbortController(), to=setTimeout(()=>ctl.abort(),35000);
+  const ctl=new AbortController(), to=setTimeout(()=>ctl.abort(),40000);
   try{
     const r=await fetch(SUPA_URL+"/functions/v1/generate-deck",{method:"POST",signal:ctl.signal,headers:{"Content-Type":"application/json","apikey":SUPA_KEY},body:JSON.stringify(body)});
     const j=await r.json().catch(()=>({}));
@@ -2086,10 +2178,11 @@ function whisper(from){
   const render=()=>{
     app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
       <h2 style="font-size:22px">🤫 Шивнээ</h2>
-      <ol class="rules"><li>Утас барьсан хүн нууц асуултыг ганцаараа уншина.</li><li>Хариулт болох хүний нэрийг <b>чангаар</b> хэлнэ. Асуултыг хэлэхгүй!</li><li>Нэрлэгдсэн хүн асуултыг мэдмээр бол зоос шиднэ, эсвэл шийтгэл хүлээгээд мэднэ. Дараагийн ээлжинд тэр хүн асуулт уншина.</li></ol>
+      <ol class="rules"><li>Утас барьсан хүн нууц асуултыг ганцаараа уншина.</li><li>Хариулт болох хүний нэрийг <b>чангаар</b> хэлнэ. Асуултыг хэлэхгүй!</li><li>Нэрлэгдсэн хүн шийтгэл хүлээгээд асуултыг харах уу, нууц чигээр нь өнгөрөх үү гэдгээ сонгоно. Дараагийн ээлжинд тэр хүн асуулт уншина.</li></ol>
       <div class="panel"><b>Хэн хэн байна?</b><div class="wh-names" style="justify-content:flex-start">${groupChips(whLevel)}</div>
         ${whLevel==="couple"?`<span class="cnt" style="font-size:13px;color:var(--ink-soft)">Краш, үнсэлт, үерхлийн асуултууд гарахгүй.</span>`:""}
         ${penToggle("whisper","🎭 «Шийтгэл хүлээгээд мэдэх» сонголт")}</div>
+      ${penOwnBox("whisper")}
       <div class="panel"><b>Тоглогчид</b>${namesEditor(3,12)}</div>
       ${aiHelperBox("whisper",{title:"Бидний тухай AI асуулт нэмэх", placeholder:"Жишээ: 12Б анги, маргааш зугаалгатай, Болд үргэлж хоцордог", btn:"Үүсгэх"})}
       ${customBox("whisper")}
@@ -2138,15 +2231,12 @@ function whisper(from){
         <div class="reveal"><span class="eyebrow">${esc(reader)} нэрлэлээ</span><h1>${esc(who)}!</h1><p style="margin:0;color:var(--ink-soft)">Асуулт юу байсныг мэдмээр байна уу?</p>
         <div id="res" style="width:100%"></div></div>
         <div class="row" id="acts" style="flex-direction:column;gap:10px">
-          <button class="btn" id="coin">🪙 Зоос шидэх</button>
-          ${penOn("whisper")?`<button class="btn ghost" id="pen">😈 Шийтгэл хүлээгээд мэдэх</button>`:""}
-          <button class="btn skip" id="skip">🤐 Мэдэхгүй өнгөрөх</button></div></section>`;
+          ${penOn("whisper")?`<button class="btn" id="pen">😈 Шийтгэл хүлээгээд асуултыг харах</button>`:`<button class="btn" id="seeQ">👀 Асуултыг харах</button>`}
+          <button class="btn ghost" id="skip">🤐 Нууц чигээр нь өнгөрөх</button></div></section>`;
       const res=document.getElementById("res"), acts=document.getElementById("acts");
       const reveal=extra=>`${extra||""}<div class="panel" style="margin-top:12px"><span class="eyebrow">Асуулт байсан нь</span><div class="wh-q">${esc(q)}</div></div>`;
       const done=html=>{ res.innerHTML=html; acts.innerHTML=`<button class="btn" id="nx">Дараагийн ээлж: ${esc(who)} уншина</button>`; document.getElementById("nx").onclick=()=>{ reader=who; pass(); }; };
-      document.getElementById("coin").onclick=()=>{ acts.innerHTML=""; res.innerHTML=`<span class="coin spin">🪙</span>`; for(let k=0;k<6;k++) setTimeout(()=>{ beep(1800+k*90,.025,.07); noise(.03,4000,.12); },k*120); buzz([15,105,15,105,15,105,15]);
-        setTimeout(()=>{ const lucky=Math.random()<.5; beep(lucky?990:300,.2,.15); buzz(lucky?[40,40,120]:250);
-          done(lucky?reveal(`<h2 style="font-size:20px">Сүлд буулаа! Асуулт илчлэгдлээ</h2>`):`<h2 style="font-size:20px">Тоо буулаа. Асуулт нууц хэвээр 🤐</h2>`); },950); };
+      const sbtn=document.getElementById("seeQ"); if(sbtn) sbtn.onclick=()=>done(reveal());
       const pb=document.getElementById("pen"); if(pb) pb.onclick=()=>done(penaltyHTML("Шийтгэл: "+who)+reveal());
       document.getElementById("skip").onclick=()=>{ reader=who; pass(); };
     };
@@ -2377,6 +2467,7 @@ function onRoomPresence(){
 function hostBroadcast(p){ room.last=p; roomSend(p); }
 function onRoomMsg(m){
   const R=room;
+  if(m.t==="q_add"){ if(R.host) roomAddQ(m.from, m.qs); return; }
   if(m.t==="vote"){ if(!R.host || !R.round || m.n!==R.round.n) return; if(!R.round.players.some(p=>p.id===m.from)) return; R.votes[m.from]=m.to; roomProgress(); return; }
   if(R.host && m.t!=="lobby") { /* host renders from its own state below */ }
   if(m.t==="lobby"){ R.level=m.level||"fun"; if(R.view!=="lobby"){ R.view="lobby"; R.myVote=null; } renderRoom(); return; }
@@ -2384,6 +2475,30 @@ function onRoomMsg(m){
   if(m.t==="progress"){ if(R.round && m.n===R.round.n){ R.progress=m; const el=document.getElementById("rmProg"); if(el) el.textContent=`${m.count} / ${m.total} санал өгсөн`; const hb=document.getElementById("rmShow"); if(hb) hb.textContent=`Дүн харах (${m.count}/${m.total})`; } return; }
   if(m.t==="result"){ if(R.view==="result" && R.result && R.result.n===m.n) return; R.result=m; R.view="result"; renderRoom(); beep(990,.2,.15); buzz([40,40,120]); return; }
   if(m.t==="end"){ if(R.view==="end") return; R.end=m; R.view="end"; renderRoom(); beep(1200,.3,.15); buzz([60,40,60,40,200]); return; }
+}
+function roomAddQ(from, qs){
+  const R=room; if(!R || !Array.isArray(qs)) return; R.qBy=R.qBy||{};
+  const left=Math.max(0, 3-(R.qBy[from]||0));
+  qs=qs.filter(q=>typeof q==="string").map(q=>q.trim().slice(0,200)).filter(q=>q.length>=5).slice(0,left);
+  if(!qs.length) return; R.qBy[from]=(R.qBy[from]||0)+qs.length; R.userQ=(R.userQ||[]).concat(qs);
+  if(R.deck.length) qs.forEach(q=>R.deck.splice(Math.max(0,R.deck.length-1-Math.floor(Math.random()*6)),0,q));
+  if(R.view==="lobby") renderRoom();
+}
+function roomQBox(R){ const sent=R.qSent||0;
+  return `<details class="panel custom" id="rqBox"><summary>+ Өөрийн нууц асуулт нэмэх</summary>
+    <textarea id="rqIn" maxlength="600" ${sent>=3?"disabled":""} placeholder="Мөр бүрт нэг асуулт (3 хүртэл). Жишээ: Хэн нь хамгийн түрүүнд гэрлэх вэ?"></textarea>
+    <label class="sharechk"><input type="checkbox" id="rqShare"> <span>Бусад тоглогчдод санал болгож хуваалцах</span></label>
+    <div class="row" style="align-items:center"><span class="cnt" id="rqMsg" style="flex:1">${sent?`✓ ${sent}/3 асуулт илгээгдлээ. Хэн бичсэн нь нууц.`:"Хэн бичсэн нь нууц үлдэнэ. Үндсэн асуултуудын дунд холилдоно."}</span><button class="btn" id="rqGo" style="flex:none" ${sent>=3?"disabled":""}>Илгээх</button></div></details>`; }
+function roomQBind(R){
+  keepDraft(R, ["rqBox","rqIn","rqShare"]);
+  const go=document.getElementById("rqGo"); if(!go) return;
+  go.onclick=()=>{ const inp=document.getElementById("rqIn"), msg=document.getElementById("rqMsg");
+    const qs=inp.value.split("\n").map(t=>t.trim()).filter(t=>t.length>=5).slice(0, 3-(R.qSent||0));
+    if(!qs.length){ msg.textContent="Дор хаяж 5 тэмдэгттэй асуулт бич"; return; }
+    if(R.host) roomAddQ(myId, qs); else roomSend({t:"q_add", from:myId, qs});
+    if(document.getElementById("rqShare")?.checked) sharePrompts(qs.map(t=>({c:"Хэн нь вэ?",t})));
+    R.qSent=(R.qSent||0)+qs.length; R["d:rqIn"]=""; inp.value=""; beep(880,.08,.1);
+    msg.textContent=`✓ ${R.qSent}/3 асуулт илгээгдлээ. Хэн бичсэн нь нууц.`; if(R.qSent>=3){ inp.disabled=true; go.disabled=true; } };
 }
 function roomProgress(){
   const R=room; if(!R.round) return;
@@ -2400,12 +2515,13 @@ function roomFinish(){
   Object.entries(tally).forEach(([id,v])=>{ const t=R.totals[id]||(R.totals[id]={name:names[id],v:0}); t.v+=v; });
   R.rounds++;
   const rows=Object.entries(tally).map(([id,v])=>[names[id],v,id]).sort((a,b)=>b[1]-a[1]);
-  hostBroadcast({t:"result", n:R.round.n, q:R.round.q, tally:rows, voters:Object.keys(R.votes).length});
+  const pen = penOn("room") && rows[0] && rows[0][1]>0 ? penalty() : null;
+  hostBroadcast({t:"result", n:R.round.n, q:R.round.q, tally:rows, voters:Object.keys(R.votes).length, pen, penWho:pen?rows.filter(r=>r[1]===rows[0][1]).map(r=>r[0]).join(", "):""});
 }
 function roomNext(){
   const R=room, ps=roomPlayers();
   if(ps.length<2){ const m=document.getElementById("rmHint"); if(m) m.textContent="Дор хаяж 2 хүн хэрэгтэй"; return; }
-  if(!R.deck.length) R.deck=freshOrder("room:"+R.level, levelPool(ROOM_Q,R.level)).reverse().concat(shuffle(R.aiQ||[]));
+  if(!R.deck.length) R.deck=insertEarly(freshOrder("room:"+R.level, levelPool(ROOM_Q,R.level)), shuffle([...(R.aiQ||[]),...(R.userQ||[])])).reverse();
   R.votes={}; R.result=null;
   hostBroadcast({t:"round", n:(R.round?.n||0)+1, q:(()=>{ const q=R.deck.pop(); markSeen("room:"+R.level,q); return q; })(), level:R.level, players:ps.map(p=>({id:p.id,name:p.name}))});
 }
@@ -2433,9 +2549,13 @@ function renderRoom(){
         <button class="btn ghost" id="rmShare" style="flex:none">🔗 Линк хуваалцах</button>
         <div class="panel"><b>Тоглогчид (${ps.length}/12)</b><div class="wh-names" style="justify-content:flex-start">${chips}</div></div>
         <div class="panel"><b>Хэн хэн байна?</b><div class="wh-names" style="justify-content:flex-start">${groupChips(R.level)}</div>${R.level==="couple"?'<p class="note" style="margin:6px 0 0;text-align:left">Романтик, краш, үнсэлтийн асуулт гарахгүй.</p>':""}</div>
+        <div class="panel">${penToggle("room","🎭 Хамгийн олон санал авсан хүнд шийтгэл")}</div>
+        ${penOwnBox("room")}
+        ${roomQBox(R)}${R.userQ&&R.userQ.length?`<p class="note" style="margin:0">✓ Тоглогчдын нууц асуулт: ${R.userQ.length}</p>`:""}
         ${aiHelperBox("room",{title:"Бидний тухай AI асуулт нэмэх", placeholder:"Жишээ: Ажлынхан, шинэ жилийн үдэшлэг, Бат үргэлж оройтдог", btn:"Үүсгэх"})}
         <div class="row" style="margin-top:auto;flex-direction:column"><button class="btn" id="rmStart" ${ps.length<2?"disabled style=\"opacity:.5\"":""}>Эхлэх</button><p class="note" id="rmHint" style="margin:0">${ps.length<2?"Дор хаяж 2 хүн нэгдэхийг хүлээж байна…":"Бүгд нэгдсэн бол эхлүүл"}</p></div></section>`;
-      document.getElementById("rmStart").onclick=roomNext;
+      document.getElementById("rmStart").onclick=()=>{ penOwnRead("room"); roomNext(); };
+      roomQBind(R); keepDraft(R, ["ob-pen-room","ob-pen-room-p","ob-pen-room-share"]);
       { const d=document.getElementById("ah-room"), inp=document.getElementById("ahIn-room"); if(R.aiOpen) d.open=true; inp.value=R.aiDraft||""; if(R.aiMsg) document.getElementById("ahMsg-room").textContent=R.aiMsg;
         d.ontoggle=()=>{ R.aiOpen=d.open; }; inp.oninput=()=>{ R.aiDraft=inp.value; };
         bindAiHelper("room", ctx=>({mode:"room_questions", names:roomPlayers().map(p=>p.name), context:aiCtx4(ctx,R.level), level:aiLevel4(R.level)}),
@@ -2451,7 +2571,9 @@ function renderRoom(){
         <div class="hero" style="text-align:center"><span class="eyebrow">🗳️ Хэн нь вэ? · Өрөө</span></div>
         <div class="room-code">${R.code}</div>
         <div class="panel"><b>Тоглогчид (${ps.length})</b><div class="wh-names" style="justify-content:flex-start">${chips}</div></div>
+        ${roomQBox(R)}
         <p class="wait">${R.level==="hot"?"😈 Задгай 18+ горим<br>":R.level==="couple"?"💑 Хостой хүмүүс байгаа горим<br>":""}Хост тоглоомыг эхлүүлэхийг хүлээж байна…</p></section>`;
+      roomQBind(R);
     }
     return;
   }
@@ -2466,7 +2588,7 @@ function renderRoom(){
     } else {
       app.innerHTML=`<section class="view">${head}<p class="who-line" style="margin:0">Асуулт ${m.n} · Нууцаар санал өг</p>
         <div class="panel" style="gap:18px"><div class="wh-q">${esc(m.q)}</div></div>
-        <div class="wh-names">${m.players.map(p=>`<button class="chip" data-vote="${esc(p.id)}" style="display:inline-flex;align-items:center">${avHTML(p.name,picById(p.id),26)}${esc(p.name)}${p.id===myId?" (та)":""}</button>`).join("")}</div>
+        <div class="wh-names">${(m.players.length>=3?m.players.filter(p=>p.id!==myId):m.players).map(p=>`<button class="chip" data-vote="${esc(p.id)}" style="display:inline-flex;align-items:center">${avHTML(p.name,picById(p.id),26)}${esc(p.name)}${p.id===myId?" (та)":""}</button>`).join("")}</div>
         <p class="wait" id="rmProg" style="margin:0">${pr.count} / ${pr.total} санал өгсөн</p>${hostBtns}</section>`;
       app.querySelectorAll("[data-vote]").forEach(b=>b.onclick=()=>{ R.myVote=b.dataset.vote; buzz(25); beep(700,.06,.1); roomSend({t:"vote", n:m.n, from:myId, to:b.dataset.vote}); renderRoom(); });
     }
@@ -2478,6 +2600,7 @@ function renderRoom(){
     app.innerHTML=`<section class="view">${head}<p class="who-line" style="margin:0">Асуулт ${m.n} · Дүн</p>
       <div class="panel"><div class="wh-q" style="font-size:18px">${esc(m.q)}</div></div>
       ${tallyHTML(m.tally)}<p class="note" style="margin:0">${m.voters} хүн санал өглөө. Хэн хэнд өгсөн нь нууц.</p>
+      ${m.pen?`<div class="penalty"><span class="eyebrow">Шийтгэл: ${esc(m.penWho)} · ${esc(m.pen.kind)}</span><b>${esc(m.pen.text)}</b></div>`:""}
       ${R.host?`<div class="row" style="margin-top:auto;flex-direction:column"><button class="btn" id="rmNext">Дараагийн асуулт</button><button class="btn ghost" id="rmEnd">🏁 Тоглолт дуусгах</button></div>`:`<p class="wait" style="margin-top:auto">Хост дараагийн асуултыг нээхийг хүлээж байна…</p>`}</section>`;
     if(R.host){ document.getElementById("rmNext").onclick=roomNext; document.getElementById("rmEnd").onclick=roomEnd; }
     return;
@@ -2993,7 +3116,7 @@ const HOW = {
   spicy:"Ээлжээр халуухан асуултад үнэнээр хариул. Ичвэл шийтгэл биелүүл. 10 тойрог тутамд хамгийн зоригтойг тодруулна.",
   shagai:"Ээлжээр утсаа аваад «Сэгсрэх» дар. Дөрвөн бэрх 20, морь 4, тэмээ 3, хонь 2, ямаа 1 оноо. Бүгд шидэж дуусахад хамгийн их оноотой нь хожно.",
   wave:f=>`Нэг нь нууц цэгийг хараад тэр цэгт тохирох ганц үг хэлнэ. ${f==="couples"?"Нөгөө нь":"Бусад нь ярилцаж"} зүүг тэр цэг рүү тааруулна. Ойртох тусам оноо их.`,
-  whisper:"Утас барьсан хүн нууц асуултыг ганцаараа уншаад, хариулт болох хүний нэрийг чанга хэлнэ. Нэрлэгдсэн хүн асуултыг мэдмээр бол зоос шиднэ.",
+  whisper:"Утас барьсан хүн нууц асуултыг ганцаараа уншаад, хариулт болох хүний нэрийг чанга хэлнэ. Нэрлэгдсэн хүн шийтгэл хүлээгээд асуултыг харах уу, нууц чигээр нь өнгөрөх үү гэдгээ сонгоно.",
   room:"Нэг хүн өрөө нээнэ, бусад нь кодоор утаснаасаа нэгдэнэ. Асуулт гарахад тохирох хүнийхээ нэр дээр нууцаар санал өгнө.",
   draw:"Нэг хүн өрөө нээнэ, бусад нь кодоор нэгдэнэ. Нэг нь утсан дээрээ зурна, бусад нь юу болохыг бичиж таана.",
   photo:"Нэг хүн өрөө нээнэ, бусад нь кодоор нэгдэнэ. Хүн бүр 3–5 зураг сонгоно. Гарсан зураг хэнийх болохыг хамгийн хурдан таасан нь хожно."

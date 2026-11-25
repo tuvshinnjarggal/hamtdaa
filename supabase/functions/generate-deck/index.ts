@@ -1,6 +1,6 @@
 // Хамтдаа: generate-deck (нэг функц, олон mode)
 // mode: "deck" | "guide" | "whisper" | "room_questions" | "spy_words" | "headsup_words"
-// Secrets: GEMINI_API_KEY (заавал), GEMINI_MODEL (заавал биш, анхдагч gemini-3.5-flash-lite),
+// Secrets: GEMINI_API_KEY (заавал), GEMINI_MODEL (заавал биш, анхдагч gemini-3.5-flash-lite; ачаалалтай бол gemini-2.5-flash → gemini-2.0-flash руу шилжинэ),
 //          ALLOWED_KEYS (заавал биш, таслалаар тусгаарласан publishable key-үүд).
 // Deploy: supabase functions deploy generate-deck --no-verify-jwt
 //   (sb_publishable_ түлхүүр JWT биш тул JWT шалгалтыг унтрааж, apikey-г энд өөрсдөө шалгана.)
@@ -163,24 +163,44 @@ async function discoverModel(apiKey: string): Promise<string | null> {
   return pick(/flash-lite/) || pick(/flash/) || names[0] || null;
 }
 
+// Нөөц загварууд: эхнийх нь ачаалалтай (429/503), олдохгүй (404) эсвэл удааширвал дараагийнх руу шууд шилжинэ.
+const FALLBACKS = ["gemini-2.5-flash", "gemini-2.0-flash"];
+const RETRYABLE = new Set([404, 408, 429, 500, 502, 503, 504]);
+
 async function gemini(apiKey: string, built: Built) {
   const body = JSON.stringify({
     contents: [{ role: "user", parts: [{ text: built.prompt }] }],
     generationConfig: { temperature: built.temperature ?? 1.0, maxOutputTokens: 3000, responseMimeType: "application/json", responseSchema: built.schema },
   });
-  const call = (model: string) => fetch(`${API}/models/${model}:generateContent`, {
-    method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey }, body, signal: AbortSignal.timeout(25_000),
-  });
-  let model = cachedModel || PREFERRED;
-  let r = await call(model);
-  let data: any = await r.json().catch(() => ({}));
-  if (r.status === 404 || (r.status === 400 && /model/i.test(data?.error?.message || ""))) {
-    console.error("model_unavailable", model, data?.error?.message?.slice(0, 200));
-    const found = await discoverModel(apiKey);
-    if (found && found !== model) { model = found; r = await call(model); data = await r.json().catch(() => ({})); }
+  const call = async (model: string, ms: number) => {
+    try {
+      const r = await fetch(`${API}/models/${model}:generateContent`, {
+        method: "POST", headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey }, body, signal: AbortSignal.timeout(ms),
+      });
+      return { status: r.status, ok: r.ok, data: await r.json().catch(() => ({})) as any };
+    } catch (e) {
+      return { status: 504, ok: false, data: { error: { message: String(e) } } as any };
+    }
+  };
+  const chain = [...new Set([cachedModel || PREFERRED, PREFERRED, ...FALLBACKS])];
+  let last = { status: 503, ok: false, data: {} as any }, model = chain[0], all404 = true;
+  for (let i = 0; i < chain.length; i++) {
+    model = chain[i];
+    last = await call(model, i === 0 ? 14_000 : 9_000);
+    if (last.ok) { cachedModel = model; return { ...last, model, busy: false }; }
+    const modelGone = last.status === 404 || (last.status === 400 && /model/i.test(last.data?.error?.message || ""));
+    if (!modelGone) all404 = false;
+    console.error("gemini_try_failed", model, last.status, String(last.data?.error?.message || "").slice(0, 160));
+    if (!modelGone && !RETRYABLE.has(last.status)) return { ...last, model, busy: false }; // жишээ нь 400 буруу хүсэлт: дахин оролдох утгагүй
   }
-  if (r.ok) cachedModel = model;
-  return { r, data, model };
+  if (all404) { // бүх нэр хуучирсан бол жагсаалтаас шинэ загвар хайна
+    const found = await discoverModel(apiKey);
+    if (found && !chain.includes(found)) {
+      model = found; last = await call(found, 9_000);
+      if (last.ok) { cachedModel = found; return { ...last, model, busy: false }; }
+    }
+  }
+  return { ...last, model, busy: true };
 }
 
 Deno.serve(async (req) => {
@@ -211,10 +231,11 @@ Deno.serve(async (req) => {
   if (typeof built === "string") return json({ error: built }, 400);
 
   try {
-    const { r, data, model } = await gemini(apiKey, built);
-    if (!r.ok) {
-      console.error("gemini_error", mode, r.status, JSON.stringify(data).slice(0, 500));
-      return json({ error: r.status === 429 ? "ai_busy" : "ai_error", detail: data?.error?.message?.slice(0, 200) }, 502);
+    const { ok, status, data, model, busy } = await gemini(apiKey, built);
+    if (!ok) {
+      console.error("gemini_error", mode, status, model, JSON.stringify(data).slice(0, 500));
+      if (busy) return json({ error: "ai_busy" }, 503);
+      return json({ error: "ai_error", detail: data?.error?.message?.slice(0, 200) }, 502);
     }
     const text = data?.candidates?.[0]?.content?.parts?.map((p: any) => p.text || "").join("") || "";
     let raw: unknown = null;
