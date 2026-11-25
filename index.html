@@ -16,7 +16,7 @@
 <meta property="og:image" content="https://hamtdaa.app/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
-<meta property="og:image:alt" content="Хамтдаа — 15+ монгол тоглоом. Нэг утас, олон хүн.">
+<meta property="og:image:alt" content="Хамтдаа — 20+ монгол тоглоом. Нэг утас, олон хүн.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Хамтдаа — Найзууд, хосууд, гэр бүлийн монгол тоглоомууд">
 <meta name="twitter:description" content="Бүртгэлгүй, нэг утсаар эсвэл 4 оронтой кодоор шууд тогло. 18+ тоглоом, зураг таах, зураач болон AI хөтөчтэй.">
@@ -35,7 +35,7 @@ window.dataLayer = window.dataLayer || [];
 function gtag(){ dataLayer.push(arguments); }
 if(/^G-[A-Z0-9]+$/.test(GA_ID)){
   const s=document.createElement("script"); s.async=true; s.src="https://www.googletagmanager.com/gtag/js?id="+GA_ID; document.head.appendChild(s);
-  gtag("js", new Date()); gtag("config", GA_ID, {send_page_view:false});
+  gtag("js", new Date()); gtag("config", GA_ID, {page_location:location.href, page_path:location.pathname+location.hash, page_title:document.title});
 }
 </script>
 <meta name="claude:viewport-fit-sides" content="cover">
@@ -488,8 +488,9 @@ body{background:#09090B}
 .sgbtn .i{width:16px;height:16px}
 .foot-links{align-items:center;color:#52525B}
 .foot-links .linkbtn,.foot-links a{font-size:13px;color:#71717A;text-decoration:none}
-.pktabs{position:absolute;top:calc(env(safe-area-inset-top,0px) + 66px);left:50%;transform:translateX(-50%);display:flex;gap:4px;padding:4px;border-radius:999px;background:#141417;border:1px solid var(--edge);z-index:4;white-space:nowrap}
+.pktabs{position:absolute;top:calc(env(safe-area-inset-top,0px) + 66px);left:50%;transform:translateX(-50%);display:flex;gap:4px;padding:4px;border-radius:999px;background:#141417;border:1px solid var(--edge);z-index:4;white-space:nowrap;max-width:calc(100vw - 24px)}
 .pktabs button{padding:8px 12px;border-radius:999px;border:0;background:none;font:inherit;font-weight:700;font-size:13px;color:var(--ink-soft)}
+@media (max-width:360px){.pktabs button{padding:8px 9px;font-size:12px}}
 .pktabs button[aria-pressed="true"]{background:#fff;color:#09090B}
 .touchpad .hint{top:calc(env(safe-area-inset-top,0px) + 124px);font-family:var(--body);letter-spacing:0;font-size:16px}
 .pkname{position:absolute;left:16px;right:16px;top:calc(env(safe-area-inset-top,0px) + 120px);bottom:calc(env(safe-area-inset-bottom,0px) + 76px);overflow-y:auto;display:flex;flex-direction:column;gap:12px;touch-action:pan-y;user-select:text;-webkit-user-select:text;z-index:3;max-width:480px;margin:0 auto}
@@ -517,6 +518,17 @@ body{background:#09090B}
     <div class="row">
       <button class="btn ghost" id="gateNo">Буцах</button>
       <button class="btn" id="gateYes">Тийм, 18+</button>
+    </div>
+  </div>
+</div>
+
+<div id="leave" class="gate" hidden>
+  <div class="panel" role="alertdialog" aria-modal="true" aria-labelledby="leaveTitle" aria-describedby="leaveText">
+    <h2 id="leaveTitle">Тоглолтоос гарах уу?</h2>
+    <p id="leaveText">Одоогийн тоглолт, оноо устна.</p>
+    <div class="row">
+      <button class="btn ghost" id="leaveNo">Үргэлжлүүлэх</button>
+      <button class="btn" id="leaveYes">Гарах</button>
     </div>
   </div>
 </div>
@@ -587,13 +599,18 @@ const ICONS = {
   info:'<circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>',
   arrowUR:'<path d="M7 17 17 7M7 7h10v10"/>',
   chev:'<path d="m9 18 6-6-6-6"/>',
-  play:'<path d="m6 3 14 9-14 9V3z"/>'
+  play:'<path d="m6 3 14 9-14 9V3z"/>',
+  phone:'<rect x="5" y="2" width="14" height="20" rx="2"/><path d="M12 18h.01"/>',
+  flower:'<path d="M12 5a3 3 0 1 1 3 3m-3-3a3 3 0 1 0-3 3m3-3v1M9 8a3 3 0 1 0 3 3M9 8h1m5 0a3 3 0 1 1-3 3m3-3h-1m-2 3v-1"/><circle cx="12" cy="8" r="2"/><path d="M12 10v12"/><path d="M12 22c4.2 0 7-1.67 7-4.5"/><path d="M12 22c-4.2 0-7-1.67-7-4.5"/>',
+  task:'<rect x="8" y="2" width="8" height="4" rx="1"/><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"/><path d="m9 14 2 2 4-4"/>',
+  ger:'<path d="M3 13c2-5 5.5-8 9-8s7 3 9 8"/><path d="M4 13h16v8H4z"/><path d="M10 21v-5h4v5"/><path d="M12 5V3"/>',
+  timer:'<path d="M10 2h4"/><path d="m12 14 3-3"/><circle cx="12" cy="14" r="8"/>'
 };
-const EMO = {"✨":"sparkles","✓":"check","✅":"check","📸":"camera","📷":"camera","🤳":"camera","🔥":"flame","🌶️":"flame","😈":"flame","🕯️":"flame","🎨":"palette","🖌️":"pen","✏️":"pen","✍️":"pen",
-  "🎉":"party","🥳":"party","❤️":"heart","💞":"heart","💘":"heart","💋":"heart","🌸":"heart","💑":"heart","💛":"heart","💕":"heart","🖤":"heart","🤍":"heart","🫶":"heart",
+const EMO = {"✨":"sparkles","✓":"check","✅":"check","📸":"camera","📷":"camera","🤳":"phone","🔥":"flame","🌶️":"flame","😈":"flame","🕯️":"flame","🎨":"palette","🖌️":"pen","✏️":"pen","✍️":"pen",
+  "🎉":"party","🥳":"party","❤️":"heart","💞":"heart","💘":"heart","💋":"heart","🌸":"flower","💑":"heart","💛":"heart","💕":"heart","🖤":"heart","🤍":"heart","🫶":"heart",
   "🤔":"help","✕":"x","✗":"x","🤫":"chat","👑":"crown","🔗":"link","🗳️":"vote","🦴":"bone","💡":"bulb","🧠":"bulb","📡":"radio","💣":"bomb","💥":"zap","🎯":"target",
   "🎭":"smile","😅":"smile","😂":"smile","😄":"smile","🤗":"smile","😳":"smile","😎":"smile","🧸":"smile","😇":"smile","🙂":"smile","😕":"frown","🙈":"eyeoff","👀":"eye","🔎":"search",
-  "⚡":"zap","🦸":"zap","🕵️":"glasses","🕶️":"glasses","🍲":"utensils","🍜":"utensils","💎":"gem","🏆":"trophy","🥇":"trophy","🖼️":"image","🔌":"plug","⭐":"star","🌟":"star","🍀":"star",
+  "⚡":"zap","🦸":"zap","🕵️":"glasses","🕶️":"task","🐎":"bone","⛺":"ger","⏱️":"timer","⏱":"timer","⏰":"timer","🍲":"utensils","🍜":"utensils","💎":"gem","🏆":"trophy","🥇":"trophy","🖼️":"image","🔌":"plug","⭐":"star","🌟":"star","🍀":"star",
   "🔒":"lock","🔐":"lock","🤐":"lock","🤝":"compass","🎡":"rotate","🔁":"rotate","🦁":"crown","🐺":"glasses","🎲":"dice","🧩":"puzzle","🔇":"volx","🔊":"vol","💌":"mail","🏁":"flag","🪙":"coin",
   "🏡":"house","🖐️":"hand","👏":"hand","🙌":"hand","🙏":"hand","🧊":"snow","👩‍🚒":"user","💃":"music","🎶":"music","🎵":"music","💅":"sparkles","🍺":"glass","🍷":"glass","🍵":"cup",
   "🔑":"key","🗝️":"key","👴":"users","👵":"users","🚀":"rocket","📣":"megaphone","🌊":"wave","📲":"share","🗑️":"trash","➤":"send","📵":"phoneoff","🧽":"eraser","⏳":"rotate","ℹ️":"info"};
@@ -645,7 +662,7 @@ const GAMES = {
   bomb:{name:"Бөмбөг", ic:"💣", desc:"Сэдэвт тохирох үг хэлээд утсаа дамжуул. Хэзээ дэлбэрэхийг хэн ч мэдэхгүй."},
   missions:{name:"Нууц даалгавар", ic:"🕶️", desc:"Хүн бүр нууц даалгавар авна. Бүх орой баригдалгүй биелүүлж, төгсгөлд нь илчил."},
   match:{name:"Хэр сайн мэддэг вэ?", ic:"🎯", desc:"Нэг нь 5 эсвэл 10 асуултад нууцаар хариулна, нөгөө нь бүгдийг таана. Хэдэн хувь таарахыг үз."},
-  wish:{name:"Нууц хүсэл", ic:"❤️", desc:"Хоёулаа нууцаар ❤️ / 🤔 / ✕ дарна. Зөвхөн хоёулаа хүссэн зүйл л илчлэгдэнэ.", tag:"Шинэ"},
+  wish:{name:"Нууц хүсэл", ic:"❤️", desc:"Санаа бүр дээр хоёулаа нууцаар «Тийм / Магадгүй / Үгүй» гэж дарна. Зөвхөн хоёулаа хүссэн зүйл л илчлэгдэнэ.", tag:"Шинэ"},
   couplesDeck:{name:"Бид хоёр", ic:"🕯️", desc:"Гурван түвшний асуулт, даалгавар. Эхнээсээ ойртох тусам гүнзгийрнэ.", tag:"18+ хэсэгтэй"},
   spy:{name:"Хэн нь тагнуул вэ?", ic:"🕵️", desc:"Бүгдэд нэг үг, тагнуулд арай өөр үг ирнэ. Ярилцаад тагнуулыг ол."},
   headsup:{name:"Толгой дээрээ", ic:"🤳", desc:"Утсаа духан дээрээ барь, найзууд чинь тайлбарлана. Таасан бол утсаа доош, алгасах бол дээш дохи."},
@@ -710,7 +727,7 @@ const SPY_PAIRS = [["Цай","Кофе"],["Бууз","Хуушуур"],["Мор�
 const HU_CATS = {
   animals:{name:"Амьтад", ic:"🦁", words:["Арслан","Тэмээ","Пингвин","Анааш","Матар","Туулай","Бүргэд","Мэлхий","Заан","Сарлаг","Хулгана","Далайн гахай","Цагаан баавгай","Тоть"]},
   jobs:{name:"Мэргэжил", ic:"👩‍🚒", words:["Тогооч","Нисгэгч","Сансрын нисгэгч","Цагдаа","Багш","Шүдний эмч","Барилгачин","Дуучин","Сэтгүүлч","Гал сөнөөгч","Үсчин","Жолооч"]},
-  mongol:{name:"Монгол", ic:"🐎", words:["Наадам","Бөх","Морин хуур","Гэр","Хөөмий","Шагай","Дээл","Бууз","Чингис хаан","Тэмээ уралдаан","Цагаан сар","Говь"]},
+  mongol:{name:"Монгол", ic:"⛺", words:["Наадам","Бөх","Морин хуур","Гэр","Хөөмий","Шагай","Дээл","Бууз","Чингис хаан","Тэмээ уралдаан","Цагаан сар","Говь"]},
   actions:{name:"Үйлдэл", ic:"💃", words:["Бүжиглэх","Загасчлах","Сэлэх","Унтах","Шүдээ угаах","Сэлфи авах","Машин барих","Хоол хийх","Шатар тоглох","Дугуй унах"]},
 };
 const KID_WORDS = {name:"Хүүхдийн үгс", ic:"🧸", words:["Нохой","Муур","Тахиа","Сармагчин","Могой","Шүдээ угаах","Бөмбөг өшиглөх","Дугуй унах","Онгоц","Бороо","Цасан хүн","Зайрмаг идэх","Унтах","Туулай","Загас"]};
@@ -838,7 +855,8 @@ const esc = s => String(s).replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&g
 function setGlow(c){ document.documentElement.style.setProperty("--glow", c || "var(--amber)"); }
 function stopTimer(){ if(timerId){clearInterval(timerId); timerId=null;} if(window.__off){ try{ window.__off(); }catch(e){} window.__off=null; } }
 function topBar(backTo, label){
-  return `<div class="top">${backTo?`<button class="back" data-go="${backTo}">‹ ${esc(label||"Буцах")}</button>`:`<span></span>`}<div class="tr">${sndBtn()}${user?authBtn():""}<span class="brand">Хамт<b>даа</b></span></div></div>`;
+  const guard = label==="Зогсоох" || label==="Гарах";
+  return `<div class="top">${backTo?`<button class="back" data-go="${backTo}"${guard?" data-guard":""}>‹ ${esc(label||"Буцах")}</button>`:`<span></span>`}<div class="tr">${sndBtn()}${user?authBtn():""}<span class="brand">Хамт<b>даа</b></span></div></div>`;
 }
 let adultOk = false;
 try{ adultOk = sessionStorage.getItem("adult")==="1"; }catch(e){}
@@ -882,15 +900,15 @@ function deck(id, from, levelIdx=0){
   const D = DECKS[id], L = D.levels[levelIdx];
   if(L.adult && !adultOk){ openGate(()=>deck(id,from,levelIdx)); return; }
   deckState = {id, from, levelIdx, order:freshOrder("deck:"+id+":"+levelIdx, L.items).concat(CUSTOM[id]||[]), i:0};
-  renderDeck();
+  renderDeck(true);
 }
-function renderDeck(){
+function renderDeck(open){
   const {id,from,levelIdx,order,i} = deckState; const D=DECKS[id], L=D.levels[levelIdx], G=GAMES[id];
   const q = order[i], isTask = q.startsWith("Даалгавар:"); markSeen("deck:"+id+":"+levelIdx, q);
-  app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+  app.innerHTML = `<section class="view">${topBar("mood:"+from, i>0?"Зогсоох":MOODS[from].name)}
     <h2 style="font-size:22px">${G.ic} ${G.name}</h2>
     ${D.levels.length>1?`<div class="tabs" role="tablist">${D.levels.map((l,n)=>`<button role="tab" aria-selected="${n===levelIdx}" data-level="${n}">${l.name}</button>`).join("")}</div>`:""}
-    <div class="stage"><div class="card" id="card" tabindex="0" role="button" aria-label="Картыг эргүүлэх">
+    <div class="stage"><div class="card${open?" flipped":""}" id="card" tabindex="0" role="button" aria-label="Картыг эргүүлэх">
       <div class="face front"><div class="big">?</div><span>Дарж эргүүл</span><span class="eyebrow">${L.name}</span></div>
       <div class="face back-face"><span class="kind">${id==="neverDeck"?"Би хэзээ ч":isTask?"Даалгавар":"Асуулт"} · ${L.name}</span>
         <div class="q">${esc(isTask?q.replace("Даалгавар: ",""):q)}</div>
@@ -991,7 +1009,7 @@ function huPick(from, kids){
   const cats = kids?{kids:KID_WORDS}:HU_CATS; const G = GAMES[kids?"charades":"headsup"];
   app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
     <h2 style="font-size:22px">${G.ic} ${G.name}</h2>
-    <p style="margin:0;color:var(--ink-soft)">${kids?"Дэлгэц дээрх үгийг дуугүй, зөвхөн хөдөлгөөнөөр үзүүл. Бусад нь таана.":"Утсаа духан дээрээ, дэлгэцийг найзууд руугаа харуулж барь. Тэд үгийг тайлбарлана, чи таана. Таасан бол Зөв, гацвал Алгас."}</p>
+    <p style="margin:0;color:var(--ink-soft)">${kids?"Дэлгэц дээрх үгийг дуугүй, зөвхөн хөдөлгөөнөөр үзүүл. Бусад нь таана.":"Утсаа духан дээрээ, дэлгэцийг найзууд руугаа харуулж барь. Тэд үгийг тайлбарлана, чи таана. Таасан бол утсаа доош, гацвал дээш дохи."}</p>
     <div class="cats">${Object.entries(cats).map(([k,c])=>`<button class="cat" data-cat="${k}"><span>${c.ic}</span>${esc(c.name)}<small>${c.words.length} үг · 60 сек</small></button>`).join("")}</div>
     ${kids?"":aiHelperBox("hu",{title:"Өөрийн сэдвээр үг үүсгэх", placeholder:"Жишээ: 12Б анги, Dota 2, K-Pop, Монгол кино", btn:"Үүсгэх"})}</section>`;
   app.querySelectorAll("[data-cat]").forEach(b=>b.onclick=async()=>{ const tilt = kids ? false : await tiltPermission(); huPlay(from, cats[b.dataset.cat], kids, tilt); });
@@ -1004,7 +1022,7 @@ function huPlay(from, cat, kids, tilt){
     <div class="timer" id="t">60</div>
     <div class="hu-word" id="w">${esc(words[0])}</div>
     ${tilt?`<p class="note" id="tiltHint" style="margin:0">Утсаа духан дээрээ босоо барь. <b>Доош</b> тонгойлговол Зөв, <b>дээш</b> өргөвөл Алгас.</p>`:""}
-    <div class="row"><button class="btn skip" id="skip">Алгас</button><button class="btn good" id="ok">Зөв</button></div></section>`;
+    <div class="row" id="huBtns"${tilt?" hidden":""}><button class="btn skip" id="skip">Алгас</button><button class="btn good" id="ok">Зөв</button></div></section>`;
   const w=document.getElementById("w"), t=document.getElementById("t");
   const flash = ok => { const f=document.createElement("div"); f.className="huflash "+(ok?"ok":"no"); f.innerHTML=`<div>${ok?I("check"):I("rotate")}<b>${ok?"Зөв таалаа!":"Алгаслаа"}</b></div>`; document.body.appendChild(f); setTimeout(()=>f.remove(),650);
     if(ok){ beep(880,.1,.18); setTimeout(()=>beep(1175,.1,.18),90); setTimeout(()=>beep(1568,.18,.18),180); buzz([40,30,80]); } else { beep(330,.2,.15); buzz(120); } };
@@ -1016,7 +1034,7 @@ function huPlay(from, cat, kids, tilt){
       if(v<-.6){ lock=true; step(true); } else if(v>.6){ lock=true; step(false); } };
     window.addEventListener("deviceorientation",onOri);
     window.__off=()=>window.removeEventListener("deviceorientation",onOri);
-    setTimeout(()=>{ if(!seen){ const h=document.getElementById("tiltHint"); if(h) h.textContent="Утасны мэдрэгч олдсонгүй. Доорх товчоор тогло."; } },1800); }
+    setTimeout(()=>{ if(!seen){ const h=document.getElementById("tiltHint"); if(h) h.textContent="Утасны мэдрэгч олдсонгүй. Доорх товчоор тогло."; const bb=document.getElementById("huBtns"); if(bb) bb.hidden=false; } },1800); }
   document.getElementById("ok").onclick=()=>step(true);
   document.getElementById("skip").onclick=()=>step(false);
   timerId=setInterval(()=>{left--; t.textContent=left; t.classList.toggle("low",left<=10); if(left<=0) end();},1000);
@@ -1065,11 +1083,9 @@ function bomb(from){
     app.innerHTML = `<section class="view">${topBar("mood:"+from, "Зогсоох")}
       <div class="who-line">Сэдэв</div><div class="prompt" id="pr">${esc(prompt())}</div><div class="mprog swapbar"><i id="sw" style="width:0%"></i></div>
       <div class="bomb" id="bm" aria-hidden="true">💣</div>
-      <p class="note" style="margin:0">Үгээ хэлээд хурдан дамжуул!</p>
-      <div class="row" style="margin-top:auto"><button class="btn ghost" id="np">Сэдэв солих</button></div></section>`;
+      <p class="note" style="margin:0">Үгээ хэлээд хурдан дамжуул! Сэдэв 20 секунд тутам өөрөө солигдоно.</p></section>`;
     const pr=document.getElementById("pr"), swb=document.getElementById("sw");
     const swap=auto=>{ pr.textContent=prompt(); lastSwap=Date.now(); pr.classList.remove("flash"); void pr.offsetWidth; pr.classList.add("flash"); if(auto){ beep(1320,.08,.08); setTimeout(()=>beep(1760,.08,.08),90); } };
-    document.getElementById("np").onclick=()=>swap(false);
     const bm=document.getElementById("bm");
     timerId=setInterval(()=>{
       const el=Date.now()-start, left=total-el;
@@ -1094,18 +1110,20 @@ function bomb(from){
   }
 }
 /* ---------- Names helper ---------- */
-let savedNames = ["Бат","Сараа","Болд","Номин"];
-try{ const n=JSON.parse(localStorage.getItem("names")||"null"); if(Array.isArray(n)&&n.length) savedNames=n; }catch(e){}
+const NAME_EX = ["Бат","Сараа","Болд","Номин","Тэмүүлэн","Анужин"];
+let savedNames = ["","","",""];
+try{ const n=JSON.parse(localStorage.getItem("names")||"null"); if(Array.isArray(n)&&n.length && n.join()!==NAME_EX.slice(0,4).join()) savedNames=n; }catch(e){}
 function namesEditor(min, max){
   return `<div class="names" id="names">${savedNames.map((n,i)=>nameRow(n,i)).join("")}</div>
     <button class="btn ghost" id="addName" style="flex:none">+ Тоглогч нэмэх</button>`;
-  function nameRow(n,i){ return `<div class="nm"><input id="nm-${i}" value="${esc(n)}" maxlength="16" aria-label="Тоглогч ${i+1}"><button class="rm" data-rm="${i}" aria-label="Хасах">×</button></div>`; }
+  function nameRow(n,i){ return `<div class="nm"><input id="nm-${i}" value="${esc(n)}" maxlength="16" placeholder="${esc(NAME_EX[i]||"Тоглогч "+(i+1))}" aria-label="Тоглогч ${i+1}"><button class="rm" data-rm="${i}" aria-label="Хасах">×</button></div>`; }
 }
 function bindNames(min,max,rerender){
   const read=()=>[...document.querySelectorAll("#names input")].map(i=>i.value.trim());
   document.getElementById("addName").onclick=()=>{ savedNames=read(); if(savedNames.length<max){ savedNames.push(""); rerender(); document.getElementById("nm-"+(savedNames.length-1)).focus(); } };
   document.querySelectorAll("[data-rm]").forEach(b=>b.onclick=()=>{ savedNames=read(); if(savedNames.length>min){ savedNames.splice(+b.dataset.rm,1); rerender(); } });
-  return ()=>{ const n=read().filter(Boolean); savedNames=read(); try{localStorage.setItem("names",JSON.stringify(n))}catch(e){} return n; };
+  return ()=>{ savedNames=read(); try{localStorage.setItem("names",JSON.stringify(savedNames.filter(Boolean)))}catch(e){}
+    const out=[]; savedNames.forEach((n,i)=>{ let v=n||("Тоглогч "+(i+1)); while(out.includes(v)) v+="*"; out.push(v); }); return out; };
 }
 /* ---------- Secret missions ---------- */
 function missions(from){
@@ -1140,7 +1158,7 @@ function missions(from){
     if(s) s.onclick=()=>deal(list,i,true); if(h) h.onclick=()=>deal(list,i+1,false);
   }
   function party(list){
-    app.innerHTML = `<section class="view">${topBar("mood:"+from, MOODS[from].name)}
+    app.innerHTML = `<section class="view">${topBar("mood:"+from, "Зогсоох")}
       <div class="hero" style="text-align:center"><span class="eyebrow">Тоглоом эхэллээ</span><h1 style="margin-top:6px">Утсаа тавиад ердийнхөөрөө ярилц</h1>
       <p>Орой дуусахад энд буцаж ирээд даалгавруудыг илчил.</p></div>
       <div id="rv"></div>
@@ -1188,7 +1206,7 @@ function match(from){
     }
     function handoff(){
       app.innerHTML=`<section class="view">${topBar("mood:"+from,"Зогсоох")}
-        <div class="reveal"><p>${esc(a)} бүх ${N} асуултад хариуллаа ✓</p><div class="who">Утсаа ${esc(b)}-д өгнө үү</div>
+        <div class="reveal"><p>${esc(a)} бүх ${N} асуултад хариуллаа ✓</p><div class="who">Утсаа дамжуул: ${esc(b)}</div>
         <p>${esc(b)}, одоо ${esc(a)} юу гэж хариулсныг ээлж дараалан таана.</p>
         <button class="btn" id="ready" style="flex:none;width:100%">Би бэлэн</button></div></section>`;
       document.getElementById("ready").onclick=guess;
@@ -1218,10 +1236,10 @@ function match(from){
         <div class="pct">${pct}%</div><h2 style="text-align:center;font-size:22px">${label}</h2>
         <p class="note" style="margin:0">${hits} / ${N} асуулт таарлаа.</p>
         <div class="mlist">${qs.map(([q,opts],k)=>{ const ok=gs[k]===ans[k]; return `<div class="mrow ${ok?"ok":"no"}"><span class="mi">${ok?"✓":"✗"}</span><div><b>${esc(q)}</b><small>${esc(a)}: ${esc(opts[ans[k]])}${ok?"":` · ${esc(b)} таасан: ${esc(opts[gs[k]])}`}</small></div></div>`; }).join("")}</div>
-        ${hits<N?penaltyHTML(`${b}-д зөрсний шийтгэл`):""}
+        ${hits<N?penaltyHTML(`Зөрсний шийтгэл: ${b}`):""}
         <div class="row" style="flex-direction:column"><button class="btn story" id="st">📸 Story зураг хадгалах</button><button class="btn" id="sw">🔁 Солиод тоглох: ${esc(b)} хариулна</button><button class="btn ghost" id="re">Шинээр эхлэх</button></div></section>`;
       beep(pct>=60?990:660,.25,.15); buzz([60,40,120]); track("match_done",{n:N,pct});
-      document.getElementById("st").onclick=()=>shareStory({game:"Хэр сайн мэддэг вэ?", ic:"🎯", big:pct+"%", line:`Бид ${pct}% таарлаа`, sub:`${a} & ${b} · ${label}`});
+      document.getElementById("st").onclick=()=>shareStory({game:"Хэр сайн мэддэг вэ?", ic:"🎯", pair:[a,b], big:pct+"%", line:`Бид ${pct}% таарлаа`, sub:label});
       document.getElementById("sw").onclick=()=>run(b,a);
       document.getElementById("re").onclick=setup;
     }
@@ -1238,7 +1256,7 @@ function picker(from){
   const pad=document.createElement("div"); pad.className="touchpad";
   let input="finger"; try{ input=localStorage.getItem("pkInput")==="name"?"name":"finger"; }catch(e){}
   pad.innerHTML=`<button class="back close" id="pkClose">‹ Буцах</button>
-    <div class="pktabs" id="pkTabs"><button data-in="finger">Хуруугаар (2–5 хүн)</button><button data-in="name">Нэрээр эргүүлэх (2–15 хүн)</button></div>
+    <div class="pktabs" id="pkTabs"><button data-in="finger">Хуруугаар (2–5 хүн)</button><button data-in="name">Нэрээр (2–15 хүн)</button></div>
     <div class="hint" id="pkHint"></div><div id="pkCard"></div><div class="pkname" id="pkName" hidden></div>
     <div class="pkmodes" id="pkModes">${Object.entries(MODES).map(([k,v])=>`<button data-pm="${k}" aria-pressed="${k===pickMode}">${v}</button>`).join("")}</div>`;
   document.body.appendChild(pad);
@@ -1338,7 +1356,7 @@ function confetti(){
     P.forEach(p=>{ p.vy+=.32; p.vx*=.99; p.x+=p.vx; p.y+=p.vy; p.r+=p.vr; x.save(); x.translate(p.x,p.y); x.rotate(p.r); x.globalAlpha=Math.max(0,1-el/2800); x.fillStyle=p.c; x.fillRect(-p.w/2,-p.h/2,p.w,p.h*Math.abs(Math.cos(p.r))); x.restore(); });
     if(el<2800) requestAnimationFrame(f); else cv.remove(); })(t0);
 }
-new MutationObserver(()=>{ const s=app.querySelector("#st.btn.story"); const v=app.querySelector(".view"); if(s && v && !v.dataset.conf && !v.querySelector("[data-noconf]")){ v.dataset.conf="1"; confetti(); } }).observe(app,{childList:true});
+new MutationObserver(()=>{ const s=app.querySelector("#st.btn.story"); const v=app.querySelector(".view"); if(!s) document.querySelectorAll(".confetti").forEach(c=>c.remove()); if(s && v && !v.dataset.conf && !v.querySelector("[data-noconf]")){ v.dataset.conf="1"; confetti(); } }).observe(app,{childList:true});
 /* ---------- Tilt sensor (Heads Up): iOS needs requestPermission() inside the tap ---------- */
 async function tiltPermission(){
   try{ if(typeof DeviceOrientationEvent==="undefined") return false;
@@ -1410,10 +1428,11 @@ function familyTalk(from){
       const e=pickFresh("famEnd",FAMILY_ENDS);
       app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
         <div class="reveal"><p>${i} карт дууслаа</p><div class="who" style="font-size:24px;line-height:1.35">${esc(e)}</div></div>
-        <div class="row" style="flex-direction:column"><button class="btn" id="more">Дахиад 10 карт үргэлжлүүлэх</button><button class="btn ghost" id="re">Уур амьсгал солих</button>
+        <div class="row" style="flex-direction:column"><button class="btn story" id="st">📸 Story зураг хадгалах</button><button class="btn" id="more">Дахиад 10 карт үргэлжлүүлэх</button><button class="btn ghost" id="re">Уур амьсгал солих</button>
         <button class="linkbtn" id="sg" style="align-self:center">💡 Асуулт / шийтгэл санал болгох</button></div></section>`;
       beep(660,.3,.12); track("family_round10",{mood:famMood});
       document.getElementById("more").onclick=card; document.getElementById("re").onclick=setup; document.getElementById("sg").onclick=openSuggest;
+      document.getElementById("st").onclick=()=>shareStory({game:"Ширээний яриа", ic:"🍲", big:String(i), line:"асуултаар хамтдаа ярилцлаа", sub:noEmo(FAMILY_MOODS[famMood].label)});
     }
   }
 }
@@ -1451,7 +1470,7 @@ function shagai(from){
       const who=names[turn%names.length], rnd=Math.floor(turn/names.length)+1;
       app.innerHTML=`<section class="view">${topBar("mood:"+from,"Зогсоох")}
         <div class="mprog"><i style="width:${turn/T*100}%"></i></div>
-        <p class="who-line">${rounds>1?`Тойрог ${rnd} / ${rounds} · `:""}<b style="color:var(--glow)">${esc(who)}</b>-ийн ээлж</p>
+        <p class="who-line">${rounds>1?`Тойрог ${rnd} / ${rounds} · `:""}Ээлж: <b style="color:var(--glow)">${esc(who)}</b></p>
         <div class="shagai-row cup" id="row">${SHAGAI.map(s=>`<div class="bone"><span>${s.ic}</span><small>${s.n}</small></div>`).join("")}</div>
         <div class="verdict" id="vd" aria-live="polite">Шагайгаа сэгсэр!</div>
         ${board()}
@@ -1537,7 +1556,7 @@ function wave(from){
     const d=Math.abs(target-g), pts=d<=5?4:d<=10?3:d<=15?2:0; score+=pts;
     app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
       ${spec}${dial(target,g,true)}
-      <div class="pct" style="font-size:56px">${100-d}%</div>
+      <div class="pct" style="font-size:56px">${100-d}%</div><p class="eyebrow" style="margin:-6px 0 0;text-align:center">таарлаа</p>
       <p class="verdict" style="margin:0">${pts===4?"Тархины долгион нэг дээр! +4":pts?`Ойрхон байлаа, +${pts}`:"Өөр өөр долгион дээр байна 😅"}</p>
       <p class="note" style="margin:0">Нууц цэг ${target}%, таны таамаг ${g}%. Нийт оноо: ${score} (${round} тойрог)</p>${pts?"":penaltyHTML(from==="couples"?"Таамагласан хүнд":"Таамагласан хүмүүст")}
       <div class="row" style="margin-top:auto;flex-direction:column"><button class="btn" id="nx">Дараагийн тойрог</button><button class="btn story" id="st">📸 Story зураг хадгалах</button></div></section>`;
@@ -1588,9 +1607,10 @@ function nandin(from){
     }
     function thanks(){
       app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
-        <div class="reveal"><div class="who">Өнөөдрийн нандин орой дууслаа 💞</div><p>Та хоёр ${i} асуултаар ярилцлаа. Хамгийн их сэтгэлд хүрсэн хариултаа бие биедээ дахин хэлээрэй.</p>
-        <button class="btn ghost" id="re" style="flex:none;width:100%">Дахин эхлэх</button></div></section>`;
+        <div class="reveal"><div class="who">Өнөөдрийн нандин орой дууслаа 💞</div><p>Та хоёр ${i} асуултаар ярилцлаа. Хамгийн их сэтгэлд хүрсэн хариултаа бие биедээ дахин хэлээрэй.</p></div>
+        <div class="row" style="flex-direction:column;margin-top:auto"><button class="btn story" id="st">📸 Story зураг хадгалах</button><button class="btn ghost" id="re">Дахин эхлэх</button></div></section>`;
       document.getElementById("re").onclick=setup;
+      document.getElementById("st").onclick=()=>shareStory({game:"Нандин", ic:"🌸", pair:[a,b], big:String(i), line:"асуултаар бие биеэ илүү таньлаа"});
     }
   }
 }
@@ -1619,7 +1639,7 @@ function spicy(from){
       const p=r%2, who=p?b:a, q=qs[qi%qs.length]; markSeen("spicy",q);
       app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
         <div class="mprog"><i style="width:${(r%10)/10*100}%"></i></div>
-        <p class="who-line">Тойрог ${r%10+1} / 10 · <b style="color:var(--glow)">${esc(who)}</b>-ийн ээлж</p>
+        <p class="who-line">Тойрог ${r%10+1} / 10 · Ээлж: <b style="color:var(--glow)">${esc(who)}</b></p>
         <div class="stage"><div class="card flipped"><div class="face front"></div><div class="face back-face"><span class="kind">${oq.includes(q)?"Өөрсдийн асуулт":"Халуухан үнэн"}</span><div class="q">${esc(q)}</div><div class="foot"><span>${r+1}</span><span>18+</span></div></div></div></div>
         <div id="pen"></div>
         <div class="row"><button class="btn ghost" id="shy">😳 Ичиж байна → Шийтгэл</button><button class="btn" id="ok">Хариуллаа ✓</button></div></section>`;
@@ -1641,7 +1661,7 @@ function spicy(from){
         <div class="panel"><div class="mlist">${[[a,A],[b,B]].map(([n,s])=>`<div class="mrow"><span class="mi">${n===brave?"👑":"🔥"}</span><div><b>${esc(n)}</b><small>✓ ${s.ans} үнэн хариулт · 😳 ${s.pen} шийтгэл</small></div></div>`).join("")}</div></div>
         <div class="row" style="flex-direction:column;margin-top:auto"><button class="btn story" id="st">📸 Story зураг хадгалах</button><button class="btn" id="more">Дахиад 10 тойрог үргэлжлүүлэх</button><button class="btn ghost" id="re">Шинээр эхлэх</button></div></section>`;
       beep(990,.25,.15); track("spicy_round10",{r});
-      document.getElementById("st").onclick=()=>shareStory({game:"Үнэн үү, Халуухан шийтгэл үү?", ic:"🔥", who:brave?{name:brave,pic:""}:undefined, big:brave||"Тэнцлээ", line:brave?"Өнөө оройн хамгийн зоригтой":"Хоёулаа адилхан зоригтой", sub:`${a}: ${A.ans} үнэн · ${b}: ${B.ans} үнэн`});
+      document.getElementById("st").onclick=()=>shareStory({game:"Үнэн үү, Халуухан шийтгэл үү?", ic:"🔥", pair:[a,b], big:String(A.ans+B.ans), line:"үнэнээр хариулсан халуухан асуулт", sub:brave?`Хамгийн зоригтой нь: ${brave}`:"Хоёулаа адилхан зоригтой"});
       document.getElementById("more").onclick=turn;
       document.getElementById("re").onclick=setup;
     }
@@ -1681,7 +1701,7 @@ function wish(from){
     }
     function handoff(){
       app.innerHTML=`<section class="view">${topBar("mood:"+from,"Зогсоох")}
-        <div class="reveal"><p>${esc(a)}-ийн хариулт нууц хэвээр ✓</p><div class="who">Утсаа ${esc(b)}-д өгнө үү</div>
+        <div class="reveal"><p>${esc(a)} дууслаа, хариулт нууц хэвээр ✓</p><div class="who">Утсаа дамжуул: ${esc(b)}</div>
         <p>Зөвхөн хоёулаа хүссэн зүйл л илчлэгдэнэ.</p><button class="btn" id="ready" style="flex:none;width:100%">Би бэлэн</button></div></section>`;
       document.getElementById("ready").onclick=()=>play(1,0);
     }
@@ -1695,7 +1715,7 @@ function wish(from){
         <p class="note" style="margin:0">Нэг нь л хүссэн зүйлс нууц хэвээр үлдлээ.</p>
         <div class="row" style="flex-direction:column"><button class="btn story" id="st">📸 Story зураг хадгалах</button><button class="btn" id="again">Дахиад ${N} хүсэл</button><button class="btn ghost" id="re">Шинээр эхлэх</button></div></section>`;
       beep(both.length?990:520,.25,.15); track("wish_done",{level:lv, n:both.length});
-      document.getElementById("st").onclick=()=>shareStory({game:"Нууц хүсэл", ic:"❤️", big:String(both.length), line:"нууц хүсэл маань таарлаа", sub:`${a} & ${b}`});
+      document.getElementById("st").onclick=()=>shareStory({game:"Нууц хүсэл", ic:"❤️", pair:[a,b], big:String(both.length), line:"нууц хүсэл маань таарлаа"});
       document.getElementById("again").onclick=()=>run(a,b);
       document.getElementById("re").onclick=setup;
     }
@@ -1778,7 +1798,7 @@ const CUSTOM = {whisper:[], iceDeck:[]};
 const CUSTOM_MAX = 10;
 function customBox(key){
   const n=CUSTOM[key].length;
-  return `<details class="panel custom" id="cb-${key}"><summary>+ Өөрийн нууц асуулт нэмэх</summary>
+  return `<details class="panel custom" id="cb-${key}"><summary>+ Өөрийн ${key==="iceDeck"?"":"нууц "}асуулт нэмэх</summary>
     <p class="cnt" style="margin:0">Мөр бүрт нэг асуулт. Хэн бичсэн нь харагдахгүй, үндсэн асуултуудын дунд санамсаргүй гарна.</p>
     <textarea id="ct-${key}" maxlength="600" placeholder="Жишээ: Хэн нь өнгөрсөн амралтаараа хамгийн их нууцлаг байсан бэ?"></textarea>
     <div class="row" style="align-items:center"><span class="cnt" id="cc-${key}" style="flex:1">${n} / ${CUSTOM_MAX} нэмэгдсэн</span><button class="btn" id="ca-${key}" style="flex:none">Нэмэх</button></div></details>`;
@@ -1821,33 +1841,48 @@ const STORY_THEMES = {
   gold:{label:"Алтлаг VIP", bg:["#050505","#1C1608"], card:"#13110B", ink:"#FFF7E0", soft:"#BFA76A", acc:"#D4AF37", hi:"#F5D76E", ringA:"#F5D76E", ringB:"#8C6A1C", bar:"#D4AF37"},
   white:{label:"Цэвэрхэн цагаан", bg:["#FFFFFF"], card:"#F4F4F5", ink:"#0D0D10", soft:"#71717A", acc:"#FF3B5C", hi:"#FF3B5C", ringA:"#FF3B5C", ringB:"#0D0D10", bar:"#FF3B5C"}
 };
-const PRAISE_ANY = ["✨ Хөөрхөн {n}","🔥 Мундаг {n}","👑 Ангийн нууц од — {n}","😎 Ширээний жинхэнэ босс — {n}","🌟 Өнөө оройн од — {n}","🦁 Зоригт {n}","🍀 Азтай {n}","🧠 Тархи ухаантай {n}","💎 Үнэт эрдэнэ {n}","🎉 Үдэшлэгийн сүнс — {n}","🚀 Зогсоох аргагүй {n}","😇 Сахиусан тэнгэр {n}","🐺 Чоно шиг ухаалаг {n}","🥇 Аварга {n}","💅 Гоёмсог {n}","🫶 Бүгдийн хайртай {n}"];
-const PRAISE_GAME = {
-  "Шагай":["🦴 Шагайн аварга — {n}","🐎 Морьтон {n}","🍀 Азтай {n}"],
-  "Шивнээ":["🤫 Хамгийн аюултай нууцлаг дүр — {n}","👀 Бүгдийн нүдэнд өртсөн {n}","🕵️ Нууцын эзэн {n}","🌶️ Хамгийн халуун сэдэв — {n}"],
-  "Хэн нь вэ?":["🗳️ Ард түмний сонголт — {n}","👑 Олны танил {n}","📣 Санал хураалтын хаан — {n}","🏆 Нэр дэвшигч №1 — {n}"],
-  "Утасны зураач":["🎨 Монголын шинэ Пикассо — {n}","🖌️ Алтан бийр {n}","🖼️ Галерейн од — {n}","✏️ Нэг зурлагаар гайхуулагч {n}"],
-  "Зураг таах рулет":["📸 Нууцлаг галерейн эзэн — {n}","🔎 Шерлок {n}","⚡ Хурдан нүдтэй {n}","🧩 Бүгдийг мэддэг {n}"],
-  "Хэр сайн мэддэг вэ?":["💞 Сэтгэл нэгт хос","🧠 Тархи нэгтэй хос","🔐 Нууцгүй хос","💘 Бие биеэ мэддэг хос"],
-  "Нууц хүсэл":["💘 Нууц хүсэл нэгт хос","🗝️ Нууцгүй хос","🔥 Халуухан хос","💞 Зүрх нэгт хос"],
-  "Үнэн үү, Халуухан шийтгэл үү?":["🔥 Хамгийн зоригтой — {n}","😈 Ичихээ мартсан {n}","🌶️ Халуун чинжүү {n}"],
-  "Нэг долгион дээр":["📡 Нэг долгионы хос","🧠 Тархи нэгтэй баг","🎯 Онож буудагчид","🌊 Давалгааны эзэд"]
+/* Titles never cross audiences: couples games only get couple titles, family games only family titles,
+   friends games only titles about that game. No name inside the title: the name is drawn separately. */
+const PRAISE = {
+  couples:{
+    _:["Нэг долгионтой хоёр зүрх","Төгс зохицсон хос","Хамгийн халуун оройн эзэд","Зүрх нэгт хос","Өнөө оройн хамгийн хөөрхөн хос"],
+    "Хэр сайн мэддэг вэ?":["Бие биеэ уншдаг хос","Сэтгэл нэгт хос","Тархи нэгтэй хос","Нууцгүй хос","Төгс зохицсон хос"],
+    "Нууц хүсэл":["Мөрөөдөл нэгт хос","Нууц хүсэл нэгт хос","Зүрх нэгт хос","Нэг долгионтой хоёр зүрх"],
+    "Үнэн үү, Халуухан шийтгэл үү?":["Хамгийн халуун оройн эзэд","Ичихээ мартсан хос","Зоригтой хоёр зүрх","Халуун чинжүү хос"],
+    "Нэг долгион дээр":["Нэг долгионтой хоёр зүрх","Тархи нэгтэй хос","Төгс зохицсон хос"],
+    "Нандин":["Нэг долгионтой хоёр зүрх","Бие биеэ илүү таньсан хос","Дулаахан оройн эзэд","Зүрх нэгт хос"]
+  },
+  family:{
+    _:["Хамгийн дулаан гэр бүл","Ширээний аваргууд","Инээд хөөртэй гэр бүл","Нэг зүрхтэй гэр бүл"],
+    "Ширээний яриа":["Хамгийн дулаан гэр бүл","Дурсамжийн эзэд","Ширээний аваргууд","Нэг зүрхтэй гэр бүл","Инээд хөөртэй гэр бүл"],
+    "Шагай":["Шагайн аварга","Гэр бүлийн аварга","Морьтон","Азын эзэн"]
+  },
+  friends:{
+    _:["Өнөө оройн од","Ширээний аварга"],
+    "Шивнээ":["Ширээний хамгийн нууцлаг дүр","Нууцын эзэн","Бүгдийн нүдэнд өртсөн","Хамгийн халуун сэдэв"],
+    "Хэн нь вэ?":["Ард түмний сонголт","Олны танил","Санал хураалтын хаан","Нэр дэвшигч №1"],
+    "Утасны зураач":["Монголын шинэ Пикассо","Алтан бийр","Галерейн од","Нэг зурлагаар гайхуулагч"],
+    "Гинжин зураг":["Утас дамжсан урлаг","Галерейн хамгийн хачин бүтээл","Эвдэрсэн утас, гоё зураг"],
+    "Зураг таах рулет":["Галерейн нууц эзэн","Шерлок","Хурдан нүдтэй","Бүгдийг мэддэг"],
+    "Нэг долгион дээр":["Тархи нэгтэй баг","Онож буудагчид","Давалгааны эзэд"],
+    "Шагай":["Шагайн аварга","Морьтон","Азтай шидэгч"]
+  }
 };
+const COUPLE_GAMES = new Set(["Нандин","Нууц хүсэл","Үнэн үү, Халуухан шийтгэл үү?","Хэр сайн мэддэг вэ?"]);
+function storyAud(o){ if(COUPLE_GAMES.has(o.game)) return "couples"; if(o.game==="Ширээний яриа") return "family";
+  return curFrom==="couples" ? "couples" : curFrom==="family" ? "family" : "friends"; }
 let storyPic = "";            // own photo picked in the Story window; RAM only, never uploaded
 const storyImgCache = new Map();
 async function cachedImg(src){ if(!src) return null; if(storyImgCache.has(src)) return storyImgCache.get(src); let im=null; try{ im=await loadImg(src); }catch(e){} storyImgCache.set(src,im); return im; }
-function praiseList(game, name){
-  const g=(PRAISE_GAME[game]||[]), base=name?g.concat(PRAISE_ANY):g.filter(t=>!t.includes("{n}"));
-  const list=base.length?base:["🎉 Гайхалтай орой","🔥 Мундаг баг","✨ Хөөрхөн бид","😎 Ширээний жинхэнэ боссууд"];
-  return list.map(t=>t.replace("{n}", name||"").replace(/\s—\s*$/,"").trim());
-}
+function praiseList(o){ const A=PRAISE[storyAud(o)]; return (A[o.kind||o.game]||A._).slice(); }
 function storyBg(x, T, W, H){
   if(T.bg.length>1){ const gr=x.createLinearGradient(0,0,W*.4,H); gr.addColorStop(0,T.bg[0]); gr.addColorStop(1,T.bg[1]); x.fillStyle=gr; } else x.fillStyle=T.bg[0];
   x.fillRect(0,0,W,H);
 }
 async function storyAvatar(x, cx, cy, r, name, pic, T, ic){
-  x.save(); x.beginPath(); x.arc(cx,cy,r+26,0,Math.PI*2); x.fillStyle=T.ringA; x.fill();
-  x.beginPath(); x.arc(cx,cy,r+13,0,Math.PI*2); x.fillStyle=T.ringB; x.fill(); x.restore();
+  x.save(); x.lineWidth=7; x.strokeStyle=T.ringA; x.beginPath(); x.arc(cx,cy,r+30,0,Math.PI*2); x.stroke();
+  x.lineWidth=5; x.strokeStyle=T.ringB; x.beginPath(); x.arc(cx,cy,r+14,0,Math.PI*2); x.stroke();
+  x.restore();
   const im=await cachedImg(pic);
   x.save(); x.beginPath(); x.arc(cx,cy,r,0,Math.PI*2); x.clip();
   if(im){ const w=im.naturalWidth||im.width, h=im.naturalHeight||im.height, s=Math.min(w,h)||1; x.drawImage(im,(w-s)/2,(h-s)/2,s,s,cx-r,cy-r,r*2,r*2); }
@@ -1856,40 +1891,59 @@ async function storyAvatar(x, cx, cy, r, name, pic, T, ic){
   x.textBaseline="alphabetic"; x.restore();
   try{ x.getImageData(cx,cy,1,1); }catch(e){ x.save(); x.beginPath(); x.arc(cx,cy,r,0,Math.PI*2); x.clip(); x.fillStyle=avColor(name||"?"); x.fillRect(cx-r,cy-r,r*2,r*2); x.restore(); }
 }
+function storyBgSolid(T){ return T.bg[0]; }
 function storyLogo(x, T, W, y, size){ const D='"Manrope","Montserrat","Arial Black",sans-serif'; x.font=`800 ${size}px ${D}`; const w1=x.measureText("Хамт").width, w2=x.measureText("даа").width, x0=W/2-(w1+w2)/2; x.textAlign="left"; x.fillStyle=T.ink; x.fillText("Хамт", x0, y); x.fillStyle=T.acc; x.fillText("даа", x0+w1, y); x.textAlign="center"; }
 async function renderStory(o, st){
   try{ await document.fonts?.ready; }catch(e){}
   const T=STORY_THEMES[st.theme]||STORY_THEMES.night;
   const W=1080, H=1920, cv=document.createElement("canvas"); cv.width=W; cv.height=H; const x=cv.getContext("2d");
   const D='"Manrope","Montserrat","Arial Black",sans-serif', B='"Manrope","Inter","Segoe UI",sans-serif';
-  storyBg(x,T,W,H); x.fillStyle=T.bar; x.fillRect(0,0,W,14);
-  x.fillStyle=T.card; x.beginPath(); x.roundRect(48,220,W-96,1290,48); x.fill();
-  storyLogo(x,T,W,150,64);
-  // content is drawn on its own layer, then centred vertically inside the card
-  const CH=1290, lc=document.createElement("canvas"); lc.width=W; lc.height=CH; const main=x; { const x=lc.getContext("2d");
-  const pic=await cachedImg(o.img);
-  const R=pic?118:150, cy=R+26;
-  await storyAvatar(x, W/2, cy, R, st.name, st.pic, T, o.ic);
-  if(st.name || st.pic){ const br=pic?40:50, bx=W/2+R*.74, by=cy+R*.74; x.fillStyle=T.ringA; x.beginPath(); x.arc(bx,by,br,0,Math.PI*2); x.fill(); const ii=await cachedImg(iconURL(emoName(o.ic||"🎉")||"party", T.ink)); if(ii) x.drawImage(ii, bx-br*.6, by-br*.6, br*1.2, br*1.2); }
-  let y=cy+R+110;
-  x.textAlign="center"; x.fillStyle=T.acc; x.font=`800 40px ${B}`; x.fillText(o.game.toUpperCase(), W/2, y);
-  y+=104; x.fillStyle=T.hi; const ts=fitFont(x, st.title, 800, D, 88, W-150, 50); x.font=`800 ${ts}px ${D}`;
-  const tl=ts<=50 ? (x.font=`800 64px ${D}`, wrapLines(x, st.title, W-150).slice(0,2)) : [st.title]; tl.forEach((l,i)=>x.fillText(l, W/2, y+i*78)); y+=(tl.length-1)*78;
-  const big = o.big && o.big!==st.name ? o.big : "";
+  storyBg(x,T,W,H);
+  storyLogo(x,T,W,138,56);
+  // game pill
+  x.font=`800 30px ${B}`; const gname=o.game.toUpperCase(), gw=Math.min(W-160, x.measureText(gname).width+84);
+  x.strokeStyle=T.acc; x.lineWidth=3; x.beginPath(); x.roundRect(W/2-gw/2,182,gw,64,32); x.stroke();
+  x.fillStyle=T.acc; x.textAlign="center"; x.fillText(gname, W/2, 225, W-200);
+  // bottom: tidy QR card
+  const qr=await cachedImg("qr.png"), cw=W-200, chh=232, cx0=100, cy0=H-chh-90;
+  x.fillStyle=st.theme==="white"?"#F4F4F5":"#FFFFFF"; x.beginPath(); x.roundRect(cx0,cy0,cw,chh,36); x.fill();
+  const qs=176, qx=cx0+28, qy=cy0+(chh-qs)/2;
+  if(qr){ x.fillStyle="#fff"; x.fillRect(qx-6,qy-6,qs+12,qs+12); x.imageSmoothingEnabled=false; x.drawImage(qr,qx,qy,qs,qs); x.imageSmoothingEnabled=true; }
+  const tx=qx+qs+40; x.textAlign="left";
+  x.fillStyle="#0D0D10"; x.font=`800 46px ${D}`; x.fillText("Хамт тоглоё!", tx, cy0+86);
+  x.fillStyle=st.theme==="pink"?"#E11D74":st.theme==="gold"?"#8C6A1C":"#FF3B5C"; x.font=`800 40px ${D}`; x.fillText("hamtdaa.app", tx, cy0+142);
+  x.fillStyle="#71717A"; x.font=`600 27px ${B}`; x.fillText("Бүртгэлгүй · Нэг утсаар", tx, cy0+188);
+  x.textAlign="center";
+  // everything between the pill and the QR card is drawn on its own layer, then centred in that space
+  const top=270, room=cy0-60-top, lc=document.createElement("canvas"); lc.width=W; lc.height=1500; const main=x; { const x=lc.getContext("2d"); x.textAlign="center";
+  // avatar(s)
+  const pair=(st.pair||[]).filter(Boolean), pic=await cachedImg(o.img);
+  const cy=pic?160:190;
+
+  if(pair.length===2){ const r=pic?96:122, dx=r*.78; await storyAvatar(x, W/2-dx, cy, r, pair[0], "", T, o.ic); x.save(); x.globalCompositeOperation="destination-out"; x.beginPath(); x.arc(W/2+dx,cy,r+42,0,Math.PI*2); x.fill(); x.restore(); await storyAvatar(x, W/2+dx, cy, r, pair[1], "", T, o.ic); }
+  else await storyAvatar(x, W/2, cy, pic?120:150, st.name, st.pic, T, o.ic);
+  let y=cy+(pic?120:150)+150;
+  // who: one name, two names, or nothing
+  const who = pair.length===2 ? `${pair[0]} & ${pair[1]}` : (st.name||"");
+  if(who){ x.fillStyle=T.ink; const ns=fitFont(x, who, 800, D, 118, W-140, 64); x.font=`800 ${ns}px ${D}`; x.fillText(who, W/2, y); y+=Math.round(ns*.55)+46; }
+  // title: the hero line
+  x.fillStyle=T.hi; let ts=fitFont(x, st.title, 800, D, who?76:96, W-140, 60); x.font=`800 ${ts}px ${D}`;
+  let tl=[st.title]; if(x.measureText(st.title).width>W-140){ ts=60; x.font=`800 ${ts}px ${D}`; tl=wrapLines(x, st.title, W-140).slice(0,2); }
+  tl.forEach((l,k)=>x.fillText(l, W/2, y+k*Math.round(ts*1.12))); y+=(tl.length-1)*Math.round(ts*1.12);
+  // divider
+  y+=58; x.fillStyle=T.soft+"55"; x.fillRect(W/2-60,y,120,4); y+=40;
+  const big = o.big && o.big!==st.name && o.big!==who ? o.big : "";
   if(pic){
-    const ps=430, py=y+50; x.save(); x.translate(W/2,py+ps/2); x.rotate(-.025); x.fillStyle="#fff"; x.beginPath(); x.roundRect(-ps/2-16,-ps/2-16,ps+32,ps+32,26); x.fill(); x.drawImage(pic,-ps/2,-ps/2,ps,ps); x.restore();
-    y=py+ps+100; x.fillStyle=T.ink; x.font=`800 46px ${D}`; const ll=wrapLines(x, (big?big+" · ":"")+o.line, W-170).slice(0,2); ll.forEach((l,i)=>x.fillText(l, W/2, y+i*54));
-    y+=ll.length*54+12; x.fillStyle=T.soft; x.font=`600 38px ${B}`; const sl=wrapLines(x, o.sub||"", W-180).slice(0,1); sl.forEach(l=>x.fillText(l, W/2, y)); y+=sl.length?10:-54;
+    const ps=360, py=y+20; x.save(); x.translate(W/2,py+ps/2); x.rotate(-.025); x.fillStyle="#fff"; x.beginPath(); x.roundRect(-ps/2-14,-ps/2-14,ps+28,ps+28,24); x.fill(); x.drawImage(pic,-ps/2,-ps/2,ps,ps); x.restore();
+    y=py+ps+92; x.fillStyle=T.ink; x.font=`800 44px ${D}`; wrapLines(x, (big?big+" · ":"")+o.line, W-170).slice(0,2).forEach((l,k)=>x.fillText(l, W/2, y+k*52));
   } else {
-    if(big){ y+=170; x.fillStyle=T.ink; const bs=fitFont(x, big, 800, D, 190, W-160); x.font=`800 ${bs}px ${D}`; x.fillText(big, W/2, y); }
-    y+=120; x.fillStyle=T.ink; x.font=`800 60px ${D}`; const ll=wrapLines(x, o.line, W-170).slice(0,2); ll.forEach((l,i)=>x.fillText(l, W/2, y+i*74));
-    y+=(ll.length-1)*74+74; x.fillStyle=T.soft; x.font=`600 42px ${B}`; const sl=wrapLines(x, o.sub||"", W-180).slice(0,2); sl.forEach((l,i)=>x.fillText(l, W/2, y+i*56)); y+=sl.length?(sl.length-1)*56+14:-60;
+    if(big){ x.fillStyle=T.ink; const bs=fitFont(x, big, 800, D, 210, W-160, 90); x.font=`800 ${bs}px ${D}`; y+=Math.round(bs*.78); x.fillText(big, W/2, y); y+=26; }
+    y+=64; x.fillStyle=T.ink; x.font=`700 50px ${D}`; const ll=wrapLines(x, o.line, W-170).slice(0,2); ll.forEach((l,k)=>x.fillText(l, W/2, y+k*62)); y+=(ll.length-1)*62;
+    if(o.sub){ y+=60; x.fillStyle=T.soft; x.font=`600 36px ${B}`; const sl=wrapLines(x, o.sub, W-180).slice(0,2); sl.forEach((l,k)=>x.fillText(l, W/2, y+k*48)); y+=(sl.length-1)*48; }
   }
-  main.drawImage(lc, 0, 220+Math.max(30,(CH-y)/2)); }
-  const qr=await cachedImg("qr.png");
-  if(qr){ const qs=220, qx=W/2-qs/2, qy=1575; x.fillStyle="#fff"; x.beginPath(); x.roundRect(qx-14,qy-14,qs+28,qs+28,24); x.fill(); x.imageSmoothingEnabled=false; x.drawImage(qr,qx,qy,qs,qs); x.imageSmoothingEnabled=true; }
-  storyLogo(x,T,W,1856,42);
-  x.textAlign="center"; x.fillStyle=T.soft; x.font=`700 30px ${B}`; x.fillText("hamtdaa.app", W/2, 1898);
+  y+=40; const off=top+Math.max(0,(room-y)/2);
+  const gl=main.createRadialGradient(W/2,off+cy,40,W/2,off+cy,560); gl.addColorStop(0,T.acc+"40"); gl.addColorStop(1,T.acc+"00"); main.fillStyle=gl; main.fillRect(0,0,W,H);
+  main.drawImage(lc, 0, off); }
   return cv;
 }
 function shrinkPhoto(file){ return new Promise((res,rej)=>{ const u=URL.createObjectURL(file), im=new Image();
@@ -1897,12 +1951,13 @@ function shrinkPhoto(file){ return new Promise((res,rej)=>{ const u=URL.createOb
     c.getContext("2d").drawImage(im,(im.naturalWidth-s)/2,(im.naturalHeight-s)/2,s,s,0,0,n,n); URL.revokeObjectURL(u); res(c.toDataURL("image/jpeg",.85)); };
   im.onerror=()=>{ URL.revokeObjectURL(u); rej(new Error("img")); }; im.src=u; }); }
 function shareStory(o){
-  const name = o.who?.name || (o.who ? "" : (user ? userName() : ""));
-  const basePic = o.who ? (o.who.pic||"") : (user ? profilePic() : "");
+  const aud = storyAud(o), pair = aud==="couples" && o.pair && o.pair[0] && o.pair[1] ? o.pair : null;
+  const name = pair ? "" : (o.who?.name || (o.who || aud!=="friends" ? "" : (user ? userName() : "")));
+  const basePic = pair ? "" : o.who ? (o.who.pic||"") : (user && aud==="friends" ? profilePic() : "");
   let theme="night"; try{ theme=localStorage.getItem("storyTheme")||"night"; }catch(e){}
   if(!STORY_THEMES[theme]) theme="night";
-  const titles=praiseList(o.game, name);
-  const st={theme, name, pic:storyPic||basePic, title:titles[Math.floor(Math.random()*titles.length)]};
+  const titles=praiseList(o);
+  const st={theme, name, pair, pic:pair?"":(storyPic||basePic), title:titles[Math.floor(Math.random()*titles.length)]};
   document.querySelectorAll(".studio").forEach(e=>e.remove());
   const ov=document.createElement("div"); ov.className="studio"; ov.setAttribute("role","dialog"); ov.setAttribute("aria-modal","true");
   ov.innerHTML=`<div class="studio-in">
@@ -2202,7 +2257,7 @@ function whisper(from){
     const wk="wh:"+whLevel, pool=()=>freshOrder(wk, levelPool(WHISPER_Q,whLevel)).reverse().concat(shuffle(CUSTOM.whisper.concat(AIQ.whisper)));
     let deckQ=pool(), reader=names[Math.floor(Math.random()*names.length)];
     const tally={}, nextQ=()=>{ if(!deckQ.length) deckQ=pool(); const q=deckQ.pop(); markSeen(wk,q); return q; };
-    const head=`${topBar("mood:"+from, MOODS[from].name)}`;
+    const head=`${topBar("mood:"+from, "Зогсоох")}`;
     const pass=()=>{
       app.innerHTML=`<section class="view">${head}
         <div class="reveal"><span class="eyebrow">Утсыг дамжуул</span><h1>${esc(reader)}</h1><p class="note" style="margin:0">Бусад нь дэлгэц рүү битгий хар!</p>
@@ -2221,7 +2276,7 @@ function whisper(from){
     const summary=()=>{
       const rows=Object.entries(tally).sort((x,y)=>y[1]-x[1]), [top,cnt]=rows[0];
       beep(990,.25,.15); buzz([60,40,160]);
-      app.innerHTML=`<section class="view">${head}
+      app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
         <div class="hero" style="text-align:center"><span class="eyebrow">Өнөө оройн хамгийн нууцлаг хүн</span><h1 style="margin-top:6px">🤫 ${esc(top)}</h1><p>${cnt} удаа нэрлэгдлээ</p></div>
         <div class="panel">${rows.map(([n,c])=>`<div style="display:flex;justify-content:space-between"><span>${esc(n)}</span><b>${c}</b></div>`).join("")}</div>
         <div class="row" style="margin-top:auto;flex-direction:column"><button class="btn story" id="st">📸 Story зураг хадгалах</button><button class="btn" id="re">Дахин тоглох</button></div></section>`;
@@ -2351,21 +2406,24 @@ function privacy(){
   app.innerHTML=`<section class="view">${topBar("home","Нүүр")}
     <h2 style="font-size:24px">Нууцлалын бодлого</h2>
     <div class="legal">
-      <p>«Хамтдаа» бол найзууд, хосууд, гэр бүлээрээ тоглох вэб тоглоом. Бид аль болох бага мэдээлэл цуглуулдаг. Сүүлд шинэчилсэн: 2026 оны 11-р сарын 22.</p>
+      <p>«Хамтдаа» бол найзууд, хосууд, гэр бүлээрээ тоглох вэб тоглоом. Бид аль болох бага мэдээлэл цуглуулдаг. Сүүлд шинэчилсэн: 2026 оны 11-р сарын 25. Асуух зүйл байвал: <a href="mailto:hello@hamtdaa.app" style="color:var(--glow)">hello@hamtdaa.app</a></p>
       <h3>Бүртгэлгүй тоглох</h3>
-      <p>Үндсэн бүх тоглоом бүртгэлгүй ажиллана. Тоглогчдын нэр, тохиргоо, өөрсдийн бичсэн асуулт зөвхөн таны утасны хөтөч дотор (localStorage / sessionStorage) хадгалагдаж, манай серверт очихгүй.</p>
+      <p>Үндсэн бүх тоглоом бүртгэлгүй ажиллана. Тоглогчдын нэр, тохиргоо, өөрсдийн бичсэн асуулт зөвхөн таны утасны хөтөч дотор (localStorage / sessionStorage) хадгалагдаж, манай серверт очихгүй. Ганц үл хамаарах зүйл нь доорх «Асуулт санал болгох» хэсэг.</p>
       <h3>Google-ээр нэвтрэх</h3>
       <p>Нэвтрэх нь сайн дурын. Нэвтэрвэл Supabase (манай нэвтрэлтийн үйлчилгээ) таны Google бүртгэлийн нэр, имэйл, профайл зургийг хадгална. Бид үүнийг зөвхөн таныг таньж, AI багцын өдрийн лимитийг нэмэхэд ашиглана. Хэнд ч зарахгүй, дамжуулахгүй.</p>
       <h3>AI Хувийн багц</h3>
       <p>Карт үүсгэх үед таны оруулсан нэрс, бүлгийн тайлбар Supabase-ээр дамжин Google Gemini AI руу илгээгдэж, карт зохиогдоно. Бид энэ мэдээллийг өөрсдийн өгөгдлийн санд хадгалдаггүй. Хүний хувийн нууц, гомдол төрүүлэх зүйл бүү бич.</p>
       <h3>Өрөөний тоглоом</h3>
-      <p>«Хэн нь вэ?» өрөөнд таны бичсэн нэр болон санал Supabase Realtime-аар тухайн өрөөний утаснууд руу шууд дамжина. Өрөө хаагдахад устах ба өгөгдлийн санд хадгалагдахгүй. Хэн хэнд санал өгсөн нь дэлгэц дээр харагдахгүй.</p>
+      <p>«Хэн нь вэ?», «Утасны зураач», «Зураг таах рулет» өрөөнд таны бичсэн нэр, санал, зурсан зураг, таамаг Supabase Realtime-аар зөвхөн тухайн өрөөний утаснууд руу шууд дамжина. Өрөө хаагдахад устах ба өгөгдлийн санд хадгалагдахгүй. «Хэн нь вэ?»-д хэн хэнд санал өгсөн нь дэлгэц дээр харагдахгүй.</p>
+      <p>«Зураг таах рулет»-д сонгосон зургууд утсан дээрээ жижигрээд (480px) зөвхөн өрөөний бусад утас руу дамжина. Манай серверт ч, Story зурагт ч хадгалагдахгүй, тоглоом дуусахад санах ойгоос устна. Нэвтэрсэн бол таны профайл зураг өрөөний бусад тоглогчдод харагдана.</p>
+      <h3>Асуулт санал болгох</h3>
+      <p>«Асуулт, шийтгэл санал болгох» цонхоор, эсвэл өөрийн асуулт нэмэхдээ «хуваалцах»-ыг чагталсан үед тэр бичвэр (ангилал, тоглоомын нэртэй) манай Supabase өгөгдлийн санд хадгалагдана. Бид шалгаад тоглоомдоо нэмж болно. Хэн бичсэнийг хадгалахгүй тул хувийн мэдээлэл, нэр бүү бич.</p>
       <h3>Аналитик</h3>
       <p>Сайтыг сайжруулахын тулд Google Analytics ашиглан аль тоглоом хэр их тоглогдож байгааг нэргүйгээр хэмждэг (жишээ нь: тоглоом эхэлсэн, AI багц үүссэн). Тоглогчдын нэр, асуулт, хариулт илгээгддэггүй.</p>
       <h3>18+ хэсэг</h3>
       <p>18+ хэсгүүд нас баталгаажуулах асуулттай. Хэрэв та 18 хүрээгүй бол эдгээр хэсгийг бүү нээ.</p>
       <h3>Мэдээллээ устгуулах</h3>
-      <p>Хөтчийн өгөгдлөө цэвэрлэхэд утсан дээрх бүх мэдээлэл устна. Нэвтэрсэн бүртгэлээ устгуулахыг хүсвэл бидэнтэй холбогдоно уу: <a href="https://github.com/tuvshinnjarggal/hamtdaa/issues" style="color:var(--glow)">github.com/tuvshinnjarggal/hamtdaa</a>.</p>
+      <p>Хөтчийн өгөгдлөө цэвэрлэхэд утсан дээрх бүх мэдээлэл устна. Нэвтэрсэн бүртгэлээ эсвэл санал болгосон асуултаа устгуулахыг хүсвэл <a href="mailto:hello@hamtdaa.app" style="color:var(--glow)">hello@hamtdaa.app</a> хаягаар бидэнтэй холбогдоно уу.</p>
     </div></section>`;
 }
 
@@ -2388,13 +2446,16 @@ function roomMenu(from, presetCode){
   const back = presetCode!=null ? topBar("home","Нүүр") : topBar("mood:"+(from||"friends"), MOODS[from||"friends"].name);
   const joinOnly = presetCode!=null;
   app.innerHTML=`<section class="view">${back}
-    <h2 style="font-size:22px">🗳️ Хэн нь вэ?</h2>
-    <ol class="rules"><li>Нэг хүн өрөө нээж, бусад нь 4 оронтой кодоор утаснаасаа нэгдэнэ (2–12 хүн).</li><li>Асуулт бүх утсан дээр зэрэг гарна. Хүн бүр нэг хүний нэр дээр нууцаар санал өгнө.</li><li>Хэн хэдэн санал авсан нь бүгдэд зэрэг харагдана. Хэн хэнд өгсөн нь нууц хэвээр.</li></ol>
+    ${joinOnly?`<h2 style="font-size:22px">${I("qr")} Өрөөнд нэгдэх</h2>
+    <p style="margin:0;color:var(--ink-soft)">Найзынхаа нээсэн өрөөний 4 оронтой кодыг оруул. «Хэн нь вэ?», «Утасны зураач», «Зураг таах рулет» аль нь ч байсан өөрөө таниад оруулна.</p>`:`<h2 style="font-size:22px">🗳️ Хэн нь вэ?</h2>
+    <ol class="rules"><li>Нэг хүн өрөө нээж, бусад нь 4 оронтой кодоор утаснаасаа нэгдэнэ (2–12 хүн).</li><li>Асуулт бүх утсан дээр зэрэг гарна. Хүн бүр нэг хүний нэр дээр нууцаар санал өгнө.</li><li>Хэн хэдэн санал авсан нь бүгдэд зэрэг харагдана. Хэн хэнд өгсөн нь нууц хэвээр.</li></ol>`}
     <div class="panel names"><label for="rmName"><b>Таны нэр</b></label><input id="rmName" maxlength="16" value="${esc(myName()||(user?userName().slice(0,16):""))}" placeholder="Нэрээ бич"></div>
     <div class="panel"><b>Өрөөнд нэгдэх</b>
       <div class="names"><input id="rmCode" class="code-in" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="0000" value="${esc(presetCode||"")}" aria-label="Өрөөний код"></div>
       <button class="btn" id="rmJoin">Нэгдэх</button></div>
-    ${joinOnly?`<button class="btn ghost" id="rmHostLink" style="flex:none">Эсвэл шинэ өрөө нээх</button>`:`<div class="panel"><b>Шинэ өрөө нээх</b>
+    ${joinOnly?`<button class="btn ghost" id="rmHostLink" style="flex:none" aria-expanded="false">Эсвэл шинэ өрөө нээх</button>
+      <div class="panel" id="rmPick" hidden><b>Ямар тоглоомын өрөө нээх вэ?</b>
+        ${["room","draw","photo"].map(g=>`<button class="game" data-newroom="${g}"><span class="ic">${GAMES[g].ic}</span><div><h3>${GAMES[g].name}</h3><p>${esc(GAMES[g].desc.replace(/^Олон утсаар: (.)/,(m,c)=>c.toUpperCase()))}</p></div><span class="chev" aria-hidden="true">${I("chev")}</span></button>`).join("")}</div>`:`<div class="panel"><b>Шинэ өрөө нээх</b>
       <b style="font-size:14px;color:var(--ink-soft)">Хэн хэн байна?</b><div class="wh-names" style="justify-content:flex-start">${groupChips(roomLevel)}</div>
       <button class="btn ghost" id="rmHost">Өрөө нээх</button></div>`}
     <p class="note" id="rmMsg" style="margin:0">Бүгд интернэттэй байх хэрэгтэй.</p></section>`;
@@ -2407,7 +2468,8 @@ function roomMenu(from, presetCode){
   document.getElementById("rmJoin").onclick=()=>{ const n=getName(); if(!n) return; const c=codeIn.value; if(!/^\d{4}$/.test(c)){ msg.textContent="4 оронтой код оруул"; codeIn.focus(); return; } msg.textContent="Өрөө хайж байна…"; const jb=document.getElementById("rmJoin"); jb.disabled=true;
     detectRoomKind(c).then(k=>{ jb.disabled=false; if(k==="draw"||k==="photo"){ nav("#/"+k+"/"+c+"/go"); } else if(k==="vote") connectRoom(c,false,n,from||"friends"); else msg.textContent=`${c} кодтой өрөө олдсонгүй. Кодоо шалгаад дахин оролдоорой.`; }); };
   const hb=document.getElementById("rmHost"); if(hb) hb.onclick=()=>{ const n=getName(); if(!n) return; connectRoom(String(1000+Math.floor(Math.random()*9000)),true,n,from||"friends"); };
-  const hl=document.getElementById("rmHostLink"); if(hl) hl.onclick=()=>nav("#/game/room/friends");
+  const hl=document.getElementById("rmHostLink"); if(hl) hl.onclick=()=>{ const p=document.getElementById("rmPick"); p.hidden=!p.hidden; hl.setAttribute("aria-expanded",!p.hidden); if(!p.hidden) p.scrollIntoView({behavior:"smooth",block:"nearest"}); };
+  app.querySelectorAll("[data-newroom]").forEach(b=>b.onclick=()=>{ const n=nameIn.value.trim().slice(0,16); if(n) saveMyName(n); nav("#/game/"+b.dataset.newroom+"/friends"); });
 }
 async function waitSb(){ if(!window.supabase){ await new Promise(res=>{ let n=0; const t=setInterval(()=>{ if(window.supabase||++n>30){ clearInterval(t); res(); } },100); }); } return sbClient(); }
 // peek at both room types for this code (no track), resolve "vote" | "draw" | null
@@ -2914,7 +2976,7 @@ function renderChain(){
     app.innerHTML=`<section class="view">${head}<div class="ai-load"><div class="sp" style="animation:none">🔗</div><h2 style="font-size:24px">Бүх гинж дууслаа!</h2><p class="wait">Хамгийн инээдтэйг нь Story болгож хуваалцаарай.</p></div>
       <div class="row" style="flex-direction:column"><button class="btn story" id="st">📸 Story зураг хадгалах</button>${D.host?`<button class="btn" id="drAgain">Дахин тоглох</button>`:""}</div></section>`;
     const n=C.order.length, pick=Math.floor(Math.random()*n); const a=(C.subs[0]||{})[pick], img=(C.subs[1]||{})[pick], g=(C.subs[2]||{})[pick];
-    document.getElementById("st").onclick=()=>shareStory({game:"Утасны зураач", ic:"🔗", big:"Гинжин зураг", line:`✍️ «${a||"…"}»`, sub:`🤔 «${g||"…"}»`, img:img||""});
+    document.getElementById("st").onclick=()=>shareStory({game:"Утасны зураач", kind:"Гинжин зураг", ic:"🔗", big:"Гинжин зураг", line:`✍️ «${a||"…"}»`, sub:`🤔 «${g||"…"}»`, img:img||""});
     const ag=document.getElementById("drAgain"); if(ag) ag.onclick=()=>{ D.last=null; D.view="lobby"; D.chain=null; drSend({t:"lobby",mode:D.mode}); renderDraw(); };
   }
 }
@@ -3141,11 +3203,31 @@ function startGame(id, from){
   return true;
 }
 function nav(hash){ if(location.hash===hash) route(); else location.hash=hash; }
+/* Leaving a running game (in-app back, phone back/swipe) asks first. A screen is "running" when its back button says Зогсоох/Гарах. */
+const leaveEl=document.getElementById("leave"); let leaveGo=null, curHash=location.hash, skipHash=false;
+const inGame=()=>!!app.querySelector(".top .back[data-guard]") && leaveEl.hidden;
+function askLeave(go){ leaveGo=go; leaveEl.hidden=false; document.getElementById("leaveNo").focus(); }
+document.getElementById("leaveNo").onclick=()=>{ leaveEl.hidden=true; leaveGo=null; };
+document.getElementById("leaveYes").onclick=()=>{ leaveEl.hidden=true; const g=leaveGo; leaveGo=null; if(g) g(); };
+function onHash(){
+  if(skipHash){ skipHash=false; curHash=location.hash; return; }
+  if(location.hash!==curHash && inGame()){
+    const target=location.hash||"#/";
+    history.pushState(null,"",curHash||"#/");   // stay on the game screen (pushState fires no hashchange)
+    askLeave(()=>{ curHash=target; skipHash=false; location.hash=target; });
+    return;
+  }
+  curHash=location.hash; route();
+}
+window.addEventListener("beforeunload", e=>{ if(inGame()){ e.preventDefault(); e.returnValue=""; } });
+let routedOnce=false;
 function route(){
-  document.querySelectorAll(".touchpad,.boom,.studio").forEach(el=>el.remove());
-  curGame=null; gate.hidden=true; stopTimer(); leaveRoom(); leaveDraw(); leavePhoto(); aiRerender=null; closeUserMenu();
+  document.querySelectorAll(".touchpad,.boom,.studio,.confetti,.huflash").forEach(el=>el.remove());
+  curGame=null; gate.hidden=true; leaveEl.hidden=true; stopTimer(); leaveRoom(); leaveDraw(); leavePhoto(); aiRerender=null; closeUserMenu();
   const r=location.hash.replace(/^#\/?/,"").split("/");
-  try{ gtag("event","page_view",{page_title:document.title, page_location:location.href, page_path:location.pathname+location.hash}); }catch(e){}
+  // the first screen is counted by gtag("config") itself (it sent one even with send_page_view:false); later screens are sent here
+  if(routedOnce){ try{ gtag("event","page_view",{page_title:document.title, page_location:location.href, page_path:location.pathname+location.hash}); }catch(e){} }
+  routedOnce=true;
   if(r[0]==="mood" && MOODS[r[1]]) mood(r[1]);
   else if(r[0]==="privacy") privacy();
   else if(r[0]==="guide") guide();
@@ -3162,11 +3244,11 @@ app.addEventListener("click", e=>{
   const go=e.target.closest("[data-go]"), m=e.target.closest("[data-mood]"), g=e.target.closest("[data-game]");
   if(e.target.closest("[data-snd]")){ toggleSound(); return; }
   const gh=e.target.closest("[data-go-hash]"); if(gh){ nav(gh.dataset.goHash); return; }
-  if(go){ const v=go.dataset.go; nav(v==="home" ? "#/" : "#/mood/"+v.slice(5)); }
+  if(go){ const v=go.dataset.go, h=v==="home" ? "#/" : "#/mood/"+v.slice(5); if(go.hasAttribute("data-guard")) askLeave(()=>{ curHash=h; nav(h); }); else nav(h); }
   else if(m) nav("#/mood/"+m.dataset.mood);
   else if(g) nav("#/game/"+g.dataset.game+"/"+g.dataset.from);
 });
-window.addEventListener("hashchange", route);
+window.addEventListener("hashchange", onHash);
 route();
 initAuth();
 if("serviceWorker" in navigator && location.protocol.startsWith("http")) window.addEventListener("load", ()=>navigator.serviceWorker.register("sw.js").catch(()=>{}));
