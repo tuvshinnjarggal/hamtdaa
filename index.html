@@ -11,15 +11,16 @@
 <meta property="og:locale" content="mn_MN">
 <meta property="og:title" content="Хамтдаа — Найзууд, хосууд, гэр бүлийн монгол тоглоомууд">
 <meta property="og:description" content="Бүртгэлгүй, нэг утсаар эсвэл 4 оронтой кодоор шууд тогло. 18+ тоглоом, зураг таах, зураач болон AI хөтөчтэй.">
-<meta property="og:url" content="https://tuvshinnjarggal.github.io/hamtdaa/">
-<meta property="og:image" content="https://tuvshinnjarggal.github.io/hamtdaa/og-image.jpg">
+<link rel="canonical" href="https://hamtdaa.app/">
+<meta property="og:url" content="https://hamtdaa.app/">
+<meta property="og:image" content="https://hamtdaa.app/og-image.jpg">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="Хамтдаа — 15+ монгол тоглоом. Нэг утас, олон хүн.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Хамтдаа — Найзууд, хосууд, гэр бүлийн монгол тоглоомууд">
 <meta name="twitter:description" content="Бүртгэлгүй, нэг утсаар эсвэл 4 оронтой кодоор шууд тогло. 18+ тоглоом, зураг таах, зураач болон AI хөтөчтэй.">
-<meta name="twitter:image" content="https://tuvshinnjarggal.github.io/hamtdaa/og-image.jpg">
+<meta name="twitter:image" content="https://hamtdaa.app/og-image.jpg">
 <link rel="manifest" href="manifest.json">
 <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
@@ -1627,7 +1628,8 @@ async function renderStory(o, st){
   main.drawImage(lc, 0, 220+Math.max(30,(CH-y)/2)); }
   const qr=await cachedImg("qr.png");
   if(qr){ const qs=220, qx=W/2-qs/2, qy=1575; x.fillStyle="#fff"; x.beginPath(); x.roundRect(qx-14,qy-14,qs+28,qs+28,24); x.fill(); x.imageSmoothingEnabled=false; x.drawImage(qr,qx,qy,qs,qs); x.imageSmoothingEnabled=true; }
-  storyLogo(x,T,W,1872,44);
+  storyLogo(x,T,W,1856,42);
+  x.textAlign="center"; x.fillStyle=T.soft; x.font=`700 30px ${B}`; x.fillText("hamtdaa.app", W/2, 1898);
   return cv;
 }
 function shrinkPhoto(file){ return new Promise((res,rej)=>{ const u=URL.createObjectURL(file), im=new Image();
@@ -1987,7 +1989,7 @@ function whisper(from){
   render();
 }
 /* ---------- Auth (Supabase, Google; optional "lazy" sign-up) ---------- */
-const SITE_URL = location.hostname.endsWith("github.io") ? "https://tuvshinnjarggal.github.io/hamtdaa/" : location.origin + location.pathname;
+const SITE_URL = /^(localhost|127\.0\.0\.1)$/.test(location.hostname) ? location.origin + location.pathname : "https://hamtdaa.app/";
 let sb=null, user=null, aiRerender=null;
 function sbClient(){
   if(!sb && window.supabase && window.supabase.createClient){
