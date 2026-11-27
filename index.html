@@ -33,6 +33,12 @@
 window.GA_ID = "G-4BQTKPVZE0";
 window.dataLayer = window.dataLayer || [];
 function gtag(){ dataLayer.push(arguments); }
+(function(){ let n=0; const seen={};
+  function report(msg){ try{ msg=String(msg||"unknown").slice(0,150); if(seen[msg]||n>=10) return; seen[msg]=1; n++;
+    if(typeof gtag==="function") gtag("event","app_error",{error_message:msg, page:location.hash||"#/"}); }catch(e){} }
+  window.addEventListener("error", e=>{ if(!e||!e.message) return; report(e.message+(e.lineno?" @"+e.lineno+":"+(e.colno||0):"")); });
+  window.addEventListener("unhandledrejection", e=>{ const r=e&&e.reason; report("promise: "+((r&&(r.message||r.name))||r)); });
+})();
 if(/^G-[A-Z0-9]+$/.test(GA_ID)){
   const s=document.createElement("script"); s.async=true; s.src="https://www.googletagmanager.com/gtag/js?id="+GA_ID; document.head.appendChild(s);
   gtag("js", new Date()); gtag("config", GA_ID, {page_location:location.href, page_path:location.pathname+location.hash, page_title:document.title});
@@ -557,6 +563,37 @@ body::before{content:"";position:fixed;inset:0;z-index:0;pointer-events:none;bac
 .note.bad{color:var(--amber)}
 body.inparty .room-code,body.inparty .qrbox,body.inparty #rmShare,body.inparty #drShare,body.inparty #phShare,body.inparty .rmQrNote{display:none!important}
 @media (max-width:360px){.pinv .btn{padding-left:10px;padding-right:10px;font-size:14px;gap:6px}.pbar .pb{padding:7px 10px}.pbar{gap:6px;padding-left:10px}.iab{font-size:12px}}
+/* Party: 6 games in 2 columns + party-only games */
+.pgames.g2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.g2 .pgame{flex-direction:column;align-items:flex-start;gap:10px;padding:12px;position:relative;min-height:132px}
+.g2 .pgame .rd{position:absolute;top:10px;right:10px}
+.g2 .pgame>div{width:100%}
+.g2 .pgame h3{font-size:14px;line-height:1.25}
+.g2 .pgame p{font-size:12px;line-height:1.3}
+.g2 .pgame .ic{width:36px;height:36px}
+.pgame .lim{display:inline-block;margin-top:4px;font-size:11px;font-weight:800;color:var(--amber)}
+.mpopen{align-self:flex-start;display:inline-flex;align-items:center;gap:6px;font-size:13px;font-weight:800;padding:8px 12px;border-radius:999px;background:rgba(255,255,255,.06);border:1px solid var(--edge);color:var(--ink)}
+.mpopen .i{width:16px;height:16px;color:var(--glow)}
+.wmode{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.wm{display:flex;flex-direction:column;align-items:flex-start;gap:4px;text-align:left;padding:12px;border-radius:14px;background:rgba(255,255,255,.03);border:1px solid var(--edge);color:var(--ink)}
+.wm .i{width:20px;height:20px;color:var(--glow);margin-bottom:4px}
+.wm b{font-size:14px;line-height:1.25}.wm small{font-size:12px;color:var(--ink-soft);line-height:1.3}
+.wm.on{border-color:var(--glow);background:rgba(242,180,90,.07)}
+.mpans{display:flex;flex-direction:column;gap:10px}
+.mpans .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:54px}
+.mpans .btn .i{width:20px;height:20px}
+.mpans.big .btn{min-height:72px;font-size:20px}
+.mpsent{display:flex;align-items:center;gap:10px;justify-content:center;padding:14px;border-radius:14px;background:rgba(61,220,151,.08);border:1px solid rgba(61,220,151,.25);color:var(--ink);font-size:14px;text-align:center}
+.mpsent .i{width:18px;height:18px;color:#3DDC97;flex:none}
+.mpcard{text-align:center;gap:10px}
+.mpcard .eyebrow{color:var(--glow)}
+.mpcard.dare{border-color:rgba(255,59,92,.35)}
+.mpturn{display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;background:var(--night-2);border:1px solid var(--glow)}
+.mpturn b{display:block;font-size:20px;line-height:1.2;margin-top:2px}
+.mpturn>div{min-width:0}
+.fbk{display:block;text-align:center;font-size:12px;color:var(--ink-soft);opacity:.8;text-decoration:none;padding:4px 0}
+.fbk:hover{text-decoration:underline}
+@media (max-width:360px){.g2 .pgame{padding:10px;min-height:126px}.g2 .pgame h3{font-size:13px}.wm{padding:10px}}
 </style>
 
 </head>
@@ -928,7 +965,8 @@ function home(){
     <button class="btn join" data-go-hash="#/room" style="flex:none">${I("qr")}Өрөөнд нэгдэх</button>
     <div class="homefoot"><p class="note">Бүртгэл хэрэггүй. Утсаа ширээн дээр тавиад дамжуулан тогло.</p>
     <button class="sgbtn" id="sgHome">${I("bulb")}Асуулт, шийтгэл санал болгох</button>
-    <div class="foot-links"><a href="#/privacy">Нууцлалын бодлого</a><span aria-hidden="true">·</span><button class="linkbtn" id="clrSeen">Асуултын түүх цэвэрлэх</button></div></div>
+    <div class="foot-links"><a href="#/privacy">Нууцлалын бодлого</a><span aria-hidden="true">·</span><button class="linkbtn" id="clrSeen">Асуултын түүх цэвэрлэх</button></div>
+    <a class="fbk" href="https://www.instagram.com/hamtdaa.app/" target="_blank" rel="noopener noreferrer">Алдаа / санал мэдэгдэх · @hamtdaa.app</a></div>
   </section>`;
   document.getElementById("clrSeen").onclick=e=>{ clearSeen(); e.target.textContent="Түүх цэвэрлэгдлээ"; };
   document.getElementById("sgHome").onclick=openSuggest;
@@ -960,6 +998,7 @@ function renderDeck(open){
   const q = order[i], isTask = q.startsWith("Даалгавар:"); markSeen("deck:"+id+":"+levelIdx, q);
   app.innerHTML = `<section class="view">${topBar("mood:"+from, i>0?"Зогсоох":MOODS[from].name)}
     <h2 style="font-size:22px">${G.ic} ${G.name}</h2>
+    ${id==="neverDeck"&&i===0?`<button type="button" class="mpopen" data-go-hash="#/party/never/${from}">${I("users")}Олон утсаар (Өрөө нээх)</button>`:""}
     ${D.levels.length>1?`<div class="tabs" role="tablist">${D.levels.map((l,n)=>`<button role="tab" aria-selected="${n===levelIdx}" data-level="${n}">${l.name}</button>`).join("")}</div>`:""}
     <div class="stage"><div class="card${open?" flipped":""}" id="card" tabindex="0" role="button" aria-label="Картыг эргүүлэх">
       <div class="face front"><div class="big">?</div><span>Дарж эргүүл</span><span class="eyebrow">${L.name}</span></div>
@@ -1676,6 +1715,7 @@ function spicy(from){
   function setup(){
     app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
       <h2 style="font-size:22px">🔥 Үнэн үү, Халуухан шийтгэл үү?</h2>
+      <button type="button" class="mpopen" data-go-hash="#/party/tod/${from}">${I("users")}Олон утсаар (Өрөө нээх)</button>
       <ol class="rules"><li>Ээлжээрээ халуухан асуултад үнэнээр хариулна.</li><li>Ичвэл «Шийтгэл» дарж, сонгосон төрлөөс санамсаргүй шийтгэл биелүүлнэ.</li><li>10 тойрог тутамд хэн хамгийн зоригтой байсныг харуулна.</li></ol>
       ${namesPanel()}
       <div class="panel"><b>Шийтгэлийн төрөл</b><div class="wh-names" style="justify-content:flex-start">${Object.entries(SPICY_PENS).map(([k,v])=>`<button class="chip" data-k="${k}" aria-pressed="${kinds.has(k)}">${v.label}</button>`).join("")}</div></div>
@@ -1728,6 +1768,7 @@ function wish(from){
   function setup(){
     app.innerHTML=`<section class="view">${topBar("mood:"+from, MOODS[from].name)}
       <h2 style="font-size:22px">❤️ Нууц хүсэл</h2>
+      <div class="wmode"><button type="button" class="wm on" aria-pressed="true">${I("phone")}<b>1 утсаар ээлжлэх</b><small>Нэг утсыг дамжуулна</small></button><button type="button" class="wm" data-go-hash="#/party/wish/${from}">${I("users")}<b>2 утсаар (Холоос / Кодоор)</b><small>Хүн бүр өөрийн утаснаас</small></button></div>
       <ol class="rules"><li>Нэгдүгээр хүн ${N} санааг нууцаар ❤️ Тийм, 🤔 Магадгүй, ✕ Үгүй гэж тэмдэглэнэ.</li><li>Утсаа өгөхөд хоёрдугаар хүн мөн адил тэмдэглэнэ. Нөгөөгийнхөө хариултыг харахгүй.</li><li>Төгсгөлд зөвхөн хоёулаа хүссэн зүйлс л гарна. Нэг нь л хүссэн зүйл хэзээ ч илчлэгдэхгүй.</li></ol>
       ${namesPanel()}
       <div class="panel"><b>Төрөл</b><div class="wh-names" style="justify-content:flex-start"><button class="chip" data-wl="rom" aria-pressed="${lv==="rom"}">💕 Романтик</button><button class="chip" data-wl="hot" aria-pressed="${lv==="hot"}">🔥 Халуухан 18+</button></div></div>
@@ -3281,13 +3322,214 @@ function applyHow(){
 }
 new MutationObserver(applyHow).observe(app,{childList:true});
 
+/* ---------- Party-only games: Би хэзээ ч... / Үнэн үү, Шийтгэл үү? / Нууц хүсэл (2 утас) ----------
+   Host-authoritative: the host keeps the state and broadcasts a public snapshot {t:"s"} after every change (and on every presence
+   sync / SYNC_REQ, so reloaded phones catch up). Guests send {t:"a", k:...} actions. Runs on the party adapter like room/draw/photo. */
+let mp=null;
+const TOD_LV = {
+  friends:[{name:"Энгийн", tr:()=>TRUTHS, pen:()=>DARES},
+           {name:"Уухтай", tr:()=>TRUTHS, pen:()=>DARES.concat(STAKES.drink.list)}],
+  couples:[{name:"Романтик", tr:()=>DECKS.couplesDeck.levels[0].items.concat(DECKS.couplesDeck.levels[1].items).filter(q=>!q.startsWith("Даалгавар:")).concat(nandinPool().slice(0,60)), pen:()=>SPICY_PENS.romantic.list},
+           {name:"Халуухан 18+", adult:true, tr:()=>SPICY_TRUTHS(), pen:()=>SPICY_PENS.hot.list.concat(SPICY_PENS.drink.list)}]
+};
+const MP_WISH_N = 10;
+const AGE_MP = "Энэ тоглоом «18+» горимтой. Та 18 нас хүрсэн үү?";
+function leaveMp(){ if(!mp) return; const M=mp; mp=null; clearTimeout(M.t); }
+function mpSend(p){ if(mp) try{ mp.ch.send({type:"broadcast", event:"msg", payload:p}); }catch(e){} }
+function mpPlayers(){ if(!mp) return []; const st=mp.ch.presenceState?.()||{}, list=[];
+  Object.values(st).forEach(a=>{ const p=a&&a[0]; if(p&&p.id&&!list.some(x=>x.id===p.id)) list.push({id:p.id,name:p.name||"?",host:!!p.host,at:p.at||0,pic:p.pic||""}); });
+  return list.sort((a,b)=>(b.host-a.host)||(a.at-b.at)).slice(0,12); }
+const mpOnline = () => new Set(mpPlayers().map(p=>p.id));
+function mpName(id){ const M=mp; return (M&&M.S&&M.S.names&&M.S.names[id]) || mpPlayers().find(p=>p.id===id)?.name || "?"; }
+function mpPic(id){ return mpPlayers().find(p=>p.id===id)?.pic || ""; }
+function mpPub(){ const M=mp; if(!M||!M.host||!M.S) return; mpPlayers().forEach(p=>{ M.S.names[p.id]=p.name; }); M.S.t="s"; mpSend(M.S); }
+function mpAct(p){ const M=mp; if(!M) return; const a={...p, t:"a", from:myId}; if(M.host){ MPG[M.gid].act(M,a); mpPub(); mpRender(); } else mpSend(a); }
+function connectMp(gid, code, isHost, name, from, A){
+  leaveMp(); stopTimer();
+  const M=mp={gid, ch:A, host:isHost, from, code, me:{id:myId,name}, S:null, my:{}, h:{}};
+  A.on("broadcast",{event:"msg"},({payload})=>{ if(mp!==M||!payload) return;
+    if(payload.t==="s"){ if(M.host) return; M.S=payload; mpRender(); }
+    else if(payload.t==="a" && M.host && M.S){ MPG[gid].act(M,payload); mpPub(); mpRender(); } });
+  A.on("presence",{event:"sync"},()=>{ if(mp!==M||!M.S) return;
+    if(M.host){ MPG[gid].sync&&MPG[gid].sync(M); mpPub(); if(M.S.v==="lobby"||MPG[gid].live) mpRender(); }
+    else if(M.S.v==="lobby") mpRender(); });
+  A.subscribe(()=>{ if(mp!==M) return; if(M.host){ M.S={...MPG[gid].init(M), v:"lobby", names:{}, g:gid}; mpPub(); } mpRender(); });
+}
+function mpRender(){
+  const M=mp; if(!M) return; const head=topBar("mood:"+M.from,"Гарах");
+  if(!M.S){ app.innerHTML=`<section class="view">${head}<div class="ai-load"><div class="sp">${I("users")}</div><h2 style="font-size:22px">Өрөөний эзэнтэй холбогдож байна…</h2></div></section>`; return; }
+  MPG[M.gid].render(M, head);
+}
+function mpChips(ps){ return `<div class="wh-names" style="justify-content:flex-start">${ps.map(p=>`<span class="chip" style="color:var(--ink);display:inline-flex;align-items:center">${avHTML(p.name,p.pic,24)}${esc(p.name)}${p.id===myId?" (та)":""}</span>`).join("")}</div>`; }
+function mpTitle(gid){ return `<h2 style="font-size:22px;display:flex;align-items:center;gap:10px">${I(PARTY_IC[gid])}${esc(PARTY_NAMES[gid])}</h2>`; }
+function mpSeg(name, opts, cur, disabled){ return `<div class="wh-names" style="justify-content:flex-start">${opts.map(([v,l])=>`<button type="button" class="chip" data-${name}="${v}" aria-pressed="${String(cur)===String(v)}"${disabled?" disabled":""}>${esc(l)}</button>`).join("")}</div>`; }
+function mpAge(M, adult){ if(adult && !adultOk && !M.host && !M.ageAsked){ M.ageAsked=true; openGate(()=>mpRender(), {text:AGE_MP, onNo:()=>nav("#/")}); } }
+function mpWait(t){ return `<p class="wait" style="margin-top:auto">${t}</p>`; }
+
+const MPG = {
+/* ----- Би хэзээ ч... : one card on every phone, each taps Би хийж байсан / Хэзээ ч үгүй ----- */
+never:{
+  live:true,
+  init(){ return {lv:0, n:0, q:"", pl:[], done:[], yes:[], score:{}}; },
+  sync(M){ if(M.S.v==="q") MPG.never.check(M); },
+  next(M){ const S=M.S, L=DECKS.neverDeck.levels[S.lv], key="mpnever:"+S.lv;
+    if(!M.deck||!M.deck.length||M.deckLv!==S.lv){ M.deck=freshOrder(key, L.items).reverse(); M.deckLv=S.lv; }
+    const q=M.deck.pop(); markSeen(key,q); M.ans={};
+    Object.assign(S,{v:"q", n:S.n+1, q, pl:mpPlayers().map(p=>p.id), done:[], yes:[]}); },
+  check(M){ const S=M.S, on=mpOnline(), act=S.pl.filter(id=>on.has(id)); if(act.length && act.every(id=>M.ans[id]!=null)) MPG.never.reveal(M); },
+  reveal(M){ const S=M.S; if(S.v!=="q") return; S.yes=Object.keys(M.ans).filter(id=>M.ans[id]===1); S.yes.forEach(id=>{ S.score[id]=(S.score[id]||0)+1; }); S.v="res"; },
+  act(M,a){ const S=M.S, me=a.from===myId;
+    if(a.k==="lv"&&me&&S.v==="lobby"){ S.lv=a.lv; M.deck=null; }
+    else if(a.k==="start"&&me){ S.score={}; S.n=0; MPG.never.next(M); track("mp_never_start",{lv:S.lv}); }
+    else if(a.k==="next"&&me) MPG.never.next(M);
+    else if(a.k==="show"&&me) MPG.never.reveal(M);
+    else if(a.k==="end"&&me) S.v="end";
+    else if(a.k==="again"&&me){ S.v="lobby"; S.score={}; S.n=0; }
+    else if(a.k==="ans"){ if(S.v!=="q"||a.n!==S.n||!S.pl.includes(a.from)||M.ans[a.from]!=null) return; M.ans[a.from]=a.v?1:0; S.done=Object.keys(M.ans); MPG.never.check(M); } },
+  rows(S){ return Object.entries(S.score).map(([id,v])=>[mpName(id),v,id]).sort((a,b)=>b[1]-a[1]); },
+  render(M, head){ const S=M.S, L=DECKS.neverDeck.levels[S.lv]||DECKS.neverDeck.levels[0], ps=mpPlayers(); mpAge(M, L.adult);
+    if(S.v==="lobby"){
+      app.innerHTML=`<section class="view">${head}${mpTitle("never")}
+        <ol class="rules"><li>Нэг карт бүх утсан дээр зэрэг гарна.</li><li>Хүн бүр өөрийн утаснаас «Би хийж байсан» эсвэл «Хэзээ ч үгүй» гэж дарна.</li><li>Бүгд дармагц хэн хэн нь хийж байсныг нэрээр нь ил гаргаж, оноо тоолно.</li></ol>
+        <div class="panel"><b>Түвшин</b>${mpSeg("nlv", DECKS.neverDeck.levels.map((l,i)=>[i,l.name]), S.lv, !M.host)}</div>
+        <div class="panel"><b>Тоглогчид (${ps.length})</b>${mpChips(ps)}</div>
+        ${M.host?`<div class="row" style="margin-top:auto;flex-direction:column"><button type="button" class="btn" id="mpGo"${ps.length<2?" disabled":""}>Эхлэх</button><p class="note" style="margin:0">${ps.length<2?"Дор хаяж 2 хүн хэрэгтэй":"Бүгд нэгдсэн бол эхлүүл"}</p></div>`:mpWait("Өрөөний эзэн эхлүүлэхийг хүлээж байна…")}</section>`;
+      if(M.host){ app.querySelectorAll("[data-nlv]").forEach(b=>b.onclick=()=>{ const v=+b.dataset.nlv, set=()=>mpAct({k:"lv",lv:v}); if(DECKS.neverDeck.levels[v].adult&&!adultOk) openGate(set,{text:AGE_MP,onNo:()=>{}}); else set(); });
+        document.getElementById("mpGo").onclick=()=>mpAct({k:"start"}); }
+      return; }
+    if(S.v==="end"){ const rows=MPG.never.rows(S), top=rows[0];
+      app.innerHTML=`<section class="view">${head}<div class="hero" style="text-align:center"><span class="eyebrow">Хамгийн их туршлагатай</span><h1 style="margin-top:6px">${top&&top[1]?esc(top[0]):"Бүгд цэвэрхэн"}</h1><p>${S.n} карт</p></div>
+        ${rows.length?tallyHTML(rows):""}
+        <div class="row" style="margin-top:auto;flex-direction:column"><button type="button" class="btn story" id="st">Story зураг хадгалах</button>${M.host?`<button type="button" class="btn" id="mpAgain">Дахин тоглох</button>`:""}</div></section>`;
+      document.getElementById("st").onclick=()=>shareStory({game:"Би хэзээ ч...", ic:"🍷", who:{name:top?top[0]:"—",pic:top?mpPic(top[2]):""}, big:top?top[0]:"—", line:"Хамгийн их туршлагатай", sub:`${top?top[1]:0} удаа «Би хийж байсан» · ${S.n} карт`});
+      const ag=document.getElementById("mpAgain"); if(ag) ag.onclick=()=>mpAct({k:"again"});
+      return; }
+    const on=mpOnline(), act=S.pl.filter(id=>on.has(id)), cnt=S.done.filter(id=>act.includes(id)).length;
+    const card=`<div class="panel mpcard"><span class="eyebrow">Би хэзээ ч · ${esc(L.name)} · ${S.n}</span><div class="wh-q">${esc(S.q)}</div></div>`;
+    if(S.v==="q"){ const inR=S.pl.includes(myId), mine=M.my[S.n];
+      app.innerHTML=`<section class="view">${head}${card}
+        ${!inR?`<p class="wait">Та дараагийн картаас оролцоно.</p>`:mine==null?`<div class="mpans"><button type="button" class="btn" data-nv="1">Би хийж байсан</button><button type="button" class="btn ghost" data-nv="0">Хэзээ ч үгүй</button></div>`
+          :`<div class="mpsent">${I("check")}<span>Хариулт илгээгдлээ: <b>${mine?"Би хийж байсан":"Хэзээ ч үгүй"}</b></span></div>`}
+        <p class="wait" style="margin:0" id="mpProg">${cnt}/${act.length} хүн хариулсан</p>
+        ${M.host?`<div class="row" style="margin-top:auto;flex-direction:column"><button type="button" class="btn ghost" id="mpShow">Дүнг харах</button></div>`:""}</section>`;
+      app.querySelectorAll("[data-nv]").forEach(b=>b.onclick=()=>{ const v=+b.dataset.nv; M.my[S.n]=v; buzz(25); beep(700,.06,.1); mpAct({k:"ans", n:S.n, v}); mpRender(); });
+      const sh=document.getElementById("mpShow"); if(sh) sh.onclick=()=>mpAct({k:"show"});
+      return; }
+    if(S.v==="res"){ const rows=MPG.never.rows(S);
+      if(M.h.res!==S.n){ M.h.res=S.n; beep(990,.15,.12); buzz([30,40,30]); }
+      app.innerHTML=`<section class="view">${head}${card}
+        <div class="panel"><b>${S.yes.length?`Хийж байсан (${S.yes.length})`:"Хэн ч хийж байгаагүй"}</b>${S.yes.length?mpChips(S.yes.map(id=>({id,name:mpName(id),pic:mpPic(id)}))):`<p class="note" style="margin:0;text-align:left">Энэ удаа бүгд цэвэрхэн.</p>`}</div>
+        ${rows.length?`<div class="panel"><b>Оноо</b>${tallyHTML(rows)}</div>`:""}
+        ${M.host?`<div class="row" style="margin-top:auto;flex-direction:column"><button type="button" class="btn" id="mpNext">Дараагийн асуулт</button><button type="button" class="btn ghost" id="mpEnd">Тоглолт дуусгах</button></div>`:mpWait("Өрөөний эзэн дараагийн картыг нээнэ…")}</section>`;
+      if(M.host){ document.getElementById("mpNext").onclick=()=>mpAct({k:"next"}); document.getElementById("mpEnd").onclick=()=>mpAct({k:"end"}); }
+    } }
+},
+/* ----- Үнэн үү, Шийтгэл үү? : turns; only the current player picks, the card shows on every phone ----- */
+tod:{
+  live:true,
+  init(M){ return {aud:M.from==="couples"?"couples":"friends", lv:0, order:[], ti:0, who:null, kind:null, text:"", r:0}; },
+  advance(M){ const S=M.S, on=mpOnline();
+    mpPlayers().forEach(p=>{ if(!S.order.includes(p.id)) S.order.push(p.id); });
+    for(let k=1;k<=S.order.length;k++){ const i=(S.ti+k)%S.order.length; if(on.has(S.order[i])){ S.ti=i; break; } }
+    Object.assign(S,{who:S.order[S.ti], kind:null, text:"", v:"choose", r:S.r+1}); },
+  act(M,a){ const S=M.S, me=a.from===myId;
+    if(a.k==="aud"&&me&&S.v==="lobby"){ S.aud=a.aud; S.lv=0; }
+    else if(a.k==="lv"&&me&&S.v==="lobby"){ S.lv=a.lv; }
+    else if(a.k==="start"&&me){ S.order=mpPlayers().map(p=>p.id); S.ti=-1; S.r=0; MPG.tod.advance(M); track("mp_tod_start",{aud:S.aud,lv:S.lv}); }
+    else if(a.k==="pick"&&S.v==="choose"&&a.from===S.who){ const L=TOD_LV[S.aud][S.lv]||TOD_LV[S.aud][0], dare=a.kind==="dare";
+      S.kind=dare?"dare":"truth"; S.text=pickFresh(`mptod:${S.aud}:${S.lv}:${S.kind}`, dare?L.pen():L.tr()); S.v="card"; }
+    else if(a.k==="done"&&S.v==="card"&&(a.from===S.who||me)) MPG.tod.advance(M);
+    else if(a.k==="skip"&&me&&S.v!=="lobby") MPG.tod.advance(M); },
+  render(M, head){ const S=M.S, L=TOD_LV[S.aud][S.lv]||TOD_LV[S.aud][0], ps=mpPlayers(); mpAge(M, L.adult);
+    if(S.v==="lobby"){
+      app.innerHTML=`<section class="view">${head}${mpTitle("tod")}
+        <ol class="rules"><li>Ээлжээр тоглоно. Ээлж ирсэн хүн өөрийн утаснаас «Үнэн» эсвэл «Шийтгэл» сонгоно.</li><li>Гарсан карт бүх утсан дээр зэрэг харагдана.</li><li>Биелүүлээд «Дууслаа · Дараагийн хүн» дарна.</li></ol>
+        <div class="panel"><b>Хэнд зориулсан</b>${mpSeg("taud",[["friends","Найзуудад"],["couples","Хосуудад"]],S.aud,!M.host)}<b>Түвшин</b>${mpSeg("tlv",TOD_LV[S.aud].map((l,i)=>[i,l.name]),S.lv,!M.host)}</div>
+        <div class="panel"><b>Тоглогчид (${ps.length})</b>${mpChips(ps)}</div>
+        ${M.host?`<div class="row" style="margin-top:auto;flex-direction:column"><button type="button" class="btn" id="mpGo"${ps.length<2?" disabled":""}>Эхлэх</button><p class="note" style="margin:0">${ps.length<2?"Дор хаяж 2 хүн хэрэгтэй":"Бүгд нэгдсэн бол эхлүүл"}</p></div>`:mpWait("Өрөөний эзэн эхлүүлэхийг хүлээж байна…")}</section>`;
+      if(M.host){ app.querySelectorAll("[data-taud]").forEach(b=>b.onclick=()=>mpAct({k:"aud",aud:b.dataset.taud}));
+        app.querySelectorAll("[data-tlv]").forEach(b=>b.onclick=()=>{ const v=+b.dataset.tlv, set=()=>mpAct({k:"lv",lv:v}); if(TOD_LV[S.aud][v].adult&&!adultOk) openGate(set,{text:AGE_MP,onNo:()=>{}}); else set(); });
+        document.getElementById("mpGo").onclick=()=>mpAct({k:"start"}); }
+      return; }
+    const mine=S.who===myId, wn=esc(mpName(S.who)), away=!mpOnline().has(S.who);
+    const turn=`<div class="mpturn">${avHTML(mpName(S.who),mpPic(S.who),44)}<div><span class="eyebrow">${esc(L.name)} · ${S.r}-р ээлж</span><b>${mine?"Таны ээлж":`${wn}-ийн ээлж`}</b></div></div>`;
+    const skip=M.host&&away?`<button type="button" class="btn ghost" id="mpSkip">${wn} түр салсан · Ээлж алгасах</button>`:"";
+    if(S.v==="choose"){
+      app.innerHTML=`<section class="view">${head}${turn}
+        ${mine?`<div class="mpans big"><button type="button" class="btn" data-tk="truth">${I("chat")}<span>Үнэн</span></button><button type="button" class="btn ghost" data-tk="dare">${I("flame")}<span>Шийтгэл</span></button></div>`
+          :`<div class="ai-load" style="flex:none;padding:24px 0"><div class="sp" style="font-size:48px">${I("help")}</div><p class="wait" style="margin:0">${wn} сонгож байна...</p></div>`}
+        <div class="row" style="margin-top:auto;flex-direction:column">${skip}</div></section>`;
+      app.querySelectorAll("[data-tk]").forEach(b=>b.onclick=()=>{ buzz(25); beep(700,.06,.1); mpAct({k:"pick",kind:b.dataset.tk}); });
+    } else {
+      if(M.h.card!==S.r){ M.h.card=S.r; beep(S.kind==="dare"?520:880,.12,.12); }
+      app.innerHTML=`<section class="view">${head}${turn}
+        <div class="panel mpcard ${S.kind}"><span class="eyebrow">${S.kind==="dare"?"Шийтгэл":"Үнэн"} · ${wn}</span><div class="wh-q">${esc(S.text)}</div></div>
+        <div class="row" style="margin-top:auto;flex-direction:column">${mine||M.host?`<button type="button" class="btn" id="mpDone">Дууслаа · Дараагийн хүн</button>`:`<p class="wait" style="margin:0">${wn} биелүүлж байна…</p>`}${skip}</div></section>`;
+      const d=document.getElementById("mpDone"); if(d) d.onclick=()=>mpAct({k:"done"});
+    }
+    const sk=document.getElementById("mpSkip"); if(sk) sk.onclick=()=>mpAct({k:"skip"});
+  }
+},
+/* ----- Нууц хүсэл (2 утас): both answer at the same time on their own phone; only mutual wishes are revealed ----- */
+wish:{
+  init(){ return {lv:"rom", items:[], pl:[], prog:{}, fin:[], res:null, round:0}; },
+  act(M,a){ const S=M.S, me=a.from===myId;
+    if(a.k==="lv"&&me&&S.v!=="play"){ S.lv=a.lv; }
+    else if(a.k==="start"&&me){ const ps=mpPlayers(); if(ps.length!==2) return;
+      const key="mpwish:"+S.lv; S.items=freshOrder(key, S.lv==="hot"?WISH_HOT:WISH_ROMANTIC).slice(0,MP_WISH_N); S.items.forEach(x=>markSeen(key,x));
+      Object.assign(S,{v:"play", pl:ps.map(p=>p.id), prog:{}, fin:[], res:null, round:S.round+1}); M.yes={}; track("mp_wish_start",{lv:S.lv}); }
+    else if(a.k==="prog"&&S.v==="play"&&S.pl.includes(a.from)&&a.r===S.round){ S.prog[a.from]=Math.min(MP_WISH_N, a.i|0); }
+    else if(a.k==="fin"&&S.v==="play"&&S.pl.includes(a.from)&&a.r===S.round&&!S.fin.includes(a.from)){
+      (M.yes=M.yes||{})[a.from]=(a.yes||[]).filter(i=>i>=0&&i<S.items.length); S.prog[a.from]=MP_WISH_N; S.fin.push(a.from);
+      if(S.pl.every(id=>S.fin.includes(id))){ S.res=S.items.filter((t,i)=>S.pl.every(id=>M.yes[id].includes(i))); S.v="res"; } }
+    else if(a.k==="again"&&me){ S.v="lobby"; } },
+  render(M, head){ const S=M.S, ps=mpPlayers(); mpAge(M, S.lv==="hot");
+    if(S.v==="lobby"){ const ok=ps.length===2;
+      app.innerHTML=`<section class="view">${head}${mpTitle("wish")}
+        <ol class="rules"><li>Хоёулаа ${MP_WISH_N} санааг өөр өөрийн утаснаас зэрэг, нууцаар бөглөнө.</li><li>Нөгөөгийнхөө сонголтыг харахгүй, зөвхөн хаана явааг нь харна.</li><li>Хоёулаа «Хүсэж байна» гэсэн зүйлс л төгсгөлд ил гарна.</li></ol>
+        <div class="panel"><b>Төрөл</b>${mpSeg("wlv",[["rom","Романтик"],["hot","Халуухан 18+"]],S.lv,!M.host)}</div>
+        <div class="panel"><b>Тоглогчид (${ps.length}/2)</b>${mpChips(ps)}</div>
+        ${M.host?`<div class="row" style="margin-top:auto;flex-direction:column"><button type="button" class="btn" id="mpGo"${ok?"":" disabled"}>Эхлэх</button><p class="note${ok?"":" bad"}" style="margin:0">${ok?"Хоёулаа бэлэн бол эхлүүл":ps.length<2?"Хосоо кодоор урьж нэгдүүлээрэй":"Энэ тоглоом зөвхөн 2 хүнд (хосуудад) зориулсан"}</p></div>`:mpWait("Хос чинь эхлүүлэхийг хүлээж байна…")}</section>`;
+      if(M.host){ app.querySelectorAll("[data-wlv]").forEach(b=>b.onclick=()=>{ const v=b.dataset.wlv, set=()=>mpAct({k:"lv",lv:v}); if(v==="hot"&&!adultOk) openGate(set,{text:AGE_MP,onNo:()=>{}}); else set(); });
+        document.getElementById("mpGo").onclick=()=>mpAct({k:"start"}); }
+      return; }
+    if(S.v==="res"){ const n=S.res.length, other=S.pl.find(id=>id!==myId);
+      app.innerHTML=`<section class="view">${head}<div class="hero" style="text-align:center"><span class="eyebrow">${esc(mpName(S.pl[0]))} & ${esc(mpName(S.pl[1]))}</span></div>
+        <div class="pct">${n}</div><h2 style="text-align:center;font-size:22px">${n?"давхцал олдлоо":"Энэ удаа давхцал алга"}</h2>${n?"":'<i data-noconf hidden></i>'}
+        ${n?`<div class="panel"><b>Хоёулаа хүсэж байна</b><div class="mlist">${S.res.map(t=>`<div class="mrow ok"><span class="mi">${I("heart")}</span><div><b>${esc(t)}</b></div></div>`).join("")}</div></div>`:""}
+        <p class="note" style="margin:0">Нэг нь л хүссэн зүйлс нууц хэвээр үлдлээ.</p>
+        <div class="row" style="flex-direction:column;margin-top:auto"><button type="button" class="btn story" id="st">Story зураг хадгалах</button>${M.host?`<button type="button" class="btn" id="mpAgain">Дахиад ${MP_WISH_N} хүсэл</button>`:""}</div></section>`;
+      if(M.h.res!==S.round){ M.h.res=S.round; beep(n?990:520,.25,.15); buzz(n?[60,40,60,40,200]:40); }
+      document.getElementById("st").onclick=()=>shareStory({game:"Нууц хүсэл", ic:"❤️", pair:[mpName(myId),mpName(other)], big:String(n), line:"нууц хүсэл маань таарлаа"});
+      const ag=document.getElementById("mpAgain"); if(ag) ag.onclick=()=>mpAct({k:"again"});
+      return; }
+    // play
+    if(M.my.round!==S.round) M.my={round:S.round, i:0, yes:[]};
+    const inR=S.pl.includes(myId), other=S.pl.find(id=>id!==myId), op=S.prog[other]||0, my=M.my;
+    const oline=`<p class="wait" style="margin:0">${op>=MP_WISH_N?`${esc(mpName(other))} дууслаа`:`Нөгөө хүн чинь ${op}/${MP_WISH_N} дээр явж байна...`}</p>`;
+    if(!inR){ app.innerHTML=`<section class="view">${head}${mpWait("Энэ тойрогт хоёр хүн тоглож байна…")}</section>`; return; }
+    if(my.i>=MP_WISH_N){
+      app.innerHTML=`<section class="view">${head}<div class="ai-load"><div class="sp" style="font-size:56px">${I("lock")}</div><h2 style="font-size:22px">Таны хариулт нууцаар хадгалагдлаа</h2>${oline}</div></section>`; return; }
+    app.innerHTML=`<section class="view">${head}
+      <div class="mprog"><i style="width:${my.i/MP_WISH_N*100}%"></i></div>
+      <p class="who-line" style="margin:0">${my.i+1} / ${MP_WISH_N} · Зөвхөн чи харж байна</p>
+      <div class="wishcard">${esc(S.items[my.i])}</div>
+      <div class="mpans"><button type="button" class="btn" data-wv="1">${I("heart")}<span>Хүсэж байна</span></button><button type="button" class="btn ghost" data-wv="0">Алгасах</button></div>
+      ${oline}</section>`;
+    app.querySelectorAll("[data-wv]").forEach(b=>b.onclick=()=>{ if(+b.dataset.wv) my.yes.push(my.i); my.i++; buzz(15);
+      mpAct({k:"prog", r:S.round, i:my.i}); if(my.i>=MP_WISH_N) mpAct({k:"fin", r:S.round, yes:my.yes}); mpRender(); });
+  }
+}
+};
+
 /* ---------- Нэгдсэн өрөө (Party Room): one Realtime channel room:CODE + one lobby for Хэн нь вэ? / Утасны зураач / Зураг таах рулет ----------
    Players join once. The host picks a game; each game module runs on a thin adapter over the party channel (its messages are stamped _g),
    so switching games never needs a new code. Presence drops are shown as "Түр салсан…" for 90s; a host gone that long is replaced. */
-const PARTY_GAMES = ["room","draw","photo"];
-const PARTY_IC = {room:"vote", draw:"palette", photo:"camera"};
-const PARTY_DESC = {room:"Асуулт бүх утсан дээр гарч, хүн бүр нууцаар санал өгнө", draw:"Нэг нь зурж, бусад нь утсан дээрээ шууд таана", photo:"Утасны зургуудаас хэнийх болохыг хурдан таана"};
-const PARTY_MIN = {room:2, draw:2, photo:3};
+const PARTY_GAMES = ["room","draw","photo","never","tod","wish"];
+const PARTY_NAMES = {room:"Хэн нь вэ?", draw:"Утасны зураач", photo:"Зураг таах рулет", never:"Би хэзээ ч...", tod:"Үнэн үү, Шийтгэл үү?", wish:"Нууц хүсэл (2 хүн)"};
+const PARTY_IC = {room:"vote", draw:"palette", photo:"camera", never:"glass", tod:"flame", wish:"heart"};
+const PARTY_DESC = {room:"Нууцаар санал өгч, хэн нь болохыг тодруулна", draw:"Нэг нь зурж, бусад нь утсан дээрээ таана", photo:"Утасны зургаас хэнийх болохыг таана", never:"Хийж байсан эсэхээ утаснаасаа дарна", tod:"Ээлжээр үнэн эсвэл шийтгэл сонгоно", wish:"Хоёулаа нууцаар бөглөж, давхцлаа олно"};
+const PARTY_MIN = {room:2, draw:2, photo:3, never:2, tod:2, wish:2};
 let party = null;
 const randCode = () => String(1000+Math.floor(Math.random()*9000));
 
@@ -3353,7 +3595,7 @@ function partyFail(text){ const P=party; const code=P?P.code:""; partyLeave(); p
 function partyLeave(keep){
   const P=party; if(!P) return; party=null;
   clearInterval(P.iv); clearTimeout(P.findT); clearTimeout(P.reT); clearTimeout(P.hostT);
-  P.adapter=null; leaveRoom(); leaveDraw(); leavePhoto();
+  P.adapter=null; leaveRoom(); leaveDraw(); leavePhoto(); leaveMp();
   document.body.classList.remove("inparty");
   if(!keep) partyForget();
   if(P.ch){ const ch=P.ch; P.ch=null; try{ ch.untrack&&ch.untrack(); }catch(e){} try{ sbClient()&&sbClient().removeChannel(ch); }catch(e){} }
@@ -3428,7 +3670,7 @@ function onPartyCtl(m){
     if(m.game && PARTY_GAMES.includes(m.game)){ if(P.view!=="game"||P.game!==m.game) partyLaunch(m.game); else partyRefresh(); }
     else if(P.view==="game") partyToLobby(false); else partyRefresh(); }
 }
-function partyStopGame(){ const P=party; if(!P) return; if(ph&&ph.ch&&ph.ch.isParty) P.keep=ph.photos.slice(); P.adapter=null; leaveRoom(); leaveDraw(); leavePhoto(); }
+function partyStopGame(){ const P=party; if(!P) return; if(ph&&ph.ch&&ph.ch.isParty) P.keep=ph.photos.slice(); P.adapter=null; leaveRoom(); leaveDraw(); leavePhoto(); leaveMp(); }
 function partyLaunch(gid){
   const P=party; if(!P||!PARTY_GAMES.includes(gid)) return;
   stopTimer(); document.querySelectorAll(".confetti").forEach(el=>el.remove());
@@ -3438,7 +3680,8 @@ function partyLaunch(gid){
   const A=P.adapter=partyAdapter(gid), name=P.me.name;
   if(gid==="room") connectRoom(P.code, P.host, name, P.from, A);
   else if(gid==="draw") connectDraw(P.code, P.host, name, P.from, A);
-  else connectPhoto(P.code, P.host, name, P.from, P.keep||[], A);
+  else if(gid==="photo") connectPhoto(P.code, P.host, name, P.from, P.keep||[], A);
+  else connectMp(gid, P.code, P.host, name, P.from, A);
   if(!P.host) setTimeout(()=>{ if(party===P&&P.adapter===A) partyCtl({type:"SYNC_REQ"}); },500);
 }
 function partyStart(gid){ const P=party; if(!P||!P.host||!PARTY_GAMES.includes(gid)) return; partyCtl({type:"GAME_START", gameId:gid}); track("party_game_start",{game_id:gid}); partyLaunch(gid); }
@@ -3484,8 +3727,8 @@ function renderParty(){
     return; }
   if(P.view!=="lobby") return;
   const on=partyRosterList().filter(p=>!p.away).length, hostAway=!P.host && !partyOnline().some(p=>p.host);
-  const games=PARTY_GAMES.map(g=>`<button type="button" class="pgame${P.sel===g?" on":""}" data-psel="${g}" aria-pressed="${P.sel===g}"${P.host?"":" disabled"}><span class="ic">${I(PARTY_IC[g])}</span><div><h3>${esc(GAMES[g].name)}</h3><p>${PARTY_DESC[g]}</p></div><span class="rd">${P.sel===g?I("check"):""}</span></button>`).join("");
-  const need=PARTY_MIN[P.sel]||2;
+  const games=PARTY_GAMES.map(g=>`<button type="button" class="pgame${P.sel===g?" on":""}" data-psel="${g}" aria-pressed="${P.sel===g}"${P.host?"":" disabled"}><span class="ic">${I(PARTY_IC[g])}</span><div><h3>${esc(PARTY_NAMES[g])}</h3><p>${PARTY_DESC[g]}</p>${g==="wish"&&on>2?`<span class="lim">Зөвхөн 2 хүн</span>`:""}</div><span class="rd">${P.sel===g?I("check"):""}</span></button>`).join("");
+  const need=PARTY_MIN[P.sel]||2, wishBad=P.sel==="wish"&&on>2;
   app.innerHTML=`<section class="view party">${topBar("pexit","Гарах")}${iabHTML()}
     <div class="hero" style="text-align:center"><span class="eyebrow">Нэгдсэн өрөө · код</span></div>
     <div class="room-code">${P.code}</div>
@@ -3493,9 +3736,9 @@ function renderParty(){
     ${P.host?`<details class="pqr"><summary>${I("qr")}QR код харуулах</summary>${qrImg(inviteUrl(P.code))}</details>`:""}
     <div class="panel" id="pPlayers">${partyPlayersHTML()}</div>
     ${!P.joined?`<p class="note bad" style="margin:0">Холболт тасарлаа. Дахин холбогдож байна…</p>`:""}
-    <div class="panel"><b>${P.host?"Тоглоом сонгох":"Сонгосон тоглоом"}</b><div class="pgames">${games}</div></div>
+    <div class="panel"><b>${P.host?"Тоглоом сонгох":"Сонгосон тоглоом"}</b><div class="pgames g2">${games}</div></div>
     ${P.note?`<p class="note" style="margin:0">${esc(P.note)}</p>`:""}
-    ${P.host?`<div class="row" style="margin-top:auto;flex-direction:column"><button type="button" class="btn" id="pStart">Эхлүүлэх</button><p class="note" style="margin:0">${on<need?`«${esc(GAMES[P.sel].name)}»-д дор хаяж ${need} хүн хэрэгтэй. Эхлүүлээд бусдыгаа хүлээж болно.`:"Бүгд нэгдсэн бол эхлүүл"}</p></div>`
+    ${P.host?`<div class="row" style="margin-top:auto;flex-direction:column"><button type="button" class="btn" id="pStart"${wishBad?" disabled":""}>Эхлүүлэх</button><p class="note${wishBad?" bad":""}" style="margin:0">${wishBad?"Энэ тоглоом зөвхөн 2 хүнд (хосуудад) зориулсан":on<need?`«${esc(PARTY_NAMES[P.sel])}»-д дор хаяж ${need} хүн хэрэгтэй. Эхлүүлээд бусдыгаа хүлээж болно.`:"Бүгд нэгдсэн бол эхлүүл"}</p></div>`
       :`<p class="wait" style="margin-top:auto">${hostAway?"Өрөөний эзэн түр салсан. Буцаж ирэхийг хүлээж байна…":"Өрөөний эзэн тоглоом сонгож байна..."}</p>`}</section>`;
   const iv=document.getElementById("pInvite"); iv.onclick=()=>shareInvite(iv, P.code);
   const cp=document.getElementById("pCopy"); cp.onclick=async()=>{ const ok=await copyText(inviteUrl(P.code)); cp.querySelector("span").textContent=ok?"Хуулагдлаа":inviteUrl(P.code); };
@@ -3509,7 +3752,7 @@ function partyJoinView(code, auto, err){
   stopTimer(); setGlow(MOODS.friends.c); curGame=null;
   app.innerHTML=`<section class="view party">${topBar("home","Нүүр")}${iabHTML()}
     <h2 style="font-size:22px;display:flex;align-items:center;gap:10px">${I("users")}Өрөөнд нэгдэх</h2>
-    <p style="margin:0;color:var(--ink-soft)">${code?`Найз чинь таныг <b style="color:var(--ink)">${esc(code)}</b> өрөөнд урьж байна. Нэрээ бичээд нэгдээрэй.`:"Найзынхаа нээсэн өрөөний 4 оронтой кодыг оруул. Нэг өрөөнд «Хэн нь вэ?», «Утасны зураач», «Зураг таах рулет»-ыг сольж тоглоно."}</p>
+    <p style="margin:0;color:var(--ink-soft)">${code?`Найз чинь таныг <b style="color:var(--ink)">${esc(code)}</b> өрөөнд урьж байна. Нэрээ бичээд нэгдээрэй.`:"Найзынхаа нээсэн өрөөний 4 оронтой кодыг оруул. Нэг өрөөнд 6 тоглоомыг код дахин оруулалгүй сольж тоглоно."}</p>
     <div class="panel names"><label for="pName"><b>Таны нэр</b></label><input id="pName" maxlength="16" autocomplete="nickname" value="${esc(partyNameVal())}" placeholder="Нэрээ бич">
       <label for="pCode"><b>Өрөөний код</b></label><input id="pCode" class="code-in" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="0000" value="${esc(code||"")}">
       <button type="button" class="btn" id="pJoin">Нэгдэх</button></div>
@@ -3531,8 +3774,8 @@ function partyCreateView(from, gid){
   const draw=()=>{
     app.innerHTML=`<section class="view party">${topBar("mood:"+from, MOODS[from].name)}${iabHTML()}
       <h2 style="font-size:22px;display:flex;align-items:center;gap:10px">${I("users")}Олон утсаар тоглох</h2>
-      <p style="margin:0;color:var(--ink-soft)">Нэг өрөө нээгээд найзууд чинь нэг л удаа нэгдэнэ. Дараа нь гурван тоглоомыг код дахин оруулалгүй сольж тоглоно.</p>
-      <div class="panel"><b>Эхний тоглоом</b><div class="pgames">${PARTY_GAMES.map(g=>`<button type="button" class="pgame${sel===g?" on":""}" data-psel="${g}" aria-pressed="${sel===g}"><span class="ic">${I(PARTY_IC[g])}</span><div><h3>${esc(GAMES[g].name)}</h3><p>${PARTY_DESC[g]}</p></div><span class="rd">${sel===g?I("check"):""}</span></button>`).join("")}</div></div>
+      <p style="margin:0;color:var(--ink-soft)">Нэг өрөө нээгээд найзууд чинь нэг л удаа нэгдэнэ. Дараа нь 6 тоглоомыг код дахин оруулалгүй сольж тоглоно.</p>
+      <div class="panel"><b>Эхний тоглоом</b><div class="pgames g2">${PARTY_GAMES.map(g=>`<button type="button" class="pgame${sel===g?" on":""}" data-psel="${g}" aria-pressed="${sel===g}"><span class="ic">${I(PARTY_IC[g])}</span><div><h3>${esc(PARTY_NAMES[g])}</h3><p>${PARTY_DESC[g]}</p></div><span class="rd">${sel===g?I("check"):""}</span></button>`).join("")}</div></div>
       <div class="panel names"><label for="pName"><b>Таны нэр</b></label><input id="pName" maxlength="16" autocomplete="nickname" value="${esc(partyNameVal())}" placeholder="Нэрээ бич">
         <button type="button" class="btn" id="pHost">Өрөө нээх</button></div>
       <div class="panel"><b>Найзынхаа өрөөнд нэгдэх</b><div class="names"><input id="pCode" class="code-in" inputmode="numeric" pattern="[0-9]*" maxlength="4" placeholder="0000" aria-label="Өрөөний код"></div><button type="button" class="btn ghost" id="pJoin">Нэгдэх</button></div>
@@ -3557,7 +3800,7 @@ function partyEntry(code, auto){
 // end-of-game screens: the host also gets «Өөр тоглоом сонгох (Өрөөндөө үлдэх)»
 new MutationObserver(()=>{
   if(!party||party.view!=="game"||!party.host) return;
-  const again=app.querySelector("#rmAgain,#drAgain,#phAgain"); if(!again||app.querySelector("[data-plobby2]")) return;
+  const again=app.querySelector("#rmAgain,#drAgain,#phAgain,#mpAgain"); if(!again||app.querySelector("[data-plobby2]")) return;
   const b=document.createElement("button"); b.type="button"; b.className="btn ghost"; b.setAttribute("data-plobby",""); b.setAttribute("data-plobby2","");
   b.textContent="Өөр тоглоом сонгох (Өрөөндөө үлдэх)"; again.after(b);
 }).observe(app,{childList:true, subtree:true});
@@ -3601,6 +3844,7 @@ function route(){
   else if(r[0]==="privacy") privacy();
   else if(r[0]==="guide") guide();
   else if(/^room=\d{4}$/.test(r[0])) partyEntry(r[0].slice(5), false);
+  else if(r[0]==="party" && PARTY_GAMES.includes(r[1])) { partyCreateView(MOODS[r[2]]?r[2]:"friends", r[1]); track("game_start",{game_id:"party_"+r[1], mood:r[2]||"friends"}); }
   else if(r[0]==="room"||r[0]==="draw"||r[0]==="photo") { const c=/^\d{4}$/.test(r[1]||"")?r[1]:""; if(c) partyEntry(c, r[2]==="go"); else partyJoinView(""); track("game_start",{game_id:r[0], mood:"friends"}); }
   else if(r[0]==="game" && GAMES[r[1]] && MOODS[r[2]] && startGame(r[1],r[2])) track("game_start",{game_id:r[1], mood:r[2]});
   else home();
